@@ -1,0 +1,34 @@
+{
+  "hash": "60b29b3e",
+  "configHash": "11c1ee0f",
+  "lockfileHash": "b0cb9ba2",
+  "browserHash": "8c0583b3",
+  "optimized": {
+    "@angular/core": {
+      "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
+      "file": "@angular_core.js",
+      "fileHash": "341cdaac",
+      "needsInterop": false
+    },
+    "@angular/platform-browser": {
+      "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
+      "file": "@angular_platform-browser.js",
+      "fileHash": "b6483092",
+      "needsInterop": false
+    },
+    "@angular/router": {
+      "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
+      "file": "@angular_router.js",
+      "fileHash": "79751fa7",
+      "needsInterop": false
+    }
+  },
+  "chunks": {
+    "chunk-XINXFBNK": {
+      "file": "chunk-XINXFBNK.js"
+    },
+    "chunk-URBOFONS": {
+      "file": "chunk-URBOFONS.js"
+    }
+  }
+}
