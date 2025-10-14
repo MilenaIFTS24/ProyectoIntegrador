@@ -23,22 +23,22 @@ import { MakeReservationComponent } from './features/user/make-reservation/make-
 export const routes: Routes = [
     { path: "", loadComponent: () => import('./features/home/home-page/home-page.component').then(m => HomePageComponent) },
     { path: "login", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) },
-    { path: "register", loadComponent: () => import('./features/auth/register/register.component').then(m => RegisterComponent) },
+    { path: "registro", loadComponent: () => import('./features/auth/register/register.component').then(m => RegisterComponent) },
     { path: "contacto", loadComponent: () => import('./features/contact/contact-page/contact-page.component').then(m => ContactPageComponent) },
-    { path: "products", loadComponent: () => import('./features/products/products-list/products-list.component').then(m => ProductsListComponent) },
-    { path: "products/:id", loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => ProductDetailComponent) },
-    { path: "events", loadComponent: () => import('./features/events/events-list/events-list.component').then(m => EventsListComponent) },
-    { path: "events/:id", loadComponent: () => import('./features/events/event-detail/event-detail.component').then(m => EventDetailComponent) },
+    { path: "productos", loadComponent: () => import('./features/products/products-list/products-list.component').then(m => ProductsListComponent) },
+    { path: "productos/:id", loadComponent: () => import('./features/products/product-detail/product-detail.component').then(m => ProductDetailComponent) },
+    { path: "eventos", loadComponent: () => import('./features/events/events-list/events-list.component').then(m => EventsListComponent) },
+    { path: "eventos/:id", loadComponent: () => import('./features/events/event-detail/event-detail.component').then(m => EventDetailComponent) },
     {
         path: "adminDashboard", loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => AdminDashboardComponent), children:
             [
                 { path: "adminDashboardHome", loadComponent: () => import('./features/admin/admin-dashboard-home/admin-dashboard-home.component').then(m => AdminDashboardHomeComponent) },
-                { path: "manageEvents", loadComponent: () => import('./features/admin/manage-events/manage-events.component').then(m => ManageEventsComponent) },
-                { path: "manageOffers", loadComponent: () => import('./features/admin/manage-offers/manage-offers.component').then(m => ManageOffersComponent) },
-                { path: "manageProductsCrafts", loadComponent: () => import('./features/admin/manage-products-crafts/manage-products-crafts.component').then(m => ManageProductsCraftsComponent) },
-                { path: "manageProductsTeas", loadComponent: () => import('./features/admin/manage-products-teas/manage-products-teas.component').then(m => ManageProductsTeasComponent) },
-                { path: "manageReservations", loadComponent: () => import('./features/admin/manage-reservations/manage-reservations.component').then(m => ManageReservationsComponent) },
-                { path: "manageUsers", loadComponent: () => import('./features/admin/manage-users/manage-users.component').then(m => ManageUsersComponent) },
+                { path: "gestionEventos", loadComponent: () => import('./features/admin/manage-events/manage-events.component').then(m => ManageEventsComponent) },
+                { path: "gestionOfertas", loadComponent: () => import('./features/admin/manage-offers/manage-offers.component').then(m => ManageOffersComponent) },
+                { path: "gestiosProductosArtesanias", loadComponent: () => import('./features/admin/manage-products-crafts/manage-products-crafts.component').then(m => ManageProductsCraftsComponent) },
+                { path: "gestionProductosTes", loadComponent: () => import('./features/admin/manage-products-teas/manage-products-teas.component').then(m => ManageProductsTeasComponent) },
+                { path: "gestionReservas", loadComponent: () => import('./features/admin/manage-reservations/manage-reservations.component').then(m => ManageReservationsComponent) },
+                { path: "gestionUsuarios", loadComponent: () => import('./features/admin/manage-users/manage-users.component').then(m => ManageUsersComponent) },
                 {
                     path: "",
                     redirectTo: "adminDashboardHome",
