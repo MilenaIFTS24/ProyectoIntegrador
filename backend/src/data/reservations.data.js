@@ -4,8 +4,8 @@ export const reservations = [
     createdAt: '10-10-24',
     userId: 1,
     products: [
-      { productId: 1, type: 'tea', quantity: 2, unitPrice: 450 },
-      { productId: 3, type: 'tea', quantity: 1, unitPrice: 180 }
+      { productId: 1, product: { id: 1, name: 'Té Verde Matcha Orgánico Premium', brand: 'TeaHouse Eco', productType: 'tea' }, quantity: 2, unitPrice: 450 },
+      { productId: 3, product: { id: 3, name: 'Rooibos Vainilla y Canela Orgánico', brand: 'African Organic Essence', productType: 'tea' }, quantity: 1, unitPrice: 180 }
     ],
     totalAmount: 1080,
     pickupDate: '15-10-24',
@@ -26,7 +26,7 @@ export const reservations = [
     createdAt: '11-10-24',
     userId: 2,
     products: [
-      { productId: 2, type: 'craft', quantity: 1, unitPrice: 420 }
+      { productId: 2, product: { id: 2, name: 'Set de Infusores de Acero Inoxidable Reciclado', brandArtist: 'MetalArts Eco Studio', productType: 'craft' }, quantity: 1, unitPrice: 420 }
     ],
     totalAmount: 357,
     pickupDate: '16-10-24',
@@ -47,7 +47,7 @@ export const reservations = [
     createdAt: '08-10-24',
     userId: 3,
     products: [
-      { productId: 5, type: 'tea', quantity: 3, unitPrice: 220 }
+      { productId: 5, product: { id: 5, name: 'Chai Especiado Orgánico Tradicional', brand: 'Spice Route Organic', productType: 'tea' }, quantity: 3, unitPrice: 220 }
     ],
     totalAmount: 0,
     pickupDate: null,
@@ -68,8 +68,8 @@ export const reservations = [
     createdAt: '12-10-24',
     userId: 5,
     products: [
-      { productId: 8, type: 'tea', quantity: 1, unitPrice: 520 },
-      { productId: 4, type: 'craft', quantity: 1, unitPrice: 1500 }
+      { productId: 8, product: { id: 8, name: 'Pu-erh Envejecido 10 años Orgánico', brand: 'Ancient Forest Tea Organic', productType: 'tea' }, quantity: 1, unitPrice: 520 },
+      { productId: 4, product: { id: 4, name: 'Caja de Té de Madera de Algarrobo Sustentable', brandArtist: 'Carpintería El Bosque Eco', productType: 'craft' }, quantity: 1, unitPrice: 1500 }
     ],
     totalAmount: 1700,
     pickupDate: '18-10-24',
@@ -90,7 +90,7 @@ export const reservations = [
     createdAt: '13-10-24',
     userId: 7,
     products: [
-      { productId: 7, type: 'tea', quantity: 2, unitPrice: 150 }
+      { productId: 7, product: { id: 7, name: 'Infusión Relajante - Manzanilla y Lavanda Ecológica', brand: 'Herbals Eco Argentina', productType: 'tea' }, quantity: 2, unitPrice: 150 }
     ],
     totalAmount: 270,
     pickupDate: '19-10-24',
@@ -111,8 +111,8 @@ export const reservations = [
     createdAt: '09-10-24',
     userId: 9,
     products: [
-      { productId: 9, type: 'craft', quantity: 1, unitPrice: 280 },
-      { productId: 6, type: 'tea', quantity: 1, unitPrice: 390 }
+      { productId: 9, product: { id: 9, name: 'Bolsas de Tela Orgánica Reutilizables - Pack x3', brandArtist: 'EcoDesign Studio', productType: 'craft' }, quantity: 1, unitPrice: 280 },
+      { productId: 6, product: { id: 6, name: 'Té Blanco Silver Needle Orgánico', brand: 'Chinese White Tea Eco', productType: 'tea' }, quantity: 1, unitPrice: 390 }
     ],
     totalAmount: 535,
     pickupDate: '14-10-24',
@@ -133,7 +133,7 @@ export const reservations = [
     createdAt: '14-10-24',
     userId: 1,
     products: [
-      { productId: 10, type: 'tea', quantity: 1, unitPrice: 680 }
+      { productId: 10, product: { id: 10, name: 'Té Matcha Orgánico Premium Ceremonial', brand: 'Pure Green Japan Organic', productType: 'tea' }, quantity: 1, unitPrice: 680 }
     ],
     totalAmount: 680,
     pickupDate: '20-10-24',
@@ -154,7 +154,7 @@ export const reservations = [
     createdAt: '06-10-24',
     userId: 4,
     products: [
-      { productId: 1, type: 'tea', quantity: 5, unitPrice: 450 }
+      { productId: 1, product: { id: 1, name: 'Té Verde Matcha Orgánico Premium', brand: 'TeaHouse Eco', productType: 'tea' }, quantity: 5, unitPrice: 450 }
     ],
     totalAmount: 2250,
     pickupDate: '12-10-24',
@@ -175,8 +175,8 @@ export const reservations = [
     createdAt: '11-10-24',
     userId: 5,
     products: [
-      { productId: 3, type: 'tea', quantity: 2, unitPrice: 180 },
-      { productId: 5, type: 'craft', quantity: 1, unitPrice: 320 }
+      { productId: 3, product: { id: 3, name: 'Rooibos Vainilla y Canela Orgánico', brand: 'African Organic Essence', productType: 'tea' }, quantity: 2, unitPrice: 180 },
+      { productId: 5, product: { id: 5, name: 'Velas Aromáticas 100% Soja Orgánica', brandArtist: 'Aromatherapy Eco Handmade', productType: 'craft' }, quantity: 1, unitPrice: 320 }
     ],
     totalAmount: 640,
     pickupDate: '17-10-24',
@@ -197,7 +197,7 @@ export const reservations = [
     createdAt: '07-10-24',
     userId: 2,
     products: [
-      { productId: 8, type: 'craft', quantity: 1, unitPrice: 3200 }
+      { productId: 8, product: { id: 8, name: 'Escultura de Piedra Volcánica Reciclada', brandArtist: 'Artesano Roberto Gil Eco', productType: 'craft' }, quantity: 1, unitPrice: 3200 }
     ],
     totalAmount: 2880,
     pickupDate: '13-10-24',

@@ -10,6 +10,7 @@ export const productsCrafts = [
     isUnique: true,
     materials: ['Barro local reciclado', 'Esmalte natural'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 850,
     stock: 1,
     image: '/assets/craft-bowl.jpg'
@@ -25,6 +26,7 @@ export const productsCrafts = [
     isUnique: false,
     materials: ['Acero inoxidable reciclado'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 420,
     stock: 12,
     image: '/assets/craft-infuser.jpg'
@@ -40,6 +42,7 @@ export const productsCrafts = [
     isUnique: false,
     materials: ['Lana orgánica', 'Tintes vegetales'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 1200,
     stock: 4,
     image: '/assets/craft-textile.jpg'
@@ -55,6 +58,7 @@ export const productsCrafts = [
     isUnique: true,
     materials: ['Madera de algarrobo sustentable', 'Aceite natural'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 1500,
     stock: 1,
     image: '/assets/craft-box.jpg'
@@ -70,6 +74,7 @@ export const productsCrafts = [
     isUnique: false,
     materials: ['Soja orgánica', 'Aceites esenciales naturales'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 320,
     stock: 18,
     image: '/assets/craft-candle.jpg'
@@ -85,6 +90,7 @@ export const productsCrafts = [
     isUnique: true,
     materials: ['Papel reciclado', 'Tinta vegetal', 'Madera sustentable'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 950,
     stock: 1,
     image: '/assets/craft-calligraphy.jpg'
@@ -100,6 +106,7 @@ export const productsCrafts = [
     isUnique: false,
     materials: ['Bambú orgánico'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 180,
     stock: 25,
     image: '/assets/craft-bamboo-pad.jpg'
@@ -115,6 +122,7 @@ export const productsCrafts = [
     isUnique: true,
     materials: ['Piedra volcánica reciclada'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 3200,
     stock: 1,
     image: '/assets/craft-sculpture.jpg'
@@ -130,6 +138,7 @@ export const productsCrafts = [
     isUnique: false,
     materials: ['Algodón orgánico', 'Tintes naturales'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 280,
     stock: 30,
     image: '/assets/craft-bags.jpg'
@@ -145,6 +154,7 @@ export const productsCrafts = [
     isUnique: true,
     materials: ['Plata reciclada 950'],
     ecoFriendly: true,
+    productType: 'craft',
     price: 2800,
     stock: 1,
     image: '/assets/craft-silver-tray.jpg'
