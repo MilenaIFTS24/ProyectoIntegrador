@@ -1,4 +1,4 @@
-export const getCraftsProducts = (req, res) => { //Exportación nombrada (no default)
+export const getCraftsProducts = (req, res) => {
     res.json(products);
     console.log(products);
 };
