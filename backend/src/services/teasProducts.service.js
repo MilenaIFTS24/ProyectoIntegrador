@@ -1,42 +1,38 @@
-import { teasProducts } from "../data/teasProducts.data.js";
-
-const products = teasProducts;
+import * as model from "../models/teasProducts.model.js";
 
 export const getAllTeasProducts = () => {
-    return products;
+    return model.getAllTeasProducts();
 };
 
 export const getTeaProductById = (id) => {
-    return products.find((item) => item.id == id);
+    const product = model.getTeaProductById(id);
+    if (!product) {
+        throw new Error('Producto no encontrado');
+    }
+    return product;
 }
 
-export const createTeaProduct = (data) => { 
-    const newProduct = {id: products.length + 1, ...data };
-    products.push(newProduct);
-    return newProduct;
+export const createTeaProduct = (data) => {
+    return model.createTeaProduct(data); 
+    
 };
 
-export const updateTeaProduct = (id, updateData, product) => {
-    const productIndex = products.findIndex((item) => item.id == id);
-    if (productIndex === -1) {
-        return null;
-    }
+export const updateTeaProduct = (id, updateData) => {
+    
+    const updateProduct = model.getTeaProductById(id);
+    if (!updateProduct) {
+        throw new Error('Producto no encontrado');
+    }   
 
-    const updatedProduct = {
-        ...product,
-        name: updateData.name || product.name,
-        brand: updateData.brand || product.brand,
-        description: updateData.description || product.description,
-        type: updateData.type || product.type,
-        origin: updateData.origin || product.origin,
-        hasCaffeine: updateData.hasCaffeine !== undefined ? updateData.hasCaffeine : product.hasCaffeine,
-        isOrganic: updateData.isOrganic !== undefined ? updateData.isOrganic : product.isOrganic,
-        isFairTrade: updateData.isFairTrade !== undefined ? updateData.isFairTrade : product.isFairTrade,
-        price: updateData.price || product.price,
-        stock: updateData.stock !== undefined ? updateData.stock : product.stock,
-        format: updateData.format || product.format,
-        weightPerUnit: updateData.weightPerUnit || product.weightPerUnit
-    }
-    products[productIndex] = updatedProduct;
-    return updatedProduct;
+    return model.updateTeaProduct(id, updateData);
+}
+
+export const deleteTeaProduct = (id) => {
+    const updateProduct = model.getTeaProductById(id);
+    if (!updateProduct) {
+        throw new Error('Producto no encontrado');
+    }   
+    return model.deleteTeaProduct(id);
+
+    
 }

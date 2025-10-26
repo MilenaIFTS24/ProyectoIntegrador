@@ -1,9 +1,10 @@
 import * as teasProductsService from '../services/teasProducts.service.js';
 
-const products = teasProductsService.getAllTeasProducts();
 export const getTeasProducts = (req, res) => { //Exportación nombrada (no default)
     try {
-        if (products.length === 0 || !products) {
+        const products = teasProductsService.getAllTeasProducts();
+        
+        if (products.length === 0) {
             return res.status(404).json({ error: 'No hay productos disponibles' });
         }
         res.status(200).json(products);
@@ -24,12 +25,12 @@ export const getTeaProductById = (req, res) => {
         }
         const product = teasProductsService.getTeaProductById(id);
 
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
         console.log(product);
         res.status(200).json(product);
     } catch (error) {
+        if (error.message === 'Producto no encontrado') {
+            return res.status(404).json({ error: error.message });
+        }
         console.error('Error al obtener el producto:', error);
         res.status(500).json({ error: 'Error al obtener el producto' });
     }
@@ -76,27 +77,26 @@ export const updateTeaProduct = (req, res) => {
         const { id } = req.params;
         if (!id) {
             return res.status(400).json({ error: 'ID de producto inválido' });
-        }
-        const product = teasProductsService.getTeaProductById(id);
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-
+        }     
+        
         const { name, brand, description, type, origin, hasCaffeine, isOrganic, isFairTrade, price, stock, format, weightPerUnit } = req.body;
         
-        // Verificar que al menos un campo esté presente
         if (!name && !brand && !description && !type && !origin && hasCaffeine === undefined && isOrganic === undefined && isFairTrade === undefined && !price && stock === undefined && !format && !weightPerUnit) {
             return res.status(400).json({ error: 'Debes proporcionar al menos un campo para actualizar' });
         }
 
-        const updatedProduct = teasProductsService.updateTeaProduct(id, { name, brand, description, type, origin, hasCaffeine, isOrganic, isFairTrade, price, stock, format, weightPerUnit }, product);        
+        const updatedProduct = teasProductsService.updateTeaProduct(id, { name, brand, description, type, origin, hasCaffeine, isOrganic, isFairTrade, price, stock, format, weightPerUnit });        
 
         res.status(200).json(updatedProduct);
         console.log(updatedProduct);
 
-    } catch {
+    } catch(error) {
+        if (error.message === 'Producto no encontrado') {
+            return res.status(404).json({ error: error.message });
+        }
         console.error('Error al actualizar el producto:', error);
         res.status(500).json({ error: 'Error al actualizar el producto' });
+        
     }
 }
 
@@ -106,20 +106,14 @@ export const deleteTeaProduct = (req, res) => {
         if (!id) {
             return res.status(400).json({ error: 'ID de producto inválido' });
         }
-        const product = products.find((item) => item.id == id);
-        if (!product) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-
-        const index = products.findIndex((item) => item.id == id);
-        if(index === -1) {
-            return res.status(404).json({ error: 'Producto no encontrado' });
-        }
-
-        products.splice(index, 1);
-        res.status(204).json({ message: 'Producto eliminado correctamente' });
-        console.log(product);
+        const deletedProduct = teasProductsService.deleteTeaProduct(id);
+        
+        res.status(200).json({ message: 'Producto eliminado correctamente' });
+        console.log(deletedProduct);
     } catch (error) {
+        if (error.message === 'Producto no encontrado') {
+            return res.status(404).json({ error: error.message });
+        }
         console.error('Error al eliminar el producto:', error);
         res.status(500).json({ error: 'Error al eliminar el producto' });
     }
