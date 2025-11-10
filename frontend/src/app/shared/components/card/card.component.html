@@ -1,1 +1,8 @@
-<p>card works!</p>
+<div class="card" style="width: 18rem;">
+  <img [src]="data.image" class="card-img-top" [alt]="data.name || data.title">
+  <div class="card-body">
+    <h5 class="card-title">{{data.name || data.title}}</h5>
+    <p class="card-text">{{data.description}}</p>
+    <a routerLink="/" class="btn btn-primary"></a>
+  </div>
+</div>
