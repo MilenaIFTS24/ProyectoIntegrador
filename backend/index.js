@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 dotenv.config();
 import express from "express";
 import cors from "cors";
+import swaggerUi from 'swagger-ui-express';
+import { specs } from './src/config/swagger.js';
 
 
 // 1. Importación de la conexión (Capa de Datos)
@@ -19,11 +21,10 @@ import reservationsRouter from "./src/routes/reservations.router.js";
 import usersRouter from "./src/routes/users.router.js";
 import authRouter from "./src/routes/auth.router.js";
 
-
-
 const app = express();
 
 // --- MIDDLEWARES GLOBALES ---
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json()); // Analiza cuerpos JSON
 app.use(cors());         // Habilita peticiones desde tu Frontend Angular
 
