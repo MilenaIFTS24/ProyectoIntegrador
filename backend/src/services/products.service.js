@@ -1,28 +1,56 @@
 import Product from '../models/products.model.js';
 
-// Estas funciones reemplazan tus llamadas a Firestore o fs.readFileSync
-export const getAllProducts = async () => {
-    return await Product.findAll(); // Sequelize hace el "SELECT * FROM productos"
+export const createProductService = async (productData) => {
+    // 1. Validaciones de Lógica de Negocio
+    const { productType, origin, materials } = productData;
+
+    if (productType === 'tea' && !origin) {
+        throw new Error('Los productos de tipo Té deben tener un origen especificado.');
+    }
+
+    if (productType === 'craft' && (!materials || materials.length === 0)) {
+        throw new Error('Las artesanías deben incluir al menos un material.');
+    }
+
+    // 2. Persistencia
+    return await Product.create(productData);
 };
 
-export const getProductById = async (id) => {
-    return await Product.findByPk(id);
+export const getAllProductsService = async () => {
+    return await Product.findAll();
 };
 
-export const createProduct = async (data) => {
-    // Esto reemplaza al addDoc de Firestore o al push del JSON
-    return await Product.create(data);
+export const getProductsByTypeService = async (type) => {
+    // Validamos que el tipo sea uno de los permitidos
+    if (!['tea', 'craft'].includes(type)) {
+        throw new Error("Tipo de producto no válido. Debe ser 'tea' o 'craft'.");
+    }
+    
+    return await Product.findAll({
+        where: { productType: type }
+    });
 };
 
-export const updateProduct = async (id, updateData) => {
+export const getProductByIdService = async (id) => {
     const product = await Product.findByPk(id);
-    if (!product) return null;
+    if (!product) {
+        throw new Error("Producto no encontrado");
+    }
+    return product;
+};
+
+export const updateProductService = async (id, updateData) => {
+    const product = await Product.findByPk(id);
+    if (!product) throw new Error("Producto no encontrado");
+
+    // Actualiza el producto con los datos nuevos
     return await product.update(updateData);
 };
 
-export const deleteProduct = async (id) => {
+export const deleteProductService = async (id) => {
     const product = await Product.findByPk(id);
-    if (!product) return null;
+    if (!product) throw new Error("Producto no encontrado");
+
     await product.destroy();
-    return product;
+    return { message: "Producto eliminado correctamente" };
 };

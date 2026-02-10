@@ -17,6 +17,7 @@ import offersRouter from "./src/routes/offers.router.js";
 import eventsRouter from "./src/routes/events.router.js";
 import reservationsRouter from "./src/routes/reservations.router.js";
 import usersRouter from "./src/routes/users.router.js";
+import authRouter from "./src/routes/auth.router.js";
 
 
 
@@ -27,6 +28,7 @@ app.use(express.json()); // Analiza cuerpos JSON
 app.use(cors());         // Habilita peticiones desde tu Frontend Angular
 
 // --- DEFINICIÓN DE RUTAS (API VERSIONING) ---
+app.use("/api/auth", authRouter);
 // Tal como solicitaste, unificamos tés y artesanías bajo /api/products
 app.use("/api/products", productsRouter);
 
@@ -40,7 +42,7 @@ app.use("/api/users", usersRouter);
 app.use((req, res, next) => {
   res.status(404).json({ error: "MIDDLE: Ruta no encontrada" });
 });
-
+await sequelize.sync({ alter: true });
 // --- INICIALIZACIÓN DEL SERVIDOR Y BASE DE DATOS ---
 const PORT = process.env.PORT || 3000;
 
@@ -56,7 +58,7 @@ async function startApplication() {
 
     // Sincronizar modelos con la DB
     // force: false no borra los datos; solo crea las tablas si no existen.
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ alter: true });
     console.log('✅ Modelos de Sequelize sincronizados.');
 
     app.listen(PORT, () => {

@@ -1,13 +1,14 @@
-import { Router } from 'express';
-import * as productController from '../controllers/products.controller.js';
+import { Router } from "express";
+import * as productsController from "../controllers/products.controller.js";
+import { authenticateToken, isAdmin } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-// Definimos los endpoints
-router.get('/', productController.getAll);
-router.get('/:id', productController.getById);
-router.post('/', productController.create);
-router.put('/:id', productController.update);
-router.delete('/:id', productController.remove);
+router.get("/", productsController.getProducts);
+router.get("/type/:type", productsController.getProductsByType);
+router.get("/:id", productsController.getProductById); 
+router.post("/", authenticateToken, isAdmin, productsController.createProduct);
+router.put("/:id", authenticateToken, isAdmin, productsController.updateProduct);
+router.delete("/:id", authenticateToken, isAdmin, productsController.deleteProduct);
 
 export default router;

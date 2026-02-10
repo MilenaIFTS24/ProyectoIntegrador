@@ -1,71 +1,47 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../data/database.js';
 
-const Producto = sequelize.define('Producto', {
+const Product = sequelize.define('Product', {
     id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true
     },
-    // --- Campos Comunes ---
-    nombre: { 
-        type: DataTypes.STRING, 
+    // --- Atributos Compartidos ---
+    name: { type: DataTypes.STRING, allowNull: false },
+    description: { type: DataTypes.TEXT },
+    price: { type: DataTypes.FLOAT, allowNull: false },
+    stock: { type: DataTypes.INTEGER, defaultValue: 0 },
+    image: { type: DataTypes.STRING },
+    productType: { 
+        type: DataTypes.ENUM('tea', 'craft'), 
         allowNull: false 
-    },
-    marca: { 
-        type: DataTypes.STRING, 
-        allowNull: true // Puede no aplicar a artesanías manuales
-    },
-    descripcion: { 
-        type: DataTypes.TEXT 
-    },
-    tipoProducto: { 
-        type: DataTypes.ENUM('té', 'artesanía'), 
-        allowNull: false 
-    },
-    tipo: { 
-        type: DataTypes.STRING // Ej: 'Verde/Negro' o 'Madera/Cerámica'
-    },
-    origen: { 
-        type: DataTypes.STRING 
-    },
-    precio: { 
-        type: DataTypes.DECIMAL(10, 2), 
-        allowNull: false 
-    },
-    imagenUrl: { 
-        type: DataTypes.STRING 
-    },
-    stock: { 
-        type: DataTypes.INTEGER, 
-        defaultValue: 0 
     },
 
-    // --- Campos Específicos para Té ---
-    contieneCafeina: { 
-        type: DataTypes.BOOLEAN, 
-        defaultValue: false 
-    },
-    esOrganico: { 
-        type: DataTypes.BOOLEAN, 
-        defaultValue: false 
-    },
-    comercioJusto: { 
-        type: DataTypes.BOOLEAN, 
-        defaultValue: false 
-    },
-    formatoVenta: { 
-        type: DataTypes.STRING // Ej: 'Hebras', 'Saquitos'
-    },
-    pesoUnidad: { 
-        type: DataTypes.INTEGER // Ej: gramos
-    }
+    // --- Atributos específicos de Tés ---
+    brand: { type: DataTypes.STRING }, // brand para tés
+    type: { type: DataTypes.STRING }, // "en polvo", "hebras"
+    origin: { type: DataTypes.STRING },
+    hasCaffeine: { type: DataTypes.BOOLEAN, defaultValue: false },
+    isOrganic: { type: DataTypes.BOOLEAN, defaultValue: false },
+    isFairTrade: { type: DataTypes.BOOLEAN, defaultValue: false },
+    format: { type: DataTypes.STRING },
+    weightPerUnit: { type: DataTypes.FLOAT },
 
-    // Nota: Para artesanías, los campos de té simplemente se guardarán como NULL 
-    // o con su valor por defecto, lo cual es correcto en bases de datos SQL.
+    // --- Atributos específicos de Artesanías ---
+    brandArtist: { type: DataTypes.STRING }, // brandArtist para artesanías
+    category: { type: DataTypes.STRING }, // "accesorios", "vajilla"
+    creationDate: { type: DataTypes.STRING }, // Podría ser DATE, pero mantengo STRING por tu ejemplo
+    weight: { type: DataTypes.FLOAT },
+    isUnique: { type: DataTypes.BOOLEAN, defaultValue: false },
+    materials: { 
+        type: DataTypes.ARRAY(DataTypes.STRING), // PostgreSQL soporta arreglos nativos
+        defaultValue: [] 
+    },
+    ecoFriendly: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, {
-    tableName: 'productos',
-    timestamps: true
+    tableName: 'products',
+    timestamps: true // Crea createdAt y updatedAt automáticamente
 });
 
-export default Producto;
+export default Product;

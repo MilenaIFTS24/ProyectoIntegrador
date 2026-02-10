@@ -1,70 +1,67 @@
-import * as productService from '../services/products.service.js';
+import * as ProductService from '../services/products.service.js';
 
-// Obtener todos los productos
-export const getAll = async (req, res) => {
+export const createProduct = async (req, res) => {
     try {
-        const productos = await productService.getAllProducts();
-        res.status(200).json(productos);
+        // Llamamos al servicio pasando solo los datos necesarios
+        const newProduct = await ProductService.createProductService(req.body);
+        
+        res.status(201).json({
+            message: "✅ Producto creado exitosamente",
+            data: newProduct
+        });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        // Capturamos los errores lanzados por el servicio
+        res.status(400).json({ error: error.message });
     }
 };
 
-// Obtener un producto por ID
-export const getById = async (req, res) => {
+export const getProducts = async (req, res) => {
+    try {
+        const products = await ProductService.getAllProductsService();
+        res.status(200).json(products);
+    } catch (error) {
+        res.status(500).json({ error: "Error al obtener productos" });
+    }
+};
+
+export const getProductsByType = async (req, res) => {
+    try {
+        const { type } = req.params; // Extrae 'tea' o 'craft' de la URL
+        const products = await ProductService.getProductsByTypeService(type);
+        
+        res.status(200).json(products);
+    } catch (error) {
+        // Si el tipo no es válido, el servicio lanzará un error y caerá aquí
+        res.status(400).json({ error: error.message });
+    }
+};
+
+export const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
-        const producto = await productService.getProductById(id);
-        
-        if (!producto) {
-            return res.status(404).json({ message: 'Producto no encontrado' });
-        }
-        
-        res.status(200).json(producto);
+        const product = await ProductService.getProductByIdService(id);
+        res.status(200).json(product);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(404).json({ error: error.message });
     }
 };
 
-// Crear un nuevo producto (Té o Artesanía)
-export const create = async (req, res) => {
-    try {
-        // req.body debe contener los campos: nombre, tipoProducto, precio, etc.
-        const nuevoProducto = await productService.createProduct(req.body);
-        res.status(201).json(nuevoProducto);
-    } catch (error) {
-        res.status(400).json({ message: 'Error al crear: ' + error.message });
-    }
-};
-
-// Actualizar producto
-export const update = async (req, res) => {
+export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const productoActualizado = await productService.updateProduct(id, req.body);
-        
-        if (!productoActualizado) {
-            return res.status(404).json({ message: 'No se encontró el producto para actualizar' });
-        }
-        
-        res.status(200).json(productoActualizado);
+        const updatedProduct = await ProductService.updateProductService(id, req.body);
+        res.status(200).json({ message: "✅ Producto actualizado", data: updatedProduct });
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(error.message === "Producto no encontrado" ? 404 : 400).json({ error: error.message });
     }
 };
 
-// Eliminar producto
-export const remove = async (req, res) => {
+export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const eliminado = await productService.deleteProduct(id);
-        
-        if (!eliminado) {
-            return res.status(404).json({ message: 'No se encontró el producto para eliminar' });
-        }
-        
-        res.status(200).json({ message: 'Producto eliminado con éxito' });
+        const result = await ProductService.deleteProductService(id);
+        res.status(200).json(result);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(404).json({ error: error.message });
     }
 };
