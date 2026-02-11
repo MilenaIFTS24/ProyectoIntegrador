@@ -4,8 +4,10 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 import swaggerUi from 'swagger-ui-express';
-import { specs } from './src/config/swagger.js';
+import fs from 'fs';
 
+// Cargamos el archivo una sola vez
+const swaggerData = JSON.parse(fs.readFileSync('./swagger.json', 'utf8'));
 
 // 1. Importación de la conexión (Capa de Datos)
 import sequelize from "./src/data/database.js";
@@ -24,15 +26,13 @@ import authRouter from "./src/routes/auth.router.js";
 const app = express();
 
 // --- MIDDLEWARES GLOBALES ---
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(express.json()); // Analiza cuerpos JSON
 app.use(cors());         // Habilita peticiones desde tu Frontend Angular
-
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerData));
 // --- DEFINICIÓN DE RUTAS (API VERSIONING) ---
 app.use("/api/auth", authRouter);
 // Tal como solicitaste, unificamos tés y artesanías bajo /api/products
 app.use("/api/products", productsRouter);
-
 // Rutas pendientes de migración a SQL (mantienen su ruta original)
 app.use("/api/offers", offersRouter);
 app.use("/api/events", eventsRouter);
