@@ -1,17 +1,17 @@
-<div>
-    <aside>
-        <h2>Panel Admin</h2>
-        <nav class="nav flex-column">
+<div class="d-flex">
+    <aside>        
+        <nav class="nav flex-column gap-3">
+            <h2>Panel Admin</h2>
             <a routerLink="adminDashboardHome">Inicio</a>
-            <a routerLink="manageProducts">Productos</a>
-            <a routerLink="manageEvents">Eventos</a>
-            <a routerLink="manageOffers">Ofertas</a>
-            <a routerLink="manageUsers">Usuarios</a>
-            <a routerLink="manageReservations">Reservas</a>
+            <a routerLink="manageProducts">Gestión de Productos</a>
+            <a routerLink="manageEvents">Gestión de Eventos</a>
+            <a routerLink="manageOffers">Gestión de Ofertas</a>
+            <a routerLink="manageUsers">Gestión de Usuarios</a>
+            <a routerLink="manageReservations">Gestión de Reservas</a>
         </nav>
     </aside>
 
-    <main>
+    <main class="flex-grow-1">
         <router-outlet></router-outlet>
     </main>
 </div>

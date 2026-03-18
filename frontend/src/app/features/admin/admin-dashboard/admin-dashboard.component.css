@@ -1,0 +1,16 @@
+nav {
+    width: 260px;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background-color: whitesmoke;    
+}
+
+main {
+    max-height: 100vh;
+    overflow-y: auto;
+}
+
+a {
+    text-decoration: none;
+}
