@@ -1,1 +1,41 @@
-<p>manage-products works!</p>
+<div class="container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (errorMessage) {
+            <p>{{ errorMessage }}</p>
+            } @else if (loading) {
+            <p>Cargando productos...</p>
+            }
+            @for (product of products; track $index) {
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }}</td>
+                <td>{{ product.stock }}</td>
+            </tr>
+            }
+            <tr>
+                <td>1</td>
+                <td>Té Verde Matcha Orgánico Premium - Origen Japón</td>
+                <td>$4500.00</td>
+                <td>25</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Cuenco de Cerámica Esmaltado a Mano</td>
+                <td>$8200.00</td>
+                <td>8</td>
+            </tr>
+        </tbody>
+
+    </table>
+</div>

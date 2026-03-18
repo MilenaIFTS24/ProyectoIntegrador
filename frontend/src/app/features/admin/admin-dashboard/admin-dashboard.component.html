@@ -1,1 +1,17 @@
-<p>admin-dashboard works!</p>
+<div>
+    <aside>
+        <h2>Panel Admin</h2>
+        <nav class="nav flex-column">
+            <a routerLink="adminDashboardHome">Inicio</a>
+            <a routerLink="manageProducts">Productos</a>
+            <a routerLink="manageEvents">Eventos</a>
+            <a routerLink="manageOffers">Ofertas</a>
+            <a routerLink="manageUsers">Usuarios</a>
+            <a routerLink="manageReservations">Reservas</a>
+        </nav>
+    </aside>
+
+    <main>
+        <router-outlet></router-outlet>
+    </main>
+</div>
