@@ -1,35 +1,38 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { environment } from '../../../environments/environment';
 import { Observable } from 'rxjs';
 import { Product } from '../models/product.model.js';
+import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  // 1. Inyectamos el cliente HTTP (Sintaxis moderna)
-  private http = inject(HttpClient);
+  // Inyectamos TU servicio base en lugar del HttpClient directamente
+  private api = inject(ApiService);
 
-  // 2. Definimos la URL base usando nuestro environment
-  private apiUrl = `${environment.apiUrl}/products`;
+  // La ruta relativa (el ApiService ya tiene el http://localhost:3000/api)
+  private path = 'products';
 
-  constructor() { }
-
-  // --- MÉTODOS DE LA API ---
-
-  // Obtener todos los productos (Tés y Artesanías)
+  // Obtener todos
   getProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(this.apiUrl);
+    return this.api.get<Product[]>(this.path);
   }
 
-  // Obtener un producto por su ID
+  // Obtener uno
   getProductById(id: number): Observable<Product> {
-    return this.http.get<Product>(`${this.apiUrl}/${id}`);
+    return this.api.get<Product>(`${this.path}/${id}`);
   }
 
-  // Crear un nuevo producto (para tu panel de admin)
-  createProduct(product: Product): Observable<Product> {
-    return this.http.post<Product>(this.apiUrl, product);
+  // Guardar (Crear o Actualizar)
+  // Usamos el objeto 'any' o 'Product' que limpiamos en el componente
+  saveProduct(product: any): Observable<any> {
+    if (product.id) {
+      return this.api.put(`${this.path}/${product.id}`, product);
+    }
+    return this.api.post(this.path, product);
+  }
+
+  deleteProduct(id: number): Observable<any> {
+    return this.api.delete(`products/${id}`);
   }
 }
