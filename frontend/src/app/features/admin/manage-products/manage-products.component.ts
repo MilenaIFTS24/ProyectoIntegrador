@@ -3,11 +3,12 @@ import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NotificationService } from '../../../core/services/notification.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-manage-products',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './manage-products.component.html',
   styleUrls: ['./manage-products.component.css']
 })
@@ -25,16 +26,16 @@ export class ManageProductsComponent implements OnInit {
     // --- Campos Generales ---
     id: [null],
     name: ['', [Validators.required, Validators.minLength(3)]],
-    description: [''],
+    description: ['', [Validators.maxLength(200)]],
     price: [null, [Validators.required, Validators.min(0.01)]],
-    stock: [null, [Validators.min(0)]],
+    stock: [null, [Validators.min(0), Validators.required]],
     image: [''],
     productType: ['', Validators.required], // Valor por defecto 'té'
 
     // --- Atributos de Té ---
-    brand: [''],
+    brand: ['', [Validators.maxLength(50)]],
     type: [''],
-    origin: [''],
+    origin: ['', [Validators.required]],
     hasCaffeine: [false],
     isOrganic: [false],
     isFairTrade: [false],
@@ -42,12 +43,12 @@ export class ManageProductsComponent implements OnInit {
     weightPerUnit: [null, [Validators.min(0)]],
 
     // --- Atributos de Artesanía ---
-    brandArtist: [''],
+    brandArtist: ['', [Validators.maxLength(50)]],
     category: [''],
     creationDate: [''],
     weight: [null, [Validators.min(0)]],
     isUnique: [false],
-    materials: [[]], // Se maneja como array
+    materials: [''],
     ecoFriendly: [false]
 
   })
@@ -82,41 +83,46 @@ export class ManageProductsComponent implements OnInit {
   }
 
   toggleFields(type: string | null | undefined): void {
-    // 1. Normalizamos el valor (manejamos null, undefined y espacios)
-    const val = type ? type.toLowerCase().trim() : '';
-    const esTe = val === 'tea' || val === 'té';
-    const esArtesania = val === 'craft' || val === 'artesanía';
+  const val = type ? type.toLowerCase().trim() : '';
+  const esTe = val === 'tea' || val === 'té';
+  const esArtesania = val === 'craft' || val === 'artesanía';
 
-    // 2. Definimos qué campos pertenecen a cada categoría
-    const camposTe = [
-      'brand', 'type', 'origin', 'hasCaffeine',
-      'isOrganic', 'isFairTrade', 'format', 'weightPerUnit'
-    ];
+  // 1. Definimos los grupos de controles
+  const camposTe = ['brand', 'type', 'origin', 'format', 'weightPerUnit'];
+  const camposArtesania = ['brandArtist', 'category', 'weight', 'materials'];
 
-    const camposArtesania = [
-      'brandArtist', 'category', 'creationDate',
-      'weight', 'isUnique', 'materials', 'ecoFriendly'
-    ];
+  // 2. Limpiamos validadores de TODO antes de aplicar los nuevos
+  [...camposTe, ...camposArtesania].forEach(name => {
+    const control = this.productForm.get(name);
+    control?.disable();
+    control?.clearValidators();
+  });
 
-    // 3. Aplicamos la lógica de habilitar/deshabilitar
-    if (esTe) {
-      camposTe.forEach(control => this.productForm.get(control)?.enable());
-      camposArtesania.forEach(control => this.productForm.get(control)?.disable());
-    }
-    else if (esArtesania) {
-      camposArtesania.forEach(control => this.productForm.get(control)?.enable());
-      camposTe.forEach(control => this.productForm.get(control)?.disable());
-    }
-    else {
-      // Si no hay tipo seleccionado (vacío), deshabilitamos TODOS los opcionales
-      [...camposTe, ...camposArtesania].forEach(control => {
-        this.productForm.get(control)?.disable();
-      });
-    }
-
-    // Log para depuración (puedes quitarlo luego)
-    console.log(`🛠️ Formulario configurado para: ${val || 'Ninguno'}`);
+  // 3. Aplicamos lógica específica
+  if (esTe) {
+    camposTe.forEach(name => {
+      const control = this.productForm.get(name);
+      control?.enable();
+      // El origen es obligatorio para el Backend en TÉ
+      if (name === 'origin') control?.setValidators([Validators.required]);
+    });
+  } 
+  else if (esArtesania) {
+    camposArtesania.forEach(name => {
+      const control = this.productForm.get(name);
+      control?.enable();
+      // Materiales es obligatorio para ARTESANÍA
+      if (name === 'materials') control?.setValidators([Validators.required, Validators.minLength(3)]);
+    });
   }
+
+  // 4. ¡VITAL! Sincronizar el estado del formulario
+  [...camposTe, ...camposArtesania].forEach(name => {
+    this.productForm.get(name)?.updateValueAndValidity();
+  });
+
+  console.log(`🛠️ Formulario validado y configurado para: ${val || 'Ninguno'}`);
+}
 
   async deleteProduct(product: Product) {
     const result = await this.notify.confirm(
@@ -137,99 +143,110 @@ export class ManageProductsComponent implements OnInit {
   }
 
   updateProduct(product: Product) {
-    // 1. Limpiamos rastros de validaciones anteriores
+    // 1. Limpiamos validaciones previas
     this.productForm.reset();
 
-    // 2. Diccionario de traducción: Backend (API) -> UI (Lógica de campos)
-    // Esto resuelve el error de TypeScript sobre la falta de superposición
+    // 2. Diccionario de traducción: Backend (API) -> UI
     const apiToUiMap: Record<string, 'té' | 'artesanía'> = {
       'tea': 'té',
       'craft': 'artesanía'
     };
 
-    // 3. Obtenemos el tipo para la lógica visual (con un fallback de seguridad)
+    // 3. Obtenemos el tipo para activar los campos correctos
     const uiType = apiToUiMap[product.productType] || 'té';
 
-    // 4. Habilitamos los campos específicos ANTES de cargar los datos
-    // Ahora toggleFields debe aceptar tanto 'tea'/'craft' como 'té'/'artesanía'
+    // 4. Habilitamos los campos según el tipo (Usando tu nuevo toggleFields optimizado)
     this.toggleFields(uiType);
 
-    // 5. Cargamos todos los valores del objeto en el formulario
-    // 'as any' evita que TS se queje por campos extra como fechas o IDs
-    this.productForm.patchValue(product as any);
+    // 5. TRATAMIENTO DE MATERIALES: 
+    // El backend envía un Array ["Madera", "Vidrio"], 
+    // pero el input del HTML necesita un String "Madera, Vidrio"
+    let materialsText = '';
+    if (product.materials && Array.isArray(product.materials)) {
+      materialsText = product.materials.join(', ');
+    } else if (typeof product.materials === 'string') {
+      materialsText = product.materials;
+    }
 
-    // 6. REFUERZO: Aseguramos que el SELECT marque la opción correcta
-    // Usamos el valor original del backend ('tea' o 'craft')
+    // 6. Cargamos los datos en el formulario
+    // Usamos el spread (...) para pasar todo el objeto y pisamos 'materials' con el texto plano
+    this.productForm.patchValue({
+      ...product,
+      materials: materialsText
+    } as any);
+
+    // 7. REFUERZO: Aseguramos que el SELECT marque la opción correcta (usa el valor del backend)
     this.productForm.get('productType')?.setValue(product.productType, { emitEvent: false });
 
-    console.log(`📦 Editando: ${product.name} | Backend: ${product.productType} | UI: ${uiType}`);
+    // 8. NOTIFICACIÓN: Aviso estético de que estamos editando
+    this.notify.toast(`Editando: ${product.name}`, 'info');
 
-    this.notify.toast(`Cargado: ${product.name}`, 'info');
-    // 7. Scroll suave hacia arriba para que el usuario vea el formulario listo
+    // 9. Scroll suave hacia arriba
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onSubmit() {
-    if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched();
-      return;
-    }
+  this.productForm.markAllAsTouched();
 
-    this.loading = true;
-
-    // 1. Obtenemos TODOS los valores (incluyendo IDs y campos bloqueados)
-    const f = this.productForm.getRawValue();
-
-    // 2. Determinamos el tipo real (Backend usa 'tea' o 'craft')
-    const isTea = f.productType === 'tea' || f.productType === 'té';
-
-    // 3. Construimos el Payload limpio
-    const payload: any = {
-      name: f.name,
-      price: f.price,
-      stock: f.stock,
-      description: f.description || null,
-      productType: isTea ? 'tea' : 'craft', // Enviamos siempre el valor que el backend espera
-    };
-
-    // 4. Agregamos campos específicos según el tipo
-    if (isTea) {
-      payload.brand = f.brand;
-      payload.origin = f.origin;
-      payload.hasCaffeine = f.hasCaffeine;
-      payload.format = f.format;
-      payload.isOrganic = f.isOrganic;
-      payload.weightPerUnit = f.weightPerUnit;
-    } else {
-      payload.brandArtist = f.brandArtist;
-      payload.category = f.category;
-      payload.weight = f.weight;
-      payload.isUnique = f.isUnique;
-      payload.ecoFriendly = f.ecoFriendly;
-    }
-
-    // 5. Si hay ID, es una actualización (PUT), si no, es creación (POST)
-    if (f.id) {
-      payload.id = f.id;
-    }
-
-    console.log('🚀 Enviando Payload al Backend:', payload);
-
-    this.productService.saveProduct(payload).subscribe({
-      next: () => {
-        const msg = f.id ? 'Producto actualizado' : 'Producto creado con éxito';
-        this.notify.toast(msg, 'success'); // <--- Mucho más elegante que un alert
-        this.loadProducts();
-        this.onCancel();
-      },
-      error: (err) => {
-        this.loading = false;
-        // MODIFICACIÓN: Usar el mensaje real del error si existe
-        const errorMsg = err.error?.message || 'Hubo un problema al guardar';
-        this.notify.toast(errorMsg, 'error');
-      }
-    });
+  if (this.productForm.invalid) {
+    this.notify.toast('Completa los campos obligatorios antes de guardar', 'warning');
+    return;
   }
+
+  this.loading = true;
+  const f = this.productForm.getRawValue();
+  const isTea = f.productType === 'tea' || f.productType === 'té';
+
+  // 1. Construcción del objeto con valores de respaldo
+  const payload: any = {
+    id: f.id || null,
+    name: f.name || '',
+    price: f.price || 0,
+    stock: f.stock || 0,
+    description: f.description || '',
+    productType: isTea ? 'tea' : 'craft'
+  };
+
+  if (isTea) {
+    payload.brand = f.brand || 'Genérica';
+    // Si f.origin está vacío, le mandamos 'Nacional' o 'Importado' por defecto
+    payload.origin = f.origin || 'No especificado'; 
+    
+    payload.type = f.type || 'Mezcla';
+    payload.format = f.format || 'Hebras';
+    payload.weightPerUnit = f.weightPerUnit || 0;
+    payload.hasCaffeine = !!f.hasCaffeine;
+    payload.isOrganic = !!f.isOrganic;
+} else {
+    payload.brandArtist = f.brandArtist || '';
+    payload.category = f.category || '';
+    payload.weight = f.weight || 0;
+    payload.isUnique = !!f.isUnique;
+    payload.ecoFriendly = !!f.ecoFriendly;
+    
+    // El único campo que SABEMOS que el backend exige:
+    const materialesRaw = f.materials;
+    payload.materials = (materialesRaw && materialesRaw.trim() !== '') 
+                        ? materialesRaw.split(',').map((m: string) => m.trim()) 
+                        : ['Varios'];
+  }
+
+  console.log('🚀 Enviando Payload Final:', payload);
+
+  this.productService.saveProduct(payload).subscribe({
+    next: () => {
+      this.notify.toast(f.id ? 'Actualizado' : 'Creado con éxito');
+      this.loadProducts();
+      this.onCancel();
+    },
+    error: (err: any) => {
+      this.loading = false;
+      // TRUCO PARA VER EL ERROR: Mira la pestaña 'Network' -> 'Response'
+      console.error('Detalle técnico del error:', err);
+      this.notify.toast('Error 400: El servidor rechazó los datos', 'error');
+    }
+  });
+}
 
   onCancel() {
     // 1. Reseteamos el formulario a sus valores base

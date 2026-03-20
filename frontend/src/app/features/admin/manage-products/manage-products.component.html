@@ -45,13 +45,25 @@
                 <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <label class="form-label fw-bold">Nombre del Producto</label>
+                            <label class="form-label fw-bold">Nombre del Producto<span
+                                    class="text-danger">*</span></label>
                             <input type="text" formControlName="name" class="form-control"
-                                placeholder="Ej: Té Earl Grey Imperial">
+                                placeholder="Ej: Té Earl Grey Imperial"
+                                [ngClass]="{'is-invalid': productForm.get('name')?.invalid && productForm.get('name')?.touched}">
+                            @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+                            <div class="invalid-feedback d-block">
+                                @if (productForm.get('name')?.errors?.['required']) {
+                                El nombre es obligatorio.
+                                }
+                                @if (productForm.get('name')?.errors?.['minlength']) {
+                                Mínimo 3 caracteres.
+                                }
+                            </div>
+                            }
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Tipo</label>
+                            <label class="form-label fw-bold">Tipo<span class="text-danger">*</span></label>
                             <select formControlName="productType" class="form-select border-primary">
                                 <option value="">Seleccione...</option>
                                 <option value="tea">🍃 Té</option>
@@ -60,8 +72,12 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Precio ($)</label>
-                            <input type="number" formControlName="price" class="form-control">
+                            <label class="form-label fw-bold">Precio ($)<span class="text-danger">*</span></label>
+                            <input type="number" formControlName="price" class="form-control"
+                                [ngClass]="{'is-invalid': productForm.get('price')?.invalid && productForm.get('price')?.touched}">
+                            @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
+                            <div class="invalid-feedback d-block">El precio debe ser mayor a 0.</div>
+                            }
                         </div>
                     </div>
 
@@ -71,8 +87,12 @@
                             <textarea formControlName="description" class="form-control" rows="2"></textarea>
                         </div>
                         <div class="col-md-3">
-                            <label class="form-label fw-bold">Stock Inicial</label>
-                            <input type="number" formControlName="stock" class="form-control">
+                            <label class="form-label fw-bold">Stock Inicial<span class="text-danger">*</span></label>
+                            <input type="number" formControlName="stock" class="form-control"
+                                [ngClass]="{'is-invalid': productForm.get('stock')?.invalid && productForm.get('stock')?.touched}">
+                            @if (productForm.get('stock')?.invalid && productForm.get('stock')?.touched) {
+                            <div class="invalid-feedback d-block">El stock debe ser mayor a 0.</div>
+                            }
                         </div>
                     </div>
 
@@ -88,8 +108,13 @@
                                     <input type="text" formControlName="brand" class="form-control form-control-sm">
                                 </div>
                                 <div class="col-6">
-                                    <label class="form-label">Origen</label>
-                                    <input type="text" formControlName="origin" class="form-control form-control-sm">
+                                    <label class="form-label fw-bold">Origen<span class="text-danger">*</span></label>
+                                    <input type="text" formControlName="origin" class="form-control form-control-sm"
+                                        [ngClass]="{'is-invalid': productForm.get('origin')?.invalid && productForm.get('origin')?.touched}">
+                                    @if (productForm.get('origin')?.invalid && productForm.get('origin')?.touched) {
+                                    <div class="invalid-feedback d-block">El origen es obligatorio para productos de Té.
+                                    </div>
+                                    }
                                 </div>
                                 <div class="col-6">
                                     <label class="form-label">Formato</label>
@@ -134,6 +159,19 @@
                                     <label class="form-label">Peso (g)</label>
                                     <input type="number" formControlName="weight" class="form-control form-control-sm">
                                 </div>
+                                @if (productForm.get('productType')?.value === 'craft') {
+                                <div class="mb-3">
+                                    <label class="form-label fw-bold">Materiales <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" formControlName="materials" class="form-control"
+                                        placeholder="Ej: Madera, Barniz"
+                                        [ngClass]="{'is-invalid': productForm.get('materials')?.invalid && productForm.get('materials')?.touched}">
+                                    @if (productForm.get('materials')?.invalid && productForm.get('materials')?.touched)
+                                    {
+                                    <div class="invalid-feedback d-block">Debes especificar al menos un material.</div>
+                                    }
+                                </div>
+                                }
                             </div>
                             <div class="mt-3">
                                 <div class="form-check">
