@@ -2,6 +2,7 @@ import { Component, OnInit, inject } from '@angular/core';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-manage-products',
@@ -14,6 +15,7 @@ export class ManageProductsComponent implements OnInit {
   // Inyección del servicio desde Core
   private productService = inject(ProductService);
   private fb = inject(FormBuilder);
+  private notify = inject(NotificationService); //Notificaciones toast
 
   public products: Product[] = [];
   public loading: boolean = true;
@@ -71,76 +73,67 @@ export class ManageProductsComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.errorMessage = 'No se pudo conectar con el servidor.';
         this.loading = false;
-        console.error(err);
+        // MODIFICACIÓN:
+        this.notify.toast('No se pudieron cargar los productos', 'error');
+        this.errorMessage = 'Error de conexión con el servidor.';
       }
     });
   }
 
-  toggleFields(type: string | null): void {
-    // Normalizamos el valor
+  toggleFields(type: string | null | undefined): void {
+    // 1. Normalizamos el valor (manejamos null, undefined y espacios)
     const val = type ? type.toLowerCase().trim() : '';
-
-    // AHORA COMPARAMOS CONTRA LOS VALUES DEL HTML
     const esTe = val === 'tea' || val === 'té';
     const esArtesania = val === 'craft' || val === 'artesanía';
 
-    console.log('ToggleFields recibio:', val, 'esTe:', esTe, 'esArtesania:', esArtesania);
+    // 2. Definimos qué campos pertenecen a cada categoría
+    const camposTe = [
+      'brand', 'type', 'origin', 'hasCaffeine',
+      'isOrganic', 'isFairTrade', 'format', 'weightPerUnit'
+    ];
 
+    const camposArtesania = [
+      'brandArtist', 'category', 'creationDate',
+      'weight', 'isUnique', 'materials', 'ecoFriendly'
+    ];
+
+    // 3. Aplicamos la lógica de habilitar/deshabilitar
     if (esTe) {
-      this.productForm.get('brand')?.enable();
-      this.productForm.get('origin')?.enable();
-      this.productForm.get('hasCaffeine')?.enable();
-      this.productForm.get('format')?.enable();
-      // Deshabilitamos lo de artesanía
-      this.productForm.get('brandArtist')?.disable();
-      this.productForm.get('category')?.disable();
+      camposTe.forEach(control => this.productForm.get(control)?.enable());
+      camposArtesania.forEach(control => this.productForm.get(control)?.disable());
     }
     else if (esArtesania) {
-      this.productForm.get('brandArtist')?.enable();
-      this.productForm.get('category')?.enable();
-      this.productForm.get('isUnique')?.enable();
-      // Deshabilitamos lo de té
-      this.productForm.get('brand')?.disable();
-      this.productForm.get('origin')?.disable();
-      this.productForm.get('hasCaffeine')?.disable();
+      camposArtesania.forEach(control => this.productForm.get(control)?.enable());
+      camposTe.forEach(control => this.productForm.get(control)?.disable());
     }
     else {
-      // Si no hay nada o es vacío, bloqueamos todo
-      this.productForm.get('brand')?.disable();
-      this.productForm.get('origin')?.disable();
-      this.productForm.get('brandArtist')?.disable();
-      this.productForm.get('category')?.disable();
+      // Si no hay tipo seleccionado (vacío), deshabilitamos TODOS los opcionales
+      [...camposTe, ...camposArtesania].forEach(control => {
+        this.productForm.get(control)?.disable();
+      });
     }
+
+    // Log para depuración (puedes quitarlo luego)
+    console.log(`🛠️ Formulario configurado para: ${val || 'Ninguno'}`);
   }
 
-  deleteProduct(product: Product) {
-    const confirmacion = confirm(`¿Borrar "${product.name}"?`);
+  async deleteProduct(product: Product) {
+    const result = await this.notify.confirm(
+      '¿Estás seguro?',
+      `Vas a eliminar "${product.name}". Esta acción no se puede deshacer.`
+    );
 
-    if (!confirmacion) return;
-
-    this.loading = true;
-
-    if (!product.id) {
-      alert('Este producto no tiene un ID válido para eliminar.');
-      return;
+    if (result.isConfirmed) {
+      this.loading = true;
+      this.productService.deleteProduct(product.id!).subscribe({
+        next: () => {
+          this.notify.toast('Producto eliminado correctamente');
+          this.loadProducts();
+        },
+        error: (err) => this.notify.toast(err.message, 'error')
+      });
     }
-
-    this.productService.deleteProduct(product.id).subscribe({
-      next: () => {
-        alert('Eliminado con éxito');
-        // Aquí refrescás la lista
-        this.loadProducts();
-      },
-      error: (err) => {
-        alert('Error: ' + err.message);
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    });
   }
 
   updateProduct(product: Product) {
@@ -171,6 +164,7 @@ export class ManageProductsComponent implements OnInit {
 
     console.log(`📦 Editando: ${product.name} | Backend: ${product.productType} | UI: ${uiType}`);
 
+    this.notify.toast(`Cargado: ${product.name}`, 'info');
     // 7. Scroll suave hacia arriba para que el usuario vea el formulario listo
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -222,43 +216,44 @@ export class ManageProductsComponent implements OnInit {
     console.log('🚀 Enviando Payload al Backend:', payload);
 
     this.productService.saveProduct(payload).subscribe({
-      next: (response) => {
-        alert(f.id ? '✅ Producto actualizado' : '✅ Producto creado');
-        this.loadProducts(); // Refrescar tabla
-        this.onCancel();     // Limpiar formulario y bloquear campos
+      next: () => {
+        const msg = f.id ? 'Producto actualizado' : 'Producto creado con éxito';
+        this.notify.toast(msg, 'success'); // <--- Mucho más elegante que un alert
+        this.loadProducts();
+        this.onCancel();
       },
       error: (err) => {
-        alert('❌ Error: ' + err.message);
-      },
-      complete: () => {
         this.loading = false;
+        // MODIFICACIÓN: Usar el mensaje real del error si existe
+        const errorMsg = err.error?.message || 'Hubo un problema al guardar';
+        this.notify.toast(errorMsg, 'error');
       }
     });
   }
 
   onCancel() {
-  // 1. Reseteamos el formulario a sus valores base
-  // El productType debe ser '' para que coincida con "Seleccione..."
-  this.productForm.reset({
-    id: null,
-    name: '',
-    productType: '', // <--- Cambiado de 'té' a ''
-    price: null,
-    stock: null,
-    description: '',
-    hasCaffeine: false,
-    isOrganic: false,
-    isFairTrade: false,
-    isUnique: false,
-    ecoFriendly: false
-  });
+    // 1. Reseteamos el formulario a sus valores base
+    // El productType debe ser '' para que coincida con "Seleccione..."
+    this.productForm.reset({
+      id: null,
+      name: '',
+      productType: '', // <--- Cambiado de 'té' a ''
+      price: null,
+      stock: null,
+      description: '',
+      hasCaffeine: false,
+      isOrganic: false,
+      isFairTrade: false,
+      isUnique: false,
+      ecoFriendly: false
+    });
 
-  // 2. Llamamos a toggleFields con vacío para que bloquee TODO
-  this.toggleFields(''); 
+    // 2. Llamamos a toggleFields con vacío para que bloquee TODO
+    this.toggleFields('');
 
-  // 3. (Opcional) Limpiamos errores visuales de validación
-  this.productForm.markAsPristine();
-  this.productForm.markAsUntouched();
-}
+    // 3. (Opcional) Limpiamos errores visuales de validación
+    this.productForm.markAsPristine();
+    this.productForm.markAsUntouched();
+  }
 
 }
