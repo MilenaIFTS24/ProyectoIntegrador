@@ -27,7 +27,11 @@ const app = express();
 
 // --- MIDDLEWARES GLOBALES ---
 app.use(express.json()); // Analiza cuerpos JSON
-app.use(cors());         // Habilita peticiones desde tu Frontend Angular
+app.use(cors({
+  origin: 'http://localhost:4200', // Tu app de Angular
+  methods: ['GET', 'POST', 'PUT', 'DELETE'], // Asegúrate de incluir POST y PUT
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerData));
 // --- DEFINICIÓN DE RUTAS (API VERSIONING) ---
 app.use("/api/auth", authRouter);
