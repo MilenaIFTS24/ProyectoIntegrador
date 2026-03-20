@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { ProductService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-manage-products',
@@ -15,6 +15,7 @@ export class ManageProductsComponent implements OnInit {
   // Inyección del servicio desde Core
   private productService = inject(ProductService);
   private fb = inject(FormBuilder);
+  private notify = inject(NotificationService); //Notificaciones toast
 
   public products: Product[] = [];
   public loading: boolean = true;
@@ -25,10 +26,10 @@ export class ManageProductsComponent implements OnInit {
     id: [null],
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: [''],
-    price: [0, [Validators.required, Validators.min(0.01)]],
-    stock: [0, [Validators.min(0)]],
+    price: [null, [Validators.required, Validators.min(0.01)]],
+    stock: [null, [Validators.min(0)]],
     image: [''],
-    productType: ['té', Validators.required], // Valor por defecto 'té'
+    productType: ['', Validators.required], // Valor por defecto 'té'
 
     // --- Atributos de Té ---
     brand: [''],
@@ -54,12 +55,14 @@ export class ManageProductsComponent implements OnInit {
   ngOnInit(): void {
     this.loadProducts();
 
-    const inicial = this.productForm.get('productType')?.value as 'té' | 'artesanía';
-    this.toggleFields(inicial);
-
-    this.productForm.get('productType')?.valueChanges.subscribe(type => {
-      this.toggleFields(type as 'té' | 'artesanía');
+    // 1. Primero configuramos el "escucha" de cambios
+    this.productForm.get('productType')?.valueChanges.subscribe(val => {
+      this.toggleFields(val);
     });
+
+    // 2. IMPORTANTE: Forzamos el estado inicial a BLOQUEADO 
+    // porque el form arranca en vacío ('')
+    this.toggleFields('');
   }
 
   loadProducts(): void {
@@ -70,142 +73,187 @@ export class ManageProductsComponent implements OnInit {
         this.loading = false;
       },
       error: (err) => {
-        this.errorMessage = 'No se pudo conectar con el servidor.';
         this.loading = false;
-        console.error(err);
+        // MODIFICACIÓN:
+        this.notify.toast('No se pudieron cargar los productos', 'error');
+        this.errorMessage = 'Error de conexión con el servidor.';
       }
     });
   }
 
-  private toggleFields(type: 'té' | 'artesanía') {
-    const teaFields = ['brand', 'type', 'origin', 'hasCaffeine', 'isOrganic', 'isFairTrade', 'format', 'weightPerUnit'];
-    const craftFields = ['brandArtist', 'category', 'creationDate', 'weight', 'isUnique', 'materials', 'ecoFriendly'];
+  toggleFields(type: string | null | undefined): void {
+    // 1. Normalizamos el valor (manejamos null, undefined y espacios)
+    const val = type ? type.toLowerCase().trim() : '';
+    const esTe = val === 'tea' || val === 'té';
+    const esArtesania = val === 'craft' || val === 'artesanía';
 
-    if (type === 'té') {
-      // Habilitar campos de té y deshabilitar artesanía
-      teaFields.forEach(field => this.productForm.get(field)?.enable());
-      craftFields.forEach(field => this.productForm.get(field)?.disable());
-    } else {
-      // Habilitar campos de artesanía y deshabilitar té
-      craftFields.forEach(field => this.productForm.get(field)?.enable());
-      teaFields.forEach(field => this.productForm.get(field)?.disable());
+    // 2. Definimos qué campos pertenecen a cada categoría
+    const camposTe = [
+      'brand', 'type', 'origin', 'hasCaffeine',
+      'isOrganic', 'isFairTrade', 'format', 'weightPerUnit'
+    ];
+
+    const camposArtesania = [
+      'brandArtist', 'category', 'creationDate',
+      'weight', 'isUnique', 'materials', 'ecoFriendly'
+    ];
+
+    // 3. Aplicamos la lógica de habilitar/deshabilitar
+    if (esTe) {
+      camposTe.forEach(control => this.productForm.get(control)?.enable());
+      camposArtesania.forEach(control => this.productForm.get(control)?.disable());
     }
+    else if (esArtesania) {
+      camposArtesania.forEach(control => this.productForm.get(control)?.enable());
+      camposTe.forEach(control => this.productForm.get(control)?.disable());
+    }
+    else {
+      // Si no hay tipo seleccionado (vacío), deshabilitamos TODOS los opcionales
+      [...camposTe, ...camposArtesania].forEach(control => {
+        this.productForm.get(control)?.disable();
+      });
+    }
+
+    // Log para depuración (puedes quitarlo luego)
+    console.log(`🛠️ Formulario configurado para: ${val || 'Ninguno'}`);
   }
 
-  deleteProduct(product: Product) {
-    const confirmacion = confirm(`¿Borrar "${product.name}"?`);
+  async deleteProduct(product: Product) {
+    const result = await this.notify.confirm(
+      '¿Estás seguro?',
+      `Vas a eliminar "${product.name}". Esta acción no se puede deshacer.`
+    );
 
-    if (!confirmacion) return;
-
-    this.loading = true;
-
-    if (!product.id) {
-      alert('Este producto no tiene un ID válido para eliminar.');
-      return;
+    if (result.isConfirmed) {
+      this.loading = true;
+      this.productService.deleteProduct(product.id!).subscribe({
+        next: () => {
+          this.notify.toast('Producto eliminado correctamente');
+          this.loadProducts();
+        },
+        error: (err) => this.notify.toast(err.message, 'error')
+      });
     }
-
-    this.productService.deleteProduct(product.id).subscribe({
-      next: () => {
-        alert('Eliminado con éxito');
-        // Aquí refrescás la lista
-        this.loadProducts();
-      },
-      error: (err) => {
-        alert('Error: ' + err.message);
-        this.loading = false;
-      },
-      complete: () => {
-        this.loading = false;
-      }
-    });
   }
 
   updateProduct(product: Product) {
-    // 1. Limpiamos el estado previo del formulario (validaciones y valores)
+    // 1. Limpiamos rastros de validaciones anteriores
     this.productForm.reset();
 
-    // 2. Extraemos y forzamos el tipo del producto ('té' | 'artesanía')
-    const type = product.productType as 'té' | 'artesanía';
+    // 2. Diccionario de traducción: Backend (API) -> UI (Lógica de campos)
+    // Esto resuelve el error de TypeScript sobre la falta de superposición
+    const apiToUiMap: Record<string, 'té' | 'artesanía'> = {
+      'tea': 'té',
+      'craft': 'artesanía'
+    };
 
-    // 3. Ejecutamos la lógica de habilitar/deshabilitar campos según el tipo
-    // Esto es vital ANTES del patchValue para que los campos existan al llenar
-    this.toggleFields(type);
+    // 3. Obtenemos el tipo para la lógica visual (con un fallback de seguridad)
+    const uiType = apiToUiMap[product.productType] || 'té';
 
-    // 4. Cargamos los datos usando 'as any' para saltar la restricción de null vs number
-    // PatchValue ignorará automáticamente campos como 'createdAt' o 'updatedAt'
+    // 4. Habilitamos los campos específicos ANTES de cargar los datos
+    // Ahora toggleFields debe aceptar tanto 'tea'/'craft' como 'té'/'artesanía'
+    this.toggleFields(uiType);
+
+    // 5. Cargamos todos los valores del objeto en el formulario
+    // 'as any' evita que TS se queje por campos extra como fechas o IDs
     this.productForm.patchValue(product as any);
 
-    // 5. Nos aseguramos de que el selector de tipo quede bien marcado
-    this.productForm.get('productType')?.setValue(type);
+    // 6. REFUERZO: Aseguramos que el SELECT marque la opción correcta
+    // Usamos el valor original del backend ('tea' o 'craft')
+    this.productForm.get('productType')?.setValue(product.productType, { emitEvent: false });
 
-    console.log('✅ Formulario cargado en modo edición:', product.name);
-    // Opcional: Hacer scroll hacia el formulario si la lista es larga
+    console.log(`📦 Editando: ${product.name} | Backend: ${product.productType} | UI: ${uiType}`);
+
+    this.notify.toast(`Cargado: ${product.name}`, 'info');
+    // 7. Scroll suave hacia arriba para que el usuario vea el formulario listo
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   onSubmit() {
-    // 1. Validamos que el formulario sea correcto
     if (this.productForm.invalid) {
-      this.productForm.markAllAsTouched(); // Muestra errores visuales al usuario
+      this.productForm.markAllAsTouched();
       return;
     }
 
-    this.loading = true; // Activamos el spinner del botón
+    this.loading = true;
 
-    // 2. Extraemos los datos (getRawValue para incluir campos deshabilitados e ID)
+    // 1. Obtenemos TODOS los valores (incluyendo IDs y campos bloqueados)
     const f = this.productForm.getRawValue();
-    const isTea = f.productType === 'té';
 
-    // 3. Limpiamos el objeto (Payload) para enviar solo lo necesario al Backend
+    // 2. Determinamos el tipo real (Backend usa 'tea' o 'craft')
+    const isTea = f.productType === 'tea' || f.productType === 'té';
+
+    // 3. Construimos el Payload limpio
     const payload: any = {
       name: f.name,
       price: f.price,
       stock: f.stock,
-      productType: f.productType as 'té' | 'artesanía',
       description: f.description || null,
-      // Campos condicionales según el tipo
-      ...(isTea ? {
-        brand: f.brand,
-        origin: f.origin,
-        hasCaffeine: f.hasCaffeine,
-        format: f.format
-      } : {
-        brandArtist: f.brandArtist,
-        category: f.category,
-        isUnique: f.isUnique
-      })
+      productType: isTea ? 'tea' : 'craft', // Enviamos siempre el valor que el backend espera
     };
 
-    // Si estamos editando, incluimos el ID en el cuerpo o como parámetro
+    // 4. Agregamos campos específicos según el tipo
+    if (isTea) {
+      payload.brand = f.brand;
+      payload.origin = f.origin;
+      payload.hasCaffeine = f.hasCaffeine;
+      payload.format = f.format;
+      payload.isOrganic = f.isOrganic;
+      payload.weightPerUnit = f.weightPerUnit;
+    } else {
+      payload.brandArtist = f.brandArtist;
+      payload.category = f.category;
+      payload.weight = f.weight;
+      payload.isUnique = f.isUnique;
+      payload.ecoFriendly = f.ecoFriendly;
+    }
+
+    // 5. Si hay ID, es una actualización (PUT), si no, es creación (POST)
     if (f.id) {
       payload.id = f.id;
     }
 
-    // 4. Llamada al servicio (usando Observables)
-    this.productService.saveProduct(payload).subscribe({
-      next: (response) => {
-        console.log('Respuesta del servidor:', response);
-        alert(f.id ? '✅ Producto actualizado con éxito' : '✅ Producto creado con éxito');
+    console.log('🚀 Enviando Payload al Backend:', payload);
 
-        this.loading = false;
-        this.onCancel(); // Limpia el formulario y vuelve al estado inicial
+    this.productService.saveProduct(payload).subscribe({
+      next: () => {
+        const msg = f.id ? 'Producto actualizado' : 'Producto creado con éxito';
+        this.notify.toast(msg, 'success'); // <--- Mucho más elegante que un alert
+        this.loadProducts();
+        this.onCancel();
       },
       error: (err) => {
-        // El error ya viene formateado por el handleError de tu ApiService
-        console.error('Error capturado:', err);
-        alert('❌ ' + err.message);
         this.loading = false;
+        // MODIFICACIÓN: Usar el mensaje real del error si existe
+        const errorMsg = err.error?.message || 'Hubo un problema al guardar';
+        this.notify.toast(errorMsg, 'error');
       }
     });
   }
 
   onCancel() {
+    // 1. Reseteamos el formulario a sus valores base
+    // El productType debe ser '' para que coincida con "Seleccione..."
     this.productForm.reset({
-      productType: 'té', // Valor inicial por defecto
-      price: 0,
-      stock: 0
+      id: null,
+      name: '',
+      productType: '', // <--- Cambiado de 'té' a ''
+      price: null,
+      stock: null,
+      description: '',
+      hasCaffeine: false,
+      isOrganic: false,
+      isFairTrade: false,
+      isUnique: false,
+      ecoFriendly: false
     });
-    this.toggleFields('té'); // Volver a habilitar los campos de té por defecto
+
+    // 2. Llamamos a toggleFields con vacío para que bloquee TODO
+    this.toggleFields('');
+
+    // 3. (Opcional) Limpiamos errores visuales de validación
+    this.productForm.markAsPristine();
+    this.productForm.markAsUntouched();
   }
 
 }

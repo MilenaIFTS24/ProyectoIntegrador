@@ -6,184 +6,162 @@
                 <th>Nombre</th>
                 <th>Precio</th>
                 <th>Stock</th>
+                <th>Acciones</th>
             </tr>
         </thead>
         <tbody>
             @if (errorMessage) {
-            <p>{{ errorMessage }}</p>
+            <p class="text-danger">{{ errorMessage }}</p>
             } @else if (loading) {
             <p>Cargando productos...</p>
             }
-            @for (product of products; track $index) {
+            @for (product of products; track product.id) {
             <tr>
                 <td>{{ product.id }}</td>
                 <td>{{ product.name }}</td>
                 <td>{{ product.price }}</td>
                 <td>{{ product.stock }}</td>
-                <td><button (click)="deleteProduct(product)">Eliminar</button></td>
-                <button class="btn btn-sm btn-outline-warning" (click)="updateProduct(product)">
-                    <i class="bi bi-pencil"></i> Editar
-                </button>
+                <td>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
+                        <i class="bi bi-trash"></i> Eliminar
+                    </button>
+                    <button class="btn btn-sm btn-outline-warning" (click)="updateProduct(product)">
+                        <i class="bi bi-pencil"></i> Editar
+                    </button>
+                </td>
             </tr>
             }
-            <tr>
-                <td>1</td>
-                <td>Té Verde Matcha Orgánico Premium - Origen Japón</td>
-                <td>$4500.00</td>
-                <td>25</td>
-            </tr>
-
-            <tr>
-                <td>2</td>
-                <td>Cuenco de Cerámica Esmaltado a Mano</td>
-                <td>$8200.00</td>
-                <td>8</td>
-            </tr>
         </tbody>
     </table>
 
-    <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="p-4 bg-white shadow rounded">
-        <div class="container mt-4">
-            <div class="card shadow">
-                <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                    <h3 class="mb-0">{{ productForm.get('id')?.value ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
-                    <span class="badge bg-info text-dark">ID: {{ productForm.get('id')?.value || 'Nuevo' }}</span>
-                </div>
+    <div class="container mt-4">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">{{ productForm.get('id')?.value ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
+                <span class="badge bg-info text-dark">ID: {{ productForm.get('id')?.value || 'Nuevo' }}</span>
+            </div>
 
-                <div class="card-body">
-                    <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+            <div class="card-body">
+                <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                    <div class="row g-3 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold">Nombre del Producto</label>
+                            <input type="text" formControlName="name" class="form-control"
+                                placeholder="Ej: Té Earl Grey Imperial">
+                        </div>
 
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <label class="form-label fw-bold">Nombre del Producto</label>
-                                <input type="text" formControlName="name" class="form-control"
-                                    placeholder="Ej: Té Earl Grey Imperial">
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Tipo</label>
+                            <select formControlName="productType" class="form-select border-primary">
+                                <option value="">Seleccione...</option>
+                                <option value="tea">🍃 Té</option>
+                                <option value="craft">🎨 Artesanía</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Precio ($)</label>
+                            <input type="number" formControlName="price" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-9">
+                            <label class="form-label fw-bold">Descripción</label>
+                            <textarea formControlName="description" class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-bold">Stock Inicial</label>
+                            <input type="number" formControlName="stock" class="form-control">
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="row">
+                        <div class="col-md-6 border-end"
+                            [class.opacity-25]="productForm.get('productType')?.value !== 'tea' && productForm.get('productType')?.value !== 'té'">
+                            <h5 class="text-success mb-3"><i class="bi bi-leaf"></i> Detalles del Té</h5>
+                            <div class="row g-2">
+                                <div class="col-6">
+                                    <label class="form-label">Marca</label>
+                                    <input type="text" formControlName="brand" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Origen</label>
+                                    <input type="text" formControlName="origin" class="form-control form-control-sm">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Formato</label>
+                                    <input type="text" formControlName="format" class="form-control form-control-sm"
+                                        placeholder="Hojas, Saquitos...">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Peso x Unidad (g)</label>
+                                    <input type="number" formControlName="weightPerUnit"
+                                        class="form-control form-control-sm">
+                                </div>
                             </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Tipo</label>
-                                <select formControlName="productType" class="form-select border-primary">
-                                    <option value="té">🍃 Té</option>
-                                    <option value="artesanía">🎨 Artesanía</option>
-                                </select>
-                            </div>
-
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Precio ($)</label>
-                                <input type="number" formControlName="price" class="form-control">
+                            <div class="mt-3 d-flex flex-wrap gap-3">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="hasCaffeine"
+                                        id="caf">
+                                    <label class="form-check-label" for="caf">Cafeína</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="isOrganic"
+                                        id="org">
+                                    <label class="form-check-label" for="org">Orgánico</label>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="row mb-4">
-                            <div class="col-md-9">
-                                <label class="form-label fw-bold">Descripción</label>
-                                <textarea formControlName="description" class="form-control" rows="2"></textarea>
+                        <div class="col-md-6"
+                            [class.opacity-25]="productForm.get('productType')?.value !== 'craft' && productForm.get('productType')?.value !== 'artesanía'">
+                            <h5 class="text-info mb-3"><i class="bi bi-palette"></i> Detalles de Artesanía</h5>
+                            <div class="row g-2">
+                                <div class="col-12">
+                                    <label class="form-label">Artista / Marca</label>
+                                    <input type="text" formControlName="brandArtist"
+                                        class="form-control form-control-sm">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Categoría</label>
+                                    <input type="text" formControlName="category" class="form-control form-control-sm"
+                                        placeholder="Cerámica, Madera...">
+                                </div>
+                                <div class="col-6">
+                                    <label class="form-label">Peso (g)</label>
+                                    <input type="number" formControlName="weight" class="form-control form-control-sm">
+                                </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label fw-bold">Stock Inicial</label>
-                                <input type="number" formControlName="stock" class="form-control">
+                            <div class="mt-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" formControlName="isUnique"
+                                        id="uniq">
+                                    <label class="form-check-label" for="uniq">Pieza Única</label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" formControlName="ecoFriendly"
+                                        id="eco">
+                                    <label class="form-check-label" for="eco">Eco-Friendly</label>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <hr class="my-4">
-
-                        <div class="row">
-
-                            <div class="col-md-6 border-end"
-                                [class.opacity-25]="productForm.get('productType')?.value !== 'té'">
-                                <h5 class="text-success mb-3"><i class="bi bi-leaf"></i> Detalles del Té</h5>
-
-                                <div class="row g-2">
-                                    <div class="col-6">
-                                        <label class="form-label">Marca</label>
-                                        <input type="text" formControlName="brand" class="form-control form-control-sm">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">Origen</label>
-                                        <input type="text" formControlName="origin"
-                                            class="form-control form-control-sm">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">Formato</label>
-                                        <input type="text" formControlName="format" class="form-control form-control-sm"
-                                            placeholder="Hojas, Saquitos...">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">Peso x Unidad (g)</label>
-                                        <input type="number" formControlName="weightPerUnit"
-                                            class="form-control form-control-sm">
-                                    </div>
-                                </div>
-
-                                <div class="mt-3 d-flex flex-wrap gap-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" formControlName="hasCaffeine"
-                                            id="caf">
-                                        <label class="form-check-label" for="caf">Cafeína</label>
-                                    </div>
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" formControlName="isOrganic"
-                                            id="org">
-                                        <label class="form-check-label" for="org">Orgánico</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="col-md-6"
-                                [class.opacity-25]="productForm.get('productType')?.value !== 'artesanía'">
-                                <h5 class="text-info mb-3"><i class="bi bi-palette"></i> Detalles de Artesanía</h5>
-
-                                <div class="row g-2">
-                                    <div class="col-12">
-                                        <label class="form-label">Artista / Marca</label>
-                                        <input type="text" formControlName="brandArtist"
-                                            class="form-control form-control-sm">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">Categoría</label>
-                                        <input type="text" formControlName="category"
-                                            class="form-control form-control-sm" placeholder="Cerámica, Madera...">
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label">Peso (g)</label>
-                                        <input type="number" formControlName="weight"
-                                            class="form-control form-control-sm">
-                                    </div>
-                                </div>
-
-                                <div class="mt-3">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" formControlName="isUnique"
-                                            id="uniq">
-                                        <label class="form-check-label" for="uniq">Pieza Única / Edición
-                                            Limitada</label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" formControlName="ecoFriendly"
-                                            id="eco">
-                                        <label class="form-check-label" for="eco">Eco-Friendly</label>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="card-footer bg-light mt-4 d-flex justify-content-end gap-2">
-                            <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">
-                                Cancelar
-                            </button>
-                            <button type="submit" [disabled]="productForm.invalid || loading" class="btn btn-primary">
-                                @if (loading) {
-                                <span class="spinner-border spinner-border-sm"></span> Guardando...
-                                } @else {
-                                {{ productForm.get('id')?.value ? 'Actualizar' : 'Crear' }}
-                                }
-                            </button>
-                        </div>
-
-                    </form>
-                </div>
+                    <div class="card-footer bg-light mt-4 d-flex justify-content-end gap-2">
+                        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancelar</button>
+                        <button type="submit" [disabled]="productForm.invalid || loading" class="btn btn-primary">
+                            @if (loading) {
+                            <span class="spinner-border spinner-border-sm"></span> Guardando...
+                            } @else {
+                            {{ productForm.get('id')?.value ? 'Actualizar' : 'Crear' }}
+                            }
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </form>
+    </div>
 </div>
