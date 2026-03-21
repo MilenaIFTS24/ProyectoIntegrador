@@ -36,6 +36,7 @@ export class RegisterComponent {
 
     if (this.registerForm.invalid) {
       //this.notify.toast('Revisa los campos obligatorios', 'warning');
+      alert('Revisa los campos obligatorios');
       return;
     }
 
@@ -53,12 +54,14 @@ export class RegisterComponent {
 
     this.authService.register(newUser).subscribe({
       next: () => {
+        alert('¡Cuenta creada! Ya puedes ingresar');
         //this.notify.toast('¡Cuenta creada! Ya puedes ingresar', 'success');
         this.router.navigate(['/login']);
       },
       error: (err: any) => {
         this.loading = false;
         const errorMessage = err.error?.message || 'Error en el registro';
+        alert(errorMessage);
         //this.notify.toast(errorMessage, 'error');
         console.error('Error de registro:', err);
       }
