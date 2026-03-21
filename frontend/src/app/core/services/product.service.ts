@@ -24,8 +24,7 @@ export class ProductService {
   }
 
   // Guardar (Crear o Actualizar)
-  // Usamos el objeto 'any' o 'Product' que limpiamos en el componente
-  saveProduct(product: any): Observable<any> {
+  saveProduct(product: Product): Observable<any> {
     if (product.id) {
       return this.api.put(`${this.path}/${product.id}`, product);
     }
