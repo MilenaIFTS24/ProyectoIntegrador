@@ -207,7 +207,7 @@ onSubmit() {
     description: f.description || '',
     image: f.image || '',
     // USAMOS LOS STRINGS DE LA INTERFAZ:
-    productType: isTea ? 'té' : 'artesanía' 
+    productType: isTea ? 'tea' : 'craft' 
   };
 
   if (isTea) {
@@ -247,8 +247,7 @@ onSubmit() {
 }
 
   onCancel() {
-    // 1. Reseteamos el formulario a sus valores base
-    // El productType debe ser '' para que coincida con "Seleccione..."
+    // 1. Reseteamos el formulario a sus valores base    
     this.productForm.reset({
       id: null,
       name: '',
@@ -266,7 +265,7 @@ onSubmit() {
     // 2. Llamamos a toggleFields con vacío para que bloquee TODO
     this.toggleFields('');
 
-    // 3. (Opcional) Limpiamos errores visuales de validación
+    // 3. Limpiamos errores visuales de validación
     this.productForm.markAsPristine();
     this.productForm.markAsUntouched();
   }
