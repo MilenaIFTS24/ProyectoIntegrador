@@ -5,7 +5,7 @@ export interface Product {
   price: number;
   stock?: number;
   image?: string;
-  productType: 'té' | 'artesanía'; // Basado en tu enum de Postgres
+  productType: 'tea' | 'craft';
   
   // Atributos de Té
   brand?: string;
@@ -20,10 +20,10 @@ export interface Product {
   // Atributos de Artesanía
   brandArtist?: string;
   category?: string;
-  creationDate?: string; // En tu SQL es character varying
+  creationDate?: string;
   weight?: number;
   isUnique?: boolean;
-  materials?: string[]; // character varying(255) [] en SQL es un array en TS
+  materials?: string[]; 
   ecoFriendly?: boolean;
 
   // Auditoría (Sequelize)
