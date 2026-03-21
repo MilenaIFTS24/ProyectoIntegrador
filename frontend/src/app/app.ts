@@ -1,7 +1,8 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { FooterComponent } from "./shared/components/footer/footer.component";
+import { AuthService } from './core/services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,4 +13,6 @@ import { FooterComponent } from "./shared/components/footer/footer.component";
 })
 export class App {
   protected readonly title = signal('ProyectoIntegrador');
+
+  public authService = inject(AuthService);
 }
