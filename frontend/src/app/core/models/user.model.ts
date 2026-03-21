@@ -1,4 +1,5 @@
 export interface User {
+<<<<<<< HEAD
   id?: number;
   fullName: string;
   birthDate: string;
@@ -22,4 +23,7 @@ export interface User {
   // Auditoría (timestamps: true)
   createdAt?: Date;
   updatedAt?: Date;
+=======
+    id: number;
+>>>>>>> 4864eeea6d793df3d4157f227a1b69281b91fb65
 }

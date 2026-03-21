@@ -51,17 +51,17 @@ export class RegisterComponent {
       address: formValues.address || undefined,
     };
 
-    // //this.authService.register(newUser).subscribe({
-    //   next: () => {
-    //     //this.notify.toast('¡Cuenta creada! Ya puedes ingresar', 'success');
-    //     this.router.navigate(['/login']);
-    //   },
-    //   error: (err: any) => {
-    //     this.loading = false;        
-    //     const errorMessage = err.error?.message || 'Error en el registro';
-    //     //this.notify.toast(errorMessage, 'error');
-    //     console.error('Error de registro:', err);
-    //   }
-    // })
+    this.authService.register(newUser).subscribe({
+      next: () => {
+        //this.notify.toast('¡Cuenta creada! Ya puedes ingresar', 'success');
+        this.router.navigate(['/login']);
+      },
+      error: (err: any) => {
+        this.loading = false;
+        const errorMessage = err.error?.message || 'Error en el registro';
+        //this.notify.toast(errorMessage, 'error');
+        console.error('Error de registro:', err);
+      }
+    })
   }
 }
