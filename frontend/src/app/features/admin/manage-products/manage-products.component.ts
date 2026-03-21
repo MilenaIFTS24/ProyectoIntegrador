@@ -13,7 +13,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./manage-products.component.css']
 })
 export class ManageProductsComponent implements OnInit {
-  // Inyección del servicio desde Core
   private productService = inject(ProductService);
   private fb = inject(FormBuilder);
   private notify = inject(NotificationService); //Notificaciones toast
@@ -185,65 +184,64 @@ export class ManageProductsComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  onSubmit() {
+onSubmit() {
   this.productForm.markAllAsTouched();
 
   if (this.productForm.invalid) {
-    this.notify.toast('Completa los campos obligatorios antes de guardar', 'warning');
+    this.notify.toast('Completa los campos obligatorios', 'warning');
     return;
   }
 
   this.loading = true;
   const f = this.productForm.getRawValue();
+  
+  // Detectamos el tipo (aceptamos ambas versiones por si el select tiene valores en inglés)
   const isTea = f.productType === 'tea' || f.productType === 'té';
 
-  // 1. Construcción del objeto con valores de respaldo
-  const payload: any = {
-    id: f.id || null,
+  // 1. Construcción del objeto tipado como Product
+  const payload: Product = {
+    id: f.id || undefined,
     name: f.name || '',
     price: f.price || 0,
     stock: f.stock || 0,
     description: f.description || '',
-    productType: isTea ? 'tea' : 'craft'
+    image: f.image || '',
+    // USAMOS LOS STRINGS DE LA INTERFAZ:
+    productType: isTea ? 'té' : 'artesanía' 
   };
 
   if (isTea) {
     payload.brand = f.brand || 'Genérica';
-    // Si f.origin está vacío, le mandamos 'Nacional' o 'Importado' por defecto
-    payload.origin = f.origin || 'No especificado'; 
-    
+    payload.origin = f.origin || 'No especificado';
     payload.type = f.type || 'Mezcla';
     payload.format = f.format || 'Hebras';
     payload.weightPerUnit = f.weightPerUnit || 0;
     payload.hasCaffeine = !!f.hasCaffeine;
     payload.isOrganic = !!f.isOrganic;
-} else {
+    payload.isFairTrade = !!f.isFairTrade;
+  } else {
     payload.brandArtist = f.brandArtist || '';
     payload.category = f.category || '';
     payload.weight = f.weight || 0;
     payload.isUnique = !!f.isUnique;
     payload.ecoFriendly = !!f.ecoFriendly;
     
-    // El único campo que SABEMOS que el backend exige:
+    // Convertimos el string del input a Array de strings para la interfaz
     const materialesRaw = f.materials;
     payload.materials = (materialesRaw && materialesRaw.trim() !== '') 
                         ? materialesRaw.split(',').map((m: string) => m.trim()) 
                         : ['Varios'];
   }
 
-  console.log('🚀 Enviando Payload Final:', payload);
-
   this.productService.saveProduct(payload).subscribe({
     next: () => {
-      this.notify.toast(f.id ? 'Actualizado' : 'Creado con éxito');
+      this.notify.toast(f.id ? 'Actualizado con éxito' : 'Creado con éxito');
       this.loadProducts();
       this.onCancel();
     },
-    error: (err: any) => {
+    error: (err) => {
       this.loading = false;
-      // TRUCO PARA VER EL ERROR: Mira la pestaña 'Network' -> 'Response'
-      console.error('Detalle técnico del error:', err);
-      this.notify.toast('Error 400: El servidor rechazó los datos', 'error');
+      this.notify.toast('Error al guardar el producto', 'error');
     }
   });
 }
