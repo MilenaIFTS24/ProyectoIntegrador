@@ -13,7 +13,7 @@ export class AuthService {
 
   constructor() { }
 
-  login(token: string) {
+  login(token: string, user: User) {
     localStorage.setItem('userToken', token);
     this.isLoggedIn.set(true);
   }
@@ -23,11 +23,11 @@ export class AuthService {
     this.isLoggedIn.set(false);
   }
 
-  register(userData: User): Observable<any> {
+  registerAction(userData: User): Observable<any> {
     return this.api.post<any>('auth/register', userData).pipe(
       tap(response => {
         if (response && response.token) {
-          this.login(response.token);
+          this.login(response.token, response.user);
         }
       })
     );
