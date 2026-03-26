@@ -48,7 +48,7 @@ await sequelize.sync({ alter: true });
 const PORT = process.env.PORT || 3000;
 
 /**
- * Bootstrap: Función para asegurar que la base de datos esté lista 
+ * Función para asegurar que la base de datos esté lista 
  * antes de empezar a escuchar peticiones.
  */
 async function startApplication() {
