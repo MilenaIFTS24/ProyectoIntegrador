@@ -9,7 +9,7 @@ import { Observable, tap } from 'rxjs';
 export class AuthService {
   private api = inject(ApiService);
   
-  // Tu Signal para saber si hay alguien conectado
+  // Signal para saber si hay alguien conectado
   public isLoggedIn = signal<boolean>(!!localStorage.getItem('userToken'));
 
 
