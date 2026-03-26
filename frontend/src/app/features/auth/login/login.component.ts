@@ -1,52 +1,52 @@
-// login.component.ts
 import { Component, inject } from '@angular/core';
-import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 //import { NotificationService } from '../../../core/services/notification.service';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [ReactiveFormsModule],
   templateUrl: './login.component.html'
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
   private authService = inject(AuthService);
-  //private notify = inject(NotificationService);
   private router = inject(Router);
+  //private notify = inject(NotificationService);
 
-  public loading = false;
-
-  public loginForm = this.fb.group({
+  loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   onSubmit() {
-    if (this.loginForm.invalid) {
-      this.loginForm.markAllAsTouched();
-      return;
-    }
+    if (this.loginForm.invalid) return;
 
-    this.loading = true;
-    const credentials = this.loginForm.getRawValue();
+    const credentials = this.loginForm.value;
 
+    // Llamamos al servicio (que usa el ApiService hacia /api/auth/login)
     this.authService.loginAction(credentials).subscribe({
-      next: () => {
-        // El 'res.token' lo manejamos en el servicio (vimos el .pipe(tap) antes)
-        //this.notify.toast('¡Bienvenido de nuevo!', 'success');
-        alert('Bienvenido de nuevo!');
-        this.router.navigate(['/adminDashboard']); // Redirigimos al panel
+      next: (res) => {
+        // 1. Guardamos token y rol en los SIGNALS a través del AuthService
+        // res.user.role viene del backend (Sequelize)
+        this.authService.login(res.token, res.user);
+
+        //this.notify.toast(`¡Bienvenido de nuevo, ${res.user.fullName}!`, 'success');
+
+        // 2. Redirección inteligente basada en el ROL
+        if (res.user.role === 'admin') {
+          this.router.navigate(['/adminDashboard']);
+        } else {
+          this.router.navigate(['/userDashboard']);
+        }
       },
-      error: (err: any) => {
-        this.loading = false;
-        // Error 401: Credenciales incorrectas
-        const msg = err.status === 401 ? 'Correo o contraseña incorrectos' : 'Error de conexión';
+      error: (err) => {
+        // El interceptor ya captura errores globales, pero aquí
+        // manejamos el mensaje específico de "Credenciales inválidas"
+        const msg = err.error?.error || 'Error al iniciar sesión';
         //this.notify.toast(msg, 'error');
-        alert(msg);
       }
     });
   }

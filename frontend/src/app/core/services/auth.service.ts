@@ -1,6 +1,6 @@
-import { Injectable, inject, signal } from '@angular/core';
-import { ApiService } from './api.service'; // Ajusta la ruta
-import { User } from '../models/user.model';
+import { inject, Injectable, signal } from '@angular/core';
+import { Router } from '@angular/router';
+import { ApiService } from './api.service'; // Tu servicio base de Axios/HttpClient
 import { Observable, tap } from 'rxjs';
 
 @Injectable({
@@ -8,39 +8,66 @@ import { Observable, tap } from 'rxjs';
 })
 export class AuthService {
   private api = inject(ApiService);
-  
-  // Signal para saber si hay alguien conectado
+  private router = inject(Router);
+
+  // --- SIGNALS DE ESTADO GLOBAL ---
   public isLoggedIn = signal<boolean>(!!localStorage.getItem('userToken'));
+  public userRole = signal<string | null>(localStorage.getItem('userRole'));
+  public userName = signal<string | null>(localStorage.getItem('userName'));
 
+  constructor() {}
 
+  // --- MÉTODOS DE ACCIÓN (HTTP) ---
+
+  // Intenta iniciar sesión
   loginAction(credentials: any): Observable<any> {
-    return this.api.post<any>('auth/login', credentials).pipe(
-      tap(res => {
-        if (res && res.token) {
-          this.login(res.token); // actualizo el signal
-        }
-      })
-    );
+    return this.api.post('auth/login', credentials);
   }
 
-  register(userData: User): Observable<any> {
-    return this.api.post<any>('auth/register', userData).pipe(
-      tap(res => {
-        // Para registro con logueo automatico.
-        if (res && res.token) {
-          this.login(res.token);
-        }
-      })
-    );
+  // Intenta registrar un nuevo usuario
+  registerAction(userData: any): Observable<any> {
+    return this.api.post('auth/register', userData);
   }
 
-  login(token: string) {
+  // --- MÉTODOS DE ESTADO (LOCAL) ---
+
+  /**
+   * Actualiza el estado de la aplicación tras un login/registro exitoso.
+   * @param token El JWT enviado por el backend
+   * @param user Objeto con { fullName, role, id }
+   */
+  login(token: string, user: any) {
+    // 1. Guardar en LocalStorage
     localStorage.setItem('userToken', token);
+    localStorage.setItem('userRole', user.role);
+    localStorage.setItem('userName', user.fullName);
+
+    // 2. Actualizar Signals (Reactividad en la UI)
     this.isLoggedIn.set(true);
+    this.userRole.set(user.role);
+    this.userName.set(user.fullName);
   }
 
+  /**
+   * Limpia todo rastro de la sesión y redirige al inicio.
+   */
   logout() {
+    // 1. Limpiar almacenamiento
     localStorage.removeItem('userToken');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userName');
+
+    // 2. Resetear Signals
     this.isLoggedIn.set(false);
+    this.userRole.set(null);
+    this.userName.set(null);
+
+    // 3. Redirigir
+    this.router.navigate(['/login']);
+  }
+
+  // Helper para verificar roles rápidamente (opcional)
+  isAdmin(): boolean {
+    return this.userRole() === 'admin';
   }
 }
