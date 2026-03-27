@@ -22,6 +22,7 @@ export const routes: Routes = [
             { path: "adminDashboardHome", loadComponent: () => import('./features/admin/admin-dashboard-home/admin-dashboard-home.component').then(m => m.AdminDashboardHomeComponent) },
             { path: "manageEvents", loadComponent: () => import('./features/admin/manage-events/manage-events.component').then(m => m.ManageEventsComponent) },
             { path: "manageOffers", loadComponent: () => import('./features/admin/manage-offers/manage-offers.component').then(m => m.ManageOffersComponent) },
+            { path: "manageProducts", loadComponent: () => import('./features/admin/manage-products/manage-products.component').then(m => m.ManageProductsComponent) },
             { path: "manageReservations", loadComponent: () => import('./features/admin/manage-reservations/manage-reservations.component').then(m => m.ManageReservationsComponent) },
             { path: "manageUsers", loadComponent: () => import('./features/admin/manage-users/manage-users.component').then(m => m.ManageUsersComponent) },
             { path: "", redirectTo: "adminDashboardHome", pathMatch: "full" }
