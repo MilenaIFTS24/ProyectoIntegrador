@@ -20,7 +20,7 @@ import { MakeReservationComponent } from './features/user/make-reservation/make-
 import { ManageProductsComponent } from './features/admin/manage-products/manage-products.component';
 
 export const routes: Routes = [
-    { path: "", loadComponent: () => import('./features/home/home-page/home-page.component').then(m => HomePageComponent) },
+    { path: "", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) }, //dirijo al login
     { path: "login", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) },
     { path: "register", loadComponent: () => import('./features/auth/register/register.component').then(m => RegisterComponent) },
     { path: "contacto", loadComponent: () => import('./features/contact/contact-page/contact-page.component').then(m => ContactPageComponent) },
