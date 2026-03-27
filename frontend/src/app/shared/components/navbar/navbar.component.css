@@ -1,110 +1,103 @@
-/* --- CONTENEDOR PRINCIPAL --- */
+/* --- 1. CONFIGURACIÓN DEL CONTENEDOR PRINCIPAL --- */
 .navbar {
-  /* Sombra sutil para despegar el menú del resto de la página */
-  box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-  /* Un fondo oscuro sólido pero elegante */
-  background-color: #1a1a1a;
+  background-color: #121212 !important; /* Negro neutro premium */
+  min-height: 80px; 
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
   padding: 0.8rem 1rem;
-  /* Línea decorativa inferior que separa el menú del contenido */
-  border-bottom: 2px solid #00d1b2; 
+  display: flex;
+  align-items: center;
 }
 
-/* --- LOGOTIPO / NOMBRE DE MARCA --- */
-.navbar-brand {
+/* --- 2. EL BRAND (RESERVADO PARA TU FUTURO LOGO) --- */
+.brand-wrapper {
+  display: flex !important;
+  align-items: center;
+  min-width: 250px; 
+  z-index: 1100;
+}
+
+.navbar-brand-custom {
+  display: flex !important;
+  align-items: center;
+  text-decoration: none !important;
+}
+
+.brand-icon {
+  font-size: 2rem;
+  color: #00d1b2 !important; /* Color temporal de acento */
+  margin-right: 12px;
+}
+
+.brand-text {
   font-weight: 700;
-  font-size: 1.3rem;
-  color: #fff !important;
-  /* Espaciado entre letras para un look más "premium" */
-  letter-spacing: 1px;
+  font-size: 1.4rem;
+  color: #ffffff !important; 
+  white-space: nowrap !important;
+  letter-spacing: 0.5px;
+  /* Sombra de apoyo para legibilidad en el modo transparente */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
 }
 
-/* --- ENLACES DE NAVEGACIÓN --- */
+/* --- 3. MODO AUTH (LOGIN/REGISTER - ESTILO SUTIL) --- */
+.navbar-auth {
+  background-color: rgba(18, 18, 18, 0.3) !important; 
+  backdrop-filter: blur(15px) saturate(150%) !important;
+  -webkit-backdrop-filter: blur(15px) saturate(150%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  box-shadow: none !important;
+  padding-top: 1.5rem;
+}
+
+.navbar-auth .container {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.navbar-auth .brand-wrapper {
+  min-width: auto;
+}
+
+/* --- 4. NAVEGACIÓN Y ENLACES --- */
 .nav-link {
-  color: #ccc !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   font-weight: 500;
-  margin: 0 8px;
-  /* Transición suave para cambios de color (sustituye a los keyframes) */
-  transition: color 0.2s ease-in-out;
+  margin: 0 10px;
+  transition: all 0.3s ease;
 }
 
-/* Estado al pasar el mouse por encima */
-.nav-link:hover {
+.nav-link:hover, .nav-link.active {
   color: #00d1b2 !important;
+  transform: translateY(-1px);
 }
 
-/* --- CLASE ACTIVA (RouterLinkActive) --- */
-/* Esta es la clase que aplicamos en el HTML */
-.active {
-  color: #00d1b2 !important;
-  font-weight: 700;
-  /* Una línea sólida debajo para indicar en qué sección estamos */
-  border-bottom: 2px solid #00d1b2;
-}
-
-/* --- AVATAR DEL USUARIO --- */
+/* --- 5. PERFIL Y AVATAR --- */
 .avatar-circle {
-  width: 35px;
-  height: 35px;
-  background-color: #00d1b2;
-  color: #1a1a1a;
-  border-radius: 50%; /* Crea el círculo perfecto */
+  width: 40px;
+  height: 40px;
+  background: #00d1b2;
+  color: #121212;
+  border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-weight: 800;
-  /* Pequeño margen para que no pegue con el texto */
-  margin-right: 10px;
+  font-weight: bold;
 }
 
-/* --- MENÚS DESPLEGABLES (DROPDOWNS) --- */
-.dropdown-menu {
-  /* Fondo oscuro para que combine con el resto */
-  background-color: #2c2c2c;
-  border: 1px solid #444;
-  /* Redondeamos las esquinas para un look moderno */
+/* --- 6. DROPDOWNS Y RESPONSIVIDAD --- */
+.dropdown-menu-dark {
+  background-color: #1e1e1e;
+  border: 1px solid #333;
   border-radius: 8px;
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
-.dropdown-item {
-  color: #fff;
-  padding: 10px 20px;
-  /* Transición para el fondo al hacer hover */
-  transition: background-color 0.2s;
-}
-
-.dropdown-item:hover {
-  background-color: #3d3d3d;
-  color: #00d1b2;
-}
-
-/* --- BOTÓN DE REGISTRO / ACCIÓN --- */
-.btn-outline-info {
-  border-color: #00d1b2;
-  color: #00d1b2;
-  border-radius: 50px; /* Botón tipo "píldora" */
-  padding: 5px 20px;
-  font-weight: 600;
-  transition: all 0.3s;
-}
-
-.btn-outline-info:hover {
-  background-color: #00d1b2;
-  color: #1a1a1a;
-  /* Pequeño brillo alrededor al pasar el mouse */
-  box-shadow: 0 0 8px rgba(0, 209, 178, 0.5);
-}
-
-/* --- AJUSTES PARA MÓVILES --- */
 @media (max-width: 991px) {
-  .nav-link {
-    margin: 10px 0;
-  }
-  
-  .active {
-    /* En móviles la línea inferior se ve mal, mejor usamos una lateral */
-    border-bottom: none;
-    border-left: 4px solid #00d1b2;
-    padding-left: 15px;
+  .navbar-collapse {
+    background-color: #181818;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 15px;
   }
 }
