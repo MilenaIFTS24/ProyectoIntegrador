@@ -5,7 +5,7 @@ export interface Product {
   price: number;
   stock?: number;
   image?: string;
-  productType: 'tea' | 'craft';
+  productType: 'tea' | 'craft'; // Basado en tu enum de Postgres
   
   // Atributos de Té
   brand?: string;
