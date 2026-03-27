@@ -7,7 +7,6 @@ const router = Router();
 // Solo el admin puede ver la lista completa de usuarios
 router.get("/", authenticateToken, isAdmin, usersController.getUsers);
 
-// El registro suele ser público para que alguien se pueda unir
 router.post("/", usersController.createUser);
 
 // El resto requiere estar logueado (authenticateToken)
