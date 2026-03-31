@@ -37,8 +37,9 @@ export class ApiService {
 
   // Método para manejar errores en las peticiones HTTP
   private handleError(error: any): Observable<never> {
-    let errorMensaje = `Código de error:${error.status}\n Descripción:${error.message}`;
-    return throwError(() => new Error(errorMensaje));
-  };    
+    // No creamos un "new Error", simplemente devolvemos el error tal cual viene de HttpClient
+    // para que el Interceptor y el Componente tengan acceso al .status y al .error (el body del fallo)
+    return throwError(() => error);
+  };   
 
 }

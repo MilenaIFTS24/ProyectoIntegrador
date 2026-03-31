@@ -19,39 +19,41 @@ export class LoginComponent {
 
   public loading: boolean = false;
 
-  public loading = false;
   loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
   onSubmit() {
-    if (this.loginForm.invalid) return;
-    
-    this.loading = true;
-    
-    const credentials = this.loginForm.value;
+  if (this.loginForm.invalid) return;
+  
+  this.loading = true;
 
-    // Llamamos al servicio (que usa el ApiService hacia /api/auth/login)
-    this.authService.loginAction(credentials).subscribe({
-      next: (res) => {
-        // 1. Guardamos token y rol en los SIGNALS a través del AuthService
-        // res.user.role viene del backend (Sequelize)
-        this.authService.login(res.token, res.user);
+  // Extraemos solo los valores planos para asegurar compatibilidad total con el Backend
+  const { email, password } = this.loginForm.getRawValue();
 
-        this.notify.toast(`¡Bienvenido de nuevo, ${res.user.fullName}!`, 'success');
+  this.authService.loginAction({ email, password }).subscribe({
+    next: (res) => {
+      // 1. Guardamos sesión (Signals y LocalStorage)
+      this.authService.login(res.token, res.user);
 
-        // 2. Redirección inteligente basada en el ROL
-        const route = res.user.role === 'admin' ? '/adminDashboard' : '/userDashboard';
-        this.router.navigate([route]);
-      },
-      error: (err) => {
-        // El interceptor ya captura errores globales, pero aquí
-        // manejamos el mensaje específico de "Credenciales inválidas"
-        this.loading = false;
-        const msg = err.error?.error || 'Error al iniciar sesión';
-        this.notify.toast(msg, 'error');
+      this.notify.toast(`¡Bienvenido, ${res.user.fullName}!`, 'success');
+
+      // 2. Redirección basada en el ROL que viene de la respuesta fresca
+      // Usamos navigateByUrl para una navegación absoluta y limpia
+      if (res.user.role === 'admin') {
+        this.router.navigateByUrl('/adminDashboard/adminDashboardHome');
+      } else {
+        this.router.navigateByUrl('/userDashboard/userDashboardHome');
       }
-    });
-  }
+    },
+    error: (err) => {
+      this.loading = false;
+      // Si el backend da 401, el error suele venir en err.error.message o err.error.error
+      const msg = err.error?.error || err.error?.message || 'Credenciales incorrectas';
+      this.notify.toast(msg, 'error');
+      console.error('Error 401 Detalles:', err);
+    }
+  });
+}
 }

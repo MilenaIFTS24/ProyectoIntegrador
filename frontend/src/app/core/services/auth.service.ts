@@ -53,17 +53,16 @@ export class AuthService {
    */
   logout() {
     // 1. Limpiar almacenamiento
-    localStorage.removeItem('userToken');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userName');
+    localStorage.clear(); // Opcional: limpia todo para mayor seguridad
 
     // 2. Resetear Signals
     this.isLoggedIn.set(false);
     this.userRole.set(null);
     this.userName.set(null);
 
-    // 3. Redirigir
-    this.router.navigate(['/login']);
+    // 3. Redirigir - Usar navigateByUrl('/') suele ser más seguro 
+    // para resetear el estado de las rutas
+    this.router.navigateByUrl('/login');
   }
 
   // Helper para verificar roles rápidamente (opcional)
