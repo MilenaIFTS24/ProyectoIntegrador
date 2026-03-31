@@ -1,20 +1,19 @@
-/* --- 1. CONFIGURACIÓN DEL CONTENEDOR PRINCIPAL --- */
+/* --- 1. CONFIGURACIÓN BASE (ESTADO NORMAL) --- */
 .navbar {
-  background-color: #121212 !important; /* Negro neutro premium */
-  min-height: 80px; 
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  background-color: #523b2f !important; /* Tu Marrón base */
+  min-height: 85px; 
+  /* Usamos Oro Antiguo para el borde inferior */
+  border-bottom: 3px solid var(--color-oro-antiguo, #D4A559); 
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
   padding: 0.8rem 1rem;
-  display: flex;
-  align-items: center;
 }
 
-/* --- 2. EL BRAND (RESERVADO PARA TU FUTURO LOGO) --- */
+/* --- 2. EL BRAND (LOGOTIPO Y TEXTO) --- */
 .brand-wrapper {
   display: flex !important;
   align-items: center;
-  min-width: 250px; 
+  min-width: 260px; 
   z-index: 1100;
 }
 
@@ -24,30 +23,37 @@
   text-decoration: none !important;
 }
 
+/* Colores para el modo Auth (Sobre fondo Gris #cbc9c3) */
 .brand-icon {
-  font-size: 2rem;
-  color: #00d1b2 !important; /* Color temporal de acento */
+  font-size: 2.2rem;
+  color: #523b2f !important; 
   margin-right: 12px;
 }
 
 .brand-text {
-  font-weight: 700;
-  font-size: 1.4rem;
-  color: #ffffff !important; 
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: #523b2f !important;
   white-space: nowrap !important;
-  letter-spacing: 0.5px;
-  /* Sombra de apoyo para legibilidad en el modo transparente */
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  letter-spacing: 1px;
 }
 
-/* --- 3. MODO AUTH (LOGIN/REGISTER - ESTILO SUTIL) --- */
+/* Colores para el modo Normal (Sobre fondo Marrón) */
+.navbar:not(.navbar-auth) .brand-icon {
+  /* El icono brilla en Oro Rico */
+  color: var(--color-oro-rico, #DAA520) !important; 
+}
+
+.navbar:not(.navbar-auth) .brand-text {
+  color: #cbc9c3 !important; 
+}
+
+/* --- 3. MODO AUTH (LIMPIO Y TRANSPARENTE) --- */
 .navbar-auth {
-  background-color: rgba(18, 18, 18, 0.3) !important; 
-  backdrop-filter: blur(15px) saturate(150%) !important;
-  -webkit-backdrop-filter: blur(15px) saturate(150%) !important;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  background-color: transparent !important;
+  border-bottom: none !important;
   box-shadow: none !important;
-  padding-top: 1.5rem;
+  padding-top: 2rem;
 }
 
 .navbar-auth .container {
@@ -59,25 +65,27 @@
   min-width: auto;
 }
 
-/* --- 4. NAVEGACIÓN Y ENLACES --- */
+/* --- 4. NAVEGACIÓN Y LINKS --- */
 .nav-link {
-  color: rgba(255, 255, 255, 0.8) !important;
-  font-weight: 500;
-  margin: 0 10px;
+  color: #cbc9c3 !important;
+  font-weight: 600;
+  margin: 0 12px;
   transition: all 0.3s ease;
 }
 
 .nav-link:hover, .nav-link.active {
-  color: #00d1b2 !important;
-  transform: translateY(-1px);
+  /* El Celeste Ahumado para estados activos/hover */
+  color: var(--color-celeste-ahumado, #6082B6) !important;
+  transform: translateY(-2px);
 }
 
-/* --- 5. PERFIL Y AVATAR --- */
+/* --- 5. AVATAR Y DROPDOWN --- */
 .avatar-circle {
-  width: 40px;
-  height: 40px;
-  background: #00d1b2;
-  color: #121212;
+  width: 42px;
+  height: 42px;
+  /* El avatar destaca en Oro Antiguo */
+  background-color: var(--color-oro-antiguo, #D4A559);
+  color: #523b2f; /* Texto marrón para contraste */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -85,19 +93,26 @@
   font-weight: bold;
 }
 
-/* --- 6. DROPDOWNS Y RESPONSIVIDAD --- */
 .dropdown-menu-dark {
-  background-color: #1e1e1e;
-  border: 1px solid #333;
+  background-color: #523b2f !important;
+  /* Borde en Bronce Profundo para el menú */
+  border: 1px solid var(--color-bronce-profundo, #8B6E4A) !important;
   border-radius: 8px;
   margin-top: 15px;
 }
 
+.dropdown-item:hover {
+  background-color: rgba(212, 165, 89, 0.1); /* Fondo Oro Antiguo sutil */
+  color: var(--color-oro-rico, #DAA520) !important;
+}
+
+/* --- 6. MOBILE --- */
 @media (max-width: 991px) {
   .navbar-collapse {
-    background-color: #181818;
+    background-color: #523b2f !important;
     padding: 1.5rem;
     border-radius: 12px;
     margin-top: 15px;
+    border: 1px solid var(--color-oro-antiguo, #D4A559);
   }
 }
