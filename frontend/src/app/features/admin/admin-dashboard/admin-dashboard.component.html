@@ -1,17 +1,50 @@
-<div class="d-flex">
-    <aside>        
-        <nav class="nav flex-column gap-3">
-            <h2>Panel Admin</h2>
-            <a routerLink="adminDashboardHome">Inicio</a>
-            <a routerLink="manageProducts">Gestión de Productos</a>
-            <a routerLink="manageEvents">Gestión de Eventos</a>
-            <a routerLink="manageOffers">Gestión de Ofertas</a>
-            <a routerLink="manageUsers">Gestión de Usuarios</a>
-            <a routerLink="manageReservations">Gestión de Reservas</a>
-        </nav>
-    </aside>
+<div class="admin-layout">
+  <aside class="admin-sidebar shadow-lg">
+    <div class="sidebar-header">
+      <i class="bi bi-shield-lock-fill admin-icon"></i>
+      <h2 class="admin-title">Panel de Control</h2>
+    </div>
 
-    <main class="flex-grow-1">
-        <router-outlet></router-outlet>
-    </main>
+    <nav class="nav flex-column admin-nav">
+      <a class="nav-link-custom" routerLink="adminDashboardHome" routerLinkActive="active-link">
+        <i class="bi bi-grid-1x2-fill me-3"></i>Inicio
+      </a>
+      
+      <div class="nav-divider">Inventario</div>
+      
+      <a class="nav-link-custom" routerLink="manageProducts" routerLinkActive="active-link">
+        <i class="bi bi-box-seam-fill me-3"></i>Gestión de Productos
+      </a>
+      <a class="nav-link-custom" routerLink="manageOffers" routerLinkActive="active-link">
+        <i class="bi bi-tag-fill me-3"></i>Ofertas y Promos
+      </a>
+
+      <div class="nav-divider">Experiencias</div>
+      
+      <a class="nav-link-custom" routerLink="manageEvents" routerLinkActive="active-link">
+        <i class="bi bi-calendar-check-fill me-3"></i>Eventos y Talleres
+      </a>
+
+      <div class="nav-divider">Administración</div>
+      
+      <a class="nav-link-custom" routerLink="manageUsers" routerLinkActive="active-link">
+        <i class="bi bi-people-fill me-3"></i>Usuarios Registrados
+      </a>
+      <a class="nav-link-custom" routerLink="manageReservations" routerLinkActive="active-link">
+        <i class="bi bi-receipt-cutoff me-3"></i>Gestión de Reservas
+      </a>
+    </nav>
+
+    <div class="sidebar-decoration mt-auto">
+      <div class="line"></div>
+      <i class="bi bi-flower1"></i>
+      <div class="line"></div>
+    </div>
+  </aside>
+
+  <main class="admin-main-content">
+    <div class="container-fluid py-4 px-5">
+      <router-outlet></router-outlet>
+    </div>
+  </main>
 </div>

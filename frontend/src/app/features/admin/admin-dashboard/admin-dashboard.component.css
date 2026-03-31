@@ -1,16 +1,86 @@
-nav {
-    width: 260px;
-    height: 100vh;
-    position: sticky;
-    top: 0;
-    background-color: whitesmoke;    
+/* Layout Principal */
+.admin-layout {
+  display: flex;
+  height: calc(100vh - 85px); 
+  overflow: hidden;
+  background-color: #f8f7f2;
 }
 
-main {
-    max-height: 100vh;
-    overflow-y: auto;
+/* Sidebar con medidas optimizadas */
+.admin-sidebar {
+  width: 260px;
+  background-color: #523b2f;
+  border-right: 4px solid var(--color-oro-antiguo);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex-shrink: 0;
+  padding: 1rem 0;
 }
 
-a {
-    text-decoration: none;
+/* Header más compacto */
+.sidebar-header {
+  padding: 0 1rem 1rem; 
+  border-bottom: 1px solid rgba(212, 165, 89, 0.15);
+  margin-bottom: 0.5rem; 
+  text-align: center;
+}
+
+.admin-icon {
+  font-size: 2rem;
+  color: var(--color-oro-rico);
+}
+
+.admin-title {
+  color: #f4f1ea;
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin-top: 0.3rem;
+}
+
+/* Navegación Compacta */
+.admin-nav {
+  padding: 0 0.8rem;
+}
+
+.nav-link-custom {
+  color: #cbc9c3 !important;
+  text-decoration: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 3px; /* Espacio mínimo entre botones */
+  font-size: 0.9rem; /* Fuente más pequeña */
+  transition: all 0.2s ease;
+}
+
+.nav-link-custom i {
+  font-size: 1.1rem;
+}
+
+.active-link {
+  background-color: var(--color-oro-antiguo) !important;
+  color: #523b2f !important;
+  font-weight: 700;
+}
+
+/* Divisores mucho más delgados */
+.nav-divider {
+  font-size: 0.65rem; 
+  color: rgba(203, 201, 195, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  padding: 0.8rem 14px 0.3rem;
+  font-weight: 700;
+}
+
+.sidebar-decoration {
+  display: none;
+}
+
+.admin-main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  background-color: #ffffff;
 }

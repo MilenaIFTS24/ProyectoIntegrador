@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { FooterComponent } from "./shared/components/footer/footer.component";
 
@@ -11,5 +11,12 @@ import { FooterComponent } from "./shared/components/footer/footer.component";
   styleUrl: './app.css'
 })
 export class App {
-  protected readonly title = signal('ProyectoIntegrador');
+
+  constructor(private router: Router) { }
+  
+  //Que el footer no se muestre en la pantalla de admin
+  showFooter(): boolean {
+  // Retorna falso si la URL actual contiene 'adminDashboard'
+  return !this.router.url.includes('adminDashboard');
+}
 }
