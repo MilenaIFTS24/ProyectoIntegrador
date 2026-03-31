@@ -1,107 +1,97 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow">
-  <div class="container">
-    <a class="navbar-brand d-flex align-items-center"
-      [routerLink]="authService.userRole() === 'admin' ? '/adminDashboard' : '/'">
-      <i class="bi bi-cup-hot me-2 text-info"></i>
-      <strong>Té & Artesanías</strong>
-    </a>
+<nav class="navbar navbar-expand-lg navbar-dark shadow" [class.navbar-auth]="isAuthPage()">
+  <div class="container" [class.justify-content-center]="isAuthPage()">
+    
+    <div class="brand-wrapper">
+      <a class="navbar-brand-custom" 
+         [routerLink]="authService.userRole() === 'admin' ? '/adminDashboard/adminDashboardHome' : '/'">
+        <i class="bi bi-cup-hot brand-icon"></i>
+        <span class="brand-text">Té & Artesanías</span>
+      </a>
+    </div>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+    @if (!isAuthPage()) {
+      
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-
-      <ul class="navbar-nav me-auto">
-         @if (!authService.isLoggedIn() || authService.userRole() === 'user') {
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/products" routerLinkActive="active">
-              <i class="bi bi-flower1 me-1"></i>Nuestros Tés
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/events" routerLinkActive="active">
-              <i class="bi bi-calendar-heart me-1"></i>Talleres y Eventos
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" routerLink="/contacto" routerLinkActive="active">
-              <i class="bi bi-chat-dots me-1"></i>Contacto
-            </a>
-          </li>
-        } 
-
-         @if (authService.isLoggedIn() && authService.userRole() === 'user') {
-          <li class="nav-item">
-            <a class="nav-link text-info" routerLink="/userDashboard" routerLinkActive="active">
-              <i class="bi bi-person-badge me-1"></i>Mi Panel
-            </a>
-          </li>
-        } 
-
-         @if (authService.isLoggedIn() && authService.userRole() === 'admin') {
-          <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle text-warning" href="#" id="adminMenu" data-bs-toggle="dropdown">
-              <i class="bi bi-gear-wide-connected me-1"></i>Gestión Admin
-            </a>
-            <ul class="dropdown-menu dropdown-menu-dark shadow">
-              <li><a class="dropdown-item" routerLink="/adminDashboard/adminDashboardHome">Resumen</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" routerLink="/adminDashboard/manageProductsTeas">Variedades de Té</a></li>
-              <li><a class="dropdown-item" routerLink="/adminDashboard/manageProductsCrafts">Artesanías</a></li>
-              <li><a class="dropdown-item" routerLink="/adminDashboard/manageEvents">Eventos y Catas</a></li>
-              <li><a class="dropdown-item" routerLink="/adminDashboard/manageReservations">Reservas de Mesas</a></li>
-              <li><hr class="dropdown-divider"></li>
-              <li><a class="dropdown-item" routerLink="/adminDashboard/manageUsers">Usuarios</a></li>
-            </ul>
-          </li>
-        } 
-      </ul>
-
-      <div class="navbar-nav ms-auto align-items-center">
-        @if (authService.isLoggedIn()) {
-        <div class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userProfile"
-            data-bs-toggle="dropdown">
-            <div class="avatar-circle me-2">
-              {{ authService.userName()?.charAt(0)?.toUpperCase() }}
-            </div>
-            <span>{{ authService.userName() }}</span>
-          </a>
-          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow">
-            <li class="px-3 py-1">
-              <small class="text-muted">Perfil: {{ authService.userRole() | titlecase }}</small>
-            </li>
-            <li>
-              <hr class="dropdown-divider">
-            </li>
-            <li>
-              <a class="dropdown-item"
-                [routerLink]="authService.userRole() === 'admin' ? '/adminDashboard' : '/userDashboard'">
-                <i class="bi bi-person me-2"></i>Ver Mi Perfil
+      <div class="collapse navbar-collapse" id="navbarNav">
+        
+        <ul class="navbar-nav me-auto">
+          @if (!authService.isLoggedIn() || authService.userRole() === 'user') {
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/products" routerLinkActive="active">
+                <i class="bi bi-flower1 me-1"></i>Productos
               </a>
             </li>
-             @if (authService.userRole()==='user' ) { <li>
-              <a class="dropdown-item" routerLink="/userDashboard/myReservations">
-                <i class="bi bi-journal-check me-2"></i>Mis Reservas
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/events" routerLinkActive="active">
+                <i class="bi bi-calendar-heart me-1"></i>Talleres y Eventos
               </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" routerLink="/contacto" routerLinkActive="active">
+                <i class="bi bi-chat-dots me-1"></i>Contacto
+              </a>
+            </li>
+
+            @if (authService.isLoggedIn() && authService.userRole() === 'user') {
+              <li class="nav-item">
+                <a class="nav-link text-info-custom" routerLink="/userDashboard/userDashboardHome" routerLinkActive="active">
+                  <i class="bi bi-person-badge me-1"></i>Mi Panel
+                </a>
               </li>
-              }
-               <li>
-                <hr class="dropdown-divider">
+            }
+          }
+        </ul>
+
+        <div class="navbar-nav ms-auto align-items-center">
+          
+          @if (authService.isLoggedIn()) {
+            <div class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userProfile" role="button" data-bs-toggle="dropdown">
+                <div class="avatar-circle me-2">
+                  {{ authService.userName()?.charAt(0)?.toUpperCase() }}
+                </div>
+                <span class="d-none d-md-inline">{{ authService.userName() }}</span>
+              </a>
+              <ul class="dropdown-menu dropdown-menu-end dropdown-menu-dark shadow">
+                <li class="px-3 py-1">
+                  <small class="text-muted-custom">Perfil: {{ authService.userRole() | titlecase }}</small>
                 </li>
+                <li><hr class="dropdown-divider"></li>
+                
                 <li>
-                  <button class="dropdown-item text-danger" (click)="logout()">
+                  <a class="dropdown-item" 
+                     [routerLink]="authService.userRole() === 'admin' 
+                                   ? '/adminDashboard/adminDashboardHome' 
+                                   : '/userDashboard/userDashboardHome'">
+                    <i class="bi bi-person-circle me-2"></i>Ver Mi Perfil
+                  </a>
+                </li>
+
+                @if (authService.userRole() === 'user') {
+                  <li>
+                    <a class="dropdown-item" routerLink="/userDashboard/myReservations">
+                      <i class="bi bi-journal-check me-2"></i>Mis Reservas
+                    </a>
+                  </li>
+                }
+
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                  <button class="dropdown-item text-danger-custom" (click)="logout()">
                     <i class="bi bi-box-arrow-right me-2"></i><strong>Cerrar Sesión</strong>
                   </button>
                 </li>
-          </ul>
+              </ul>
+            </div>
+          } @else {
+            <a class="nav-link me-2" routerLink="/login">Ingresar</a>
+            <a class="btn btn-cta-register rounded-pill px-4" routerLink="/register">Registrarse</a>
+          }
         </div>
-        } @else {
-        <a class="nav-link me-2" routerLink="/login">Ingresar</a>
-        <a class="btn btn-outline-info rounded-pill px-4" routerLink="/register">Unirme</a>
-        }
       </div>
-    </div>
+    }
   </div>
 </nav>
