@@ -18,7 +18,7 @@ export const loginService = async (email, password) => {
     const token = jwt.sign(
         { id: user.id, role: user.role }, 
         process.env.JWT_SECRET || 'clave_secreta_provisoria', 
-        { expiresIn: '8h' } // El token expira en 8 horas
+        { expiresIn: '1h' } // El token expira en 8 horas
     );
 
     return { token, user: { id: user.id, fullName: user.fullName, role: user.role } };
