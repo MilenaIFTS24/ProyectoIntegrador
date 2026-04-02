@@ -12,36 +12,36 @@ import { UserService } from '../../../core/services/user.service';
 import { EventService } from '../../../core/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReservationService } from '../../../core/services/reservation.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard-home',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './admin-dashboard-home.component.html',
   styleUrl: './admin-dashboard-home.component.css'
 })
 export class AdminDashboardHomeComponent implements OnInit {
-  // Inyección de servicios mediante inject()
   public authService = inject(AuthService);
   private productService = inject(ProductService);
   private userService = inject(UserService);
   private eventService = inject(EventService);
   private reservationService = inject(ReservationService);
 
-  // Variables de estado y UI
   public currentDate = new Date();
   public stats: StatCard[] = [];
   public loading = true;
-  public isSystemOnline = false; // Estado de conexión a la BD
+  public isSystemOnline = false;
 
   ngOnInit(): void {
-    this.loadDashboardData();
+    // PROTECCIÓN: Solo cargar datos si el rol es Admin
+    if (this.authService.isAdmin()) {
+      this.loadDashboardData();
+    } else {
+      this.loading = false;
+    }
   }
 
-  /**
-   * Ejecuta todas las peticiones en paralelo. 
-   * Si una falla, devuelve null para permitir que las demás carguen.
-   */
   private loadDashboardData(): void {
     this.loading = true;
 
@@ -52,7 +52,6 @@ export class AdminDashboardHomeComponent implements OnInit {
       reservations: this.reservationService.getReservations().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); }))
     }).subscribe({
       next: (res) => {
-        // Mapeo de datos a la interfaz StatCard
         this.stats = [
           { 
             label: 'Productos', 
@@ -84,14 +83,10 @@ export class AdminDashboardHomeComponent implements OnInit {
           }
         ];
 
-        // Lógica de Conectividad: 
-        // Si al menos uno NO es null, el servidor Node.js y la BD están respondiendo.
         this.isSystemOnline = (res.products !== null || res.users !== null || res.events !== null || res.reservations !== null);
-        
         this.loading = false;
       },
       error: (err) => {
-        // Solo entra aquí si el forkJoin falla por un error no capturado
         console.error('Falla crítica de conexión:', err);
         this.isSystemOnline = false;
         this.loading = false;
@@ -99,9 +94,6 @@ export class AdminDashboardHomeComponent implements OnInit {
     });
   }
 
-  /**
-   * Genera un saludo amigable basado en la hora local.
-   */
   get greeting(): string {
     const hour = new Date().getHours();
     if (hour < 12) return '¡Buen día';

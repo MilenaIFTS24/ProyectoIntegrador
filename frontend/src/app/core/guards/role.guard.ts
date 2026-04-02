@@ -1,19 +1,22 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-//import { NotificationService } from '../services/notification.service';
 
 export const roleGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
-  //const notify = inject(NotificationService);
 
-  if (authService.isLoggedIn() && authService.userRole() === 'admin') {
+  // Verificamos sesión Y rol en una sola línea
+  if (authService.isLoggedIn() && authService.isAdmin()) {
     return true;
   }
 
-  // Si no es admin, lo mandamos al dashboard de usuario
-  //notify.toast('Acceso denegado: Se requieren permisos de administrador', 'error');
-  router.navigate(['/userDashboard']); 
+  // Si no es admin pero está logueado, va a su dashboard
+  if (authService.isLoggedIn()) {
+    router.navigate(['/userDashboard']);
+  } else {
+    router.navigate(['/login']);
+  }
+  
   return false;
 };

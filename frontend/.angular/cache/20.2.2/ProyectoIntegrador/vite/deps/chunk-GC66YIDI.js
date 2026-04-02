@@ -35,11 +35,7 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-3QGGR4IJ.js
-} from "./chunk-HIRBPE3E.js";
-========
-} from "./chunk-HPAMR3SY.js";
->>>>>>>> cf03b5ad29ef7ad43fd41638dba44da527de74a6:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-A2JJ25WC.js
+} from "./chunk-UWGLRKLR.js";
 import {
   Observable,
   concatMap,
@@ -48,11 +44,7 @@ import {
   map,
   of,
   switchMap
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-3QGGR4IJ.js
-} from "./chunk-RSS3ODKE.js";
-========
-} from "./chunk-73FCWE6J.js";
->>>>>>>> cf03b5ad29ef7ad43fd41638dba44da527de74a6:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-A2JJ25WC.js
+} from "./chunk-MARUHEWW.js";
 import {
   __async,
   __objRest,
@@ -2787,8 +2779,4 @@ export {
    * License: MIT
    *)
 */
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-3QGGR4IJ.js
-//# sourceMappingURL=chunk-3QGGR4IJ.js.map
-========
-//# sourceMappingURL=chunk-A2JJ25WC.js.map
->>>>>>>> cf03b5ad29ef7ad43fd41638dba44da527de74a6:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-A2JJ25WC.js
+//# sourceMappingURL=chunk-GC66YIDI.js.map
