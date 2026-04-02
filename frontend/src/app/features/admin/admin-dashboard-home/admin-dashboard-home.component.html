@@ -1,1 +1,86 @@
-<p>admin-dashboard-home works!</p>
+<div class="home-container animate__animated animate__fadeIn">
+  
+  <header class="welcome-banner shadow">
+    <div class="welcome-text">
+      <h1 class="text-oro">{{ greeting }}, {{ authService.userName() }}!</h1>
+      <p class="text-white opacity-75">Panel de administración de Té & Artesanías.</p>
+    </div>
+    <div class="status-indicator">
+      <span [ngClass]="isSystemOnline ? 'badge-online' : 'badge-offline'">
+        <i class="bi bi-circle-fill me-2" [class.pulse]="isSystemOnline"></i>
+        {{ isSystemOnline ? 'SISTEMA ACTIVO' : 'SISTEMA INACTIVO' }}
+      </span>
+    </div>
+  </header>
+
+  <section class="stats-grid">
+    @for (stat of stats; track stat.label) {
+      <div class="stat-card" [class.border-danger]="stat.error">
+        <div class="stat-icon-container" [style.color]="stat.error ? '#B22222' : stat.color">
+          <i class="bi" [ngClass]="stat.error ? 'bi-exclamation-triangle-fill' : stat.icon"></i>
+        </div>
+        
+        <div class="stat-info">
+          @if (stat.error) {
+            <h3 class="text-danger">---</h3>
+            <p class="text-danger small fw-bold">Error de conexión</p>
+          } @else {
+            <h3 class="text-black">{{ stat.value }}</h3>
+            <p class="text-muted small fw-bold">{{ stat.label }}</p>
+          }
+        </div>
+      </div>
+    }
+  </section>
+
+  <div class="row mt-4">
+    <div class="col-lg-7">
+      <div class="info-card shadow-sm">
+        <div class="card-header-custom">
+          <h5 class="m-0 fw-bold"><i class="bi bi-person-circle me-2"></i>Mi Perfil Administrativo</h5>
+        </div>
+        <div class="card-body-custom">
+          <div class="d-flex align-items-center mb-4">
+            <div class="profile-initial">
+              {{ authService.userName()?.charAt(0) }}
+            </div>
+            <div class="ms-4">
+              <h4 class="text-black mb-1">{{ authService.userName() }}</h4>
+              <span class="role-tag">{{ authService.userRole() }}</span>
+            </div>
+          </div>
+          
+          <div class="detail-list">
+            <div class="detail-item">
+              <span class="detail-label">Estado de Cuenta: </span>
+              <span class="detail-value fw-bold" [ngClass]="isSystemOnline ? 'text-success' : 'text-danger'">
+                <i class="bi bi-circle-fill small me-1"></i>
+                {{ isSystemOnline ? 'Online (Verificado)' : 'Offline (Sincronizando...)' }}
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Último Acceso: </span>
+              <span class="detail-value">Hoy, {{ currentDate | date:'shortTime' }} hs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-5">
+      <div class="info-card shadow-sm">
+        <div class="card-header-custom">
+          <h5 class="m-0 fw-bold"><i class="bi bi-lightning-charge me-2"></i>Accesos Rápidos</h5>
+        </div>
+        <div class="card-body-custom d-grid gap-2">
+          <button class="btn btn-celeste w-100 py-2 text-white" routerLink="/adminDashboard/manageProducts">
+            <i class="bi bi-plus-circle me-2"></i>Cargar Nuevo Producto
+          </button>
+          <button class="btn btn-oro-antiguo w-100 py-2" routerLink="/adminDashboard/manageReservations">
+            <i class="bi bi-calendar-event me-2"></i>Ver Reservas de Hoy
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
