@@ -57,6 +57,12 @@
       "file": "zone__js.js",
       "fileHash": "47f0e915",
       "needsInterop": true
+    },
+    "rxjs/operators": {
+      "src": "../../../../../../node_modules/rxjs/dist/esm5/operators/index.js",
+      "file": "rxjs_operators.js",
+      "fileHash": "84ec469e",
+      "needsInterop": false
     }
   },
   "chunks": {
