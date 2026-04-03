@@ -20,6 +20,8 @@ export class ManageProductsComponent implements OnInit {
   public products: Product[] = [];
   public loading: boolean = true;
   public errorMessage: string = '';
+  public currentPage: number = 1;
+  public itemsPerPage: number = 10;
 
   public productForm = this.fb.group({
     // --- Campos Generales ---
@@ -82,46 +84,46 @@ export class ManageProductsComponent implements OnInit {
   }
 
   toggleFields(type: string | null | undefined): void {
-  const val = type ? type.toLowerCase().trim() : '';
-  const esTe = val === 'tea' || val === 'té';
-  const esArtesania = val === 'craft' || val === 'artesanía';
+    const val = type ? type.toLowerCase().trim() : '';
+    const esTe = val === 'tea' || val === 'té';
+    const esArtesania = val === 'craft' || val === 'artesanía';
 
-  // 1. Definimos los grupos de controles
-  const camposTe = ['brand', 'type', 'origin', 'format', 'weightPerUnit'];
-  const camposArtesania = ['brandArtist', 'category', 'weight', 'materials'];
+    // 1. Definimos los grupos de controles
+    const camposTe = ['brand', 'type', 'origin', 'format', 'weightPerUnit'];
+    const camposArtesania = ['brandArtist', 'category', 'weight', 'materials'];
 
-  // 2. Limpiamos validadores de TODO antes de aplicar los nuevos
-  [...camposTe, ...camposArtesania].forEach(name => {
-    const control = this.productForm.get(name);
-    control?.disable();
-    control?.clearValidators();
-  });
-
-  // 3. Aplicamos lógica específica
-  if (esTe) {
-    camposTe.forEach(name => {
+    // 2. Limpiamos validadores de TODO antes de aplicar los nuevos
+    [...camposTe, ...camposArtesania].forEach(name => {
       const control = this.productForm.get(name);
-      control?.enable();
-      // El origen es obligatorio para el Backend en TÉ
-      if (name === 'origin') control?.setValidators([Validators.required]);
+      control?.disable();
+      control?.clearValidators();
     });
-  } 
-  else if (esArtesania) {
-    camposArtesania.forEach(name => {
-      const control = this.productForm.get(name);
-      control?.enable();
-      // Materiales es obligatorio para ARTESANÍA
-      if (name === 'materials') control?.setValidators([Validators.required, Validators.minLength(3)]);
+
+    // 3. Aplicamos lógica específica
+    if (esTe) {
+      camposTe.forEach(name => {
+        const control = this.productForm.get(name);
+        control?.enable();
+        // El origen es obligatorio para el Backend en TÉ
+        if (name === 'origin') control?.setValidators([Validators.required]);
+      });
+    }
+    else if (esArtesania) {
+      camposArtesania.forEach(name => {
+        const control = this.productForm.get(name);
+        control?.enable();
+        // Materiales es obligatorio para ARTESANÍA
+        if (name === 'materials') control?.setValidators([Validators.required, Validators.minLength(3)]);
+      });
+    }
+
+    // 4. ¡VITAL! Sincronizar el estado del formulario
+    [...camposTe, ...camposArtesania].forEach(name => {
+      this.productForm.get(name)?.updateValueAndValidity();
     });
+
+    console.log(`🛠️ Formulario validado y configurado para: ${val || 'Ninguno'}`);
   }
-
-  // 4. ¡VITAL! Sincronizar el estado del formulario
-  [...camposTe, ...camposArtesania].forEach(name => {
-    this.productForm.get(name)?.updateValueAndValidity();
-  });
-
-  console.log(`🛠️ Formulario validado y configurado para: ${val || 'Ninguno'}`);
-}
 
   async deleteProduct(product: Product) {
     const result = await this.notify.confirm(
@@ -184,67 +186,67 @@ export class ManageProductsComponent implements OnInit {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-onSubmit() {
-  this.productForm.markAllAsTouched();
+  onSubmit() {
+    this.productForm.markAllAsTouched();
 
-  if (this.productForm.invalid) {
-    this.notify.toast('Completa los campos obligatorios', 'warning');
-    return;
-  }
-
-  this.loading = true;
-  const f = this.productForm.getRawValue();
-  
-  // Detectamos el tipo (aceptamos ambas versiones por si el select tiene valores en inglés)
-  const isTea = f.productType === 'tea' || f.productType === 'té';
-
-  // 1. Construcción del objeto tipado como Product
-  const payload: Product = {
-    id: f.id || undefined,
-    name: f.name || '',
-    price: f.price || 0,
-    stock: f.stock || 0,
-    description: f.description || '',
-    image: f.image || '',
-    // USAMOS LOS STRINGS DE LA INTERFAZ:
-    productType: isTea ? 'tea' : 'craft' 
-  };
-
-  if (isTea) {
-    payload.brand = f.brand || 'Genérica';
-    payload.origin = f.origin || 'No especificado';
-    payload.type = f.type || 'Mezcla';
-    payload.format = f.format || 'Hebras';
-    payload.weightPerUnit = f.weightPerUnit || 0;
-    payload.hasCaffeine = !!f.hasCaffeine;
-    payload.isOrganic = !!f.isOrganic;
-    payload.isFairTrade = !!f.isFairTrade;
-  } else {
-    payload.brandArtist = f.brandArtist || '';
-    payload.category = f.category || '';
-    payload.weight = f.weight || 0;
-    payload.isUnique = !!f.isUnique;
-    payload.ecoFriendly = !!f.ecoFriendly;
-    
-    // Convertimos el string del input a Array de strings para la interfaz
-    const materialesRaw = f.materials;
-    payload.materials = (materialesRaw && materialesRaw.trim() !== '') 
-                        ? materialesRaw.split(',').map((m: string) => m.trim()) 
-                        : ['Varios'];
-  }
-
-  this.productService.saveProduct(payload).subscribe({
-    next: () => {
-      this.notify.toast(f.id ? 'Actualizado con éxito' : 'Creado con éxito');
-      this.loadProducts();
-      this.onCancel();
-    },
-    error: (err) => {
-      this.loading = false;
-      this.notify.toast('Error al guardar el producto', 'error');
+    if (this.productForm.invalid) {
+      this.notify.toast('Completa los campos obligatorios', 'warning');
+      return;
     }
-  });
-}
+
+    this.loading = true;
+    const f = this.productForm.getRawValue();
+
+    // Detectamos el tipo (aceptamos ambas versiones por si el select tiene valores en inglés)
+    const isTea = f.productType === 'tea' || f.productType === 'té';
+
+    // 1. Construcción del objeto tipado como Product
+    const payload: Product = {
+      id: f.id || undefined,
+      name: f.name || '',
+      price: f.price || 0,
+      stock: f.stock || 0,
+      description: f.description || '',
+      image: f.image || '',
+      // USAMOS LOS STRINGS DE LA INTERFAZ:
+      productType: isTea ? 'tea' : 'craft'
+    };
+
+    if (isTea) {
+      payload.brand = f.brand || 'Genérica';
+      payload.origin = f.origin || 'No especificado';
+      payload.type = f.type || 'Mezcla';
+      payload.format = f.format || 'Hebras';
+      payload.weightPerUnit = f.weightPerUnit || 0;
+      payload.hasCaffeine = !!f.hasCaffeine;
+      payload.isOrganic = !!f.isOrganic;
+      payload.isFairTrade = !!f.isFairTrade;
+    } else {
+      payload.brandArtist = f.brandArtist || '';
+      payload.category = f.category || '';
+      payload.weight = f.weight || 0;
+      payload.isUnique = !!f.isUnique;
+      payload.ecoFriendly = !!f.ecoFriendly;
+
+      // Convertimos el string del input a Array de strings para la interfaz
+      const materialesRaw = f.materials;
+      payload.materials = (materialesRaw && materialesRaw.trim() !== '')
+        ? materialesRaw.split(',').map((m: string) => m.trim())
+        : ['Varios'];
+    }
+
+    this.productService.saveProduct(payload).subscribe({
+      next: () => {
+        this.notify.toast(f.id ? 'Actualizado con éxito' : 'Creado con éxito');
+        this.loadProducts();
+        this.onCancel();
+      },
+      error: (err) => {
+        this.loading = false;
+        this.notify.toast('Error al guardar el producto', 'error');
+      }
+    });
+  }
 
   onCancel() {
     // 1. Reseteamos el formulario a sus valores base    
@@ -268,6 +270,22 @@ onSubmit() {
     // 3. Limpiamos errores visuales de validación
     this.productForm.markAsPristine();
     this.productForm.markAsUntouched();
+  }
+
+  get paginatedProducts() {
+    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.products.slice(startIndex, endIndex);
+  }
+
+  get totalPages(): number {
+    return Math.ceil(this.products.length / this.itemsPerPage);
+  }
+
+  goToPage(page: number) {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+    }
   }
 
 }
