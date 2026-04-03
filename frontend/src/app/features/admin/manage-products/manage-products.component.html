@@ -1,205 +1,220 @@
-<div class="container">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Id</th>
-                <th>Nombre</th>
-                <th>Precio</th>
-                <th>Stock</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (errorMessage) {
-            <p class="text-danger">{{ errorMessage }}</p>
-            } @else if (loading) {
-            <p>Cargando productos...</p>
-            }
-            @for (product of products; track product.id) {
-            <tr>
-                <td>{{ product.id }}</td>
-                <td>{{ product.name }}</td>
-                <td>{{ product.price }}</td>
-                <td>{{ product.stock }}</td>
-                <td>
-                    <button class="btn btn-sm btn-outline-danger" (click)="deleteProduct(product)">
-                        <i class="bi bi-trash"></i> Eliminar
-                    </button>
-                    <button class="btn btn-sm btn-outline-warning" (click)="updateProduct(product)">
-                        <i class="bi bi-pencil"></i> Editar
-                    </button>
-                </td>
-            </tr>
-            }
-        </tbody>
-    </table>
+<div class="container-fluid manage-container animate__animated animate__fadeIn">
+    
+    <div class="table-responsive shadow-sm mb-4">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th class="col-id">ID</th>
+                    <th>Producto</th>
+                    <th>Tipo</th>
+                    <th>Precio</th>
+                    <th class="col-stock">Stock</th>
+                    <th class="text-center col-actions">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (errorMessage) {
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <div class="alert-error-container">{{ errorMessage }}</div>
+                        </td>
+                    </tr>
+                } @else if (loading && products.length === 0) {
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="spinner-border text-oro mb-2"></div>
+                            <p class="loading-label">Sincronizando inventario...</p>
+                        </td>
+                    </tr>
+                }
 
-    <div class="container mt-4">
-        <div class="card shadow">
-            <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center">
-                <h3 class="mb-0">{{ productForm.get('id')?.value ? 'Editar Producto' : 'Nuevo Producto' }}</h3>
-                <span class="badge bg-info text-dark">ID: {{ productForm.get('id')?.value || 'Nuevo' }}</span>
+                @for (product of paginatedProducts; track product.id) {
+                    <tr>
+                        <td class="product-id-cell">#{{ product.id }}</td>
+                        <td>
+                            <span class="product-name">{{ product.name }}</span>
+                        </td>
+                        <td>
+                            <span class="badge" [ngClass]="product.productType === 'tea' ? 'badge-tea' : 'badge-craft'">
+                                <i class="bi" [ngClass]="product.productType === 'tea' ? 'bi-leaf-fill' : 'bi-palette-fill'"></i>
+                                {{ (product.productType || 'N/A') | uppercase }}
+                            </span>
+                        </td>
+                        <td class="product-price">${{ (product.price || 0) | number:'1.2-2' }}</td>
+                        <td>
+                            <div class="stock-wrapper">
+                                <span class="stock-indicator" [ngClass]="(product.stock || 0) > 5 ? 'bg-success' : 'bg-danger'"></span>
+                                <span class="stock-value">{{ product.stock || 0 }}</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <div class="btn-group gap-2 justify-content-center">
+                                <button class="btn btn-action btn-edit" (click)="updateProduct(product)" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </button>
+                                <button class="btn btn-action btn-delete" (click)="deleteProduct(product)" title="Eliminar">
+                                    <i class="bi bi-trash3-fill"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
+        <span class="pagination-info">
+            Mostrando <strong>{{ paginatedProducts.length }}</strong> de <strong>{{ products.length }}</strong> productos
+        </span>
+        
+        <div class="pagination-controls d-flex gap-2">
+            <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <div class="page-numbers d-flex gap-1">
+                @for (p of [].constructor(totalPages); track $index) {
+                    <button class="btn btn-page-number" 
+                            [class.active]="$index + 1 === currentPage"
+                            (click)="goToPage($index + 1)">
+                        {{ $index + 1 }}
+                    </button>
+                }
             </div>
 
-            <div class="card-body">
-                <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">Nombre del Producto<span
-                                    class="text-danger">*</span></label>
-                            <input type="text" formControlName="name" class="form-control"
-                                placeholder="Ej: Té Earl Grey Imperial"
-                                [ngClass]="{'is-invalid': productForm.get('name')?.invalid && productForm.get('name')?.touched}">
-                            @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
-                            <div class="invalid-feedback d-block">
-                                @if (productForm.get('name')?.errors?.['required']) {
-                                El nombre es obligatorio.
-                                }
-                                @if (productForm.get('name')?.errors?.['minlength']) {
-                                Mínimo 3 caracteres.
-                                }
-                            </div>
-                            }
-                        </div>
+            <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0" (click)="goToPage(currentPage + 1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">Tipo<span class="text-danger">*</span></label>
-                            <select formControlName="productType" class="form-select border-primary">
-                                <option value="">Seleccione...</option>
-                                <option value="tea">🍃 Té</option>
-                                <option value="craft">🎨 Artesanía</option>
-                            </select>
-                        </div>
+    <div class="card product-card shadow">
+        <div class="card-header">
+            <h3 class="header-title">
+                <i class="bi" [ngClass]="productForm.get('id')?.value ? 'bi-pencil-fill' : 'bi-plus-circle-fill'"></i>
+                {{ productForm.get('id')?.value ? 'Editar Producto' : 'Nuevo Producto' }}
+            </h3>
+            <span class="badge badge-id">ID: {{ productForm.get('id')?.value || 'NUEVO' }}</span>
+        </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">Precio ($)<span class="text-danger">*</span></label>
-                            <input type="number" formControlName="price" class="form-control"
-                                [ngClass]="{'is-invalid': productForm.get('price')?.invalid && productForm.get('price')?.touched}">
-                            @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
-                            <div class="invalid-feedback d-block">El precio debe ser mayor a 0.</div>
-                            }
-                        </div>
+        <div class="card-body p-4">
+            <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label main-label">Nombre del Producto <span class="text-danger">*</span></label>
+                        <input type="text" formControlName="name" class="form-control custom-input" placeholder="Ej: Té Earl Grey Imperial"
+                            [ngClass]="{'is-invalid': productForm.get('name')?.invalid && productForm.get('name')?.touched}">
                     </div>
 
-                    <div class="row mb-4">
-                        <div class="col-md-9">
-                            <label class="form-label">Descripción</label>
-                            <textarea formControlName="description" class="form-control" rows="2"></textarea>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-bold">Stock Inicial<span class="text-danger">*</span></label>
-                            <input type="number" formControlName="stock" class="form-control"
-                                [ngClass]="{'is-invalid': productForm.get('stock')?.invalid && productForm.get('stock')?.touched}">
-                            @if (productForm.get('stock')?.invalid && productForm.get('stock')?.touched) {
-                            <div class="invalid-feedback d-block">El stock debe ser mayor a 0.</div>
-                            }
-                        </div>
+                    <div class="col-md-3">
+                        <label class="form-label main-label">Tipo <span class="text-danger">*</span></label>
+                        <select formControlName="productType" class="form-select custom-input">
+                            <option value="">Seleccione...</option>
+                            <option value="tea">🍃 Té</option>
+                            <option value="craft">🎨 Artesanía</option>
+                        </select>
                     </div>
 
-                    <hr class="my-4">
+                    <div class="col-md-3">
+                        <label class="form-label main-label">Precio ($) <span class="text-danger">*</span></label>
+                        <input type="number" formControlName="price" class="form-control custom-input">
+                    </div>
+                </div>
 
-                    <div class="row">
-                        <div class="col-md-6 border-end"
-                            [class.opacity-25]="productForm.get('productType')?.value !== 'tea' && productForm.get('productType')?.value !== 'té'">
-                            <h5 class="text-success mb-3"><i class="bi bi-leaf"></i> Detalles del Té</h5>
-                            <div class="row g-2">
-                                <div class="col-6">
-                                    <label class="form-label">Marca</label>
-                                    <input type="text" formControlName="brand" class="form-control form-control-sm">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label fw-bold">Origen<span class="text-danger">*</span></label>
-                                    <input type="text" formControlName="origin" class="form-control form-control-sm"
-                                        [ngClass]="{'is-invalid': productForm.get('origin')?.invalid && productForm.get('origin')?.touched}">
-                                    @if (productForm.get('origin')?.invalid && productForm.get('origin')?.touched) {
-                                    <div class="invalid-feedback d-block">El origen es obligatorio para productos de Té.
-                                    </div>
-                                    }
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Formato</label>
-                                    <input type="text" formControlName="format" class="form-control form-control-sm"
-                                        placeholder="Hojas, Saquitos...">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Peso x Unidad (g)</label>
-                                    <input type="number" formControlName="weightPerUnit"
-                                        class="form-control form-control-sm">
-                                </div>
+                <div class="row g-3 mb-4">
+                    <div class="col-md-9">
+                        <label class="form-label">Descripción</label>
+                        <textarea formControlName="description" class="form-control custom-input" rows="2" placeholder="Breve reseña..."></textarea>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label main-label">Stock Inicial <span class="text-danger">*</span></label>
+                        <input type="number" formControlName="stock" class="form-control custom-input">
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="row g-4">
+                    <div class="col-md-6 tea-section" [class.opacity-inactive]="productForm.get('productType')?.value !== 'tea'">
+                        <h5 class="section-title text-tea mb-3"><i class="bi bi-leaf"></i> Detalles del Té</h5>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label small">Marca</label>
+                                <input type="text" formControlName="brand" class="form-control form-control-sm">
                             </div>
-                            <div class="mt-3 d-flex flex-wrap gap-3">
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" formControlName="hasCaffeine"
-                                        id="caf">
-                                    <label class="form-check-label" for="caf">Cafeína</label>
-                                </div>
-                                <div class="form-check form-switch">
-                                    <input class="form-check-input" type="checkbox" formControlName="isOrganic"
-                                        id="org">
-                                    <label class="form-check-label" for="org">Orgánico</label>
-                                </div>
+                            <div class="col-6">
+                                <label class="form-label small main-label">Origen <span class="text-danger">*</span></label>
+                                <input type="text" formControlName="origin" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Formato</label>
+                                <input type="text" formControlName="format" class="form-control form-control-sm" placeholder="Hojas...">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Peso (g)</label>
+                                <input type="number" formControlName="weightPerUnit" class="form-control form-control-sm">
                             </div>
                         </div>
-
-                        <div class="col-md-6"
-                            [class.opacity-25]="productForm.get('productType')?.value !== 'craft' && productForm.get('productType')?.value !== 'artesanía'">
-                            <h5 class="text-info mb-3"><i class="bi bi-palette"></i> Detalles de Artesanía</h5>
-                            <div class="row g-2">
-                                <div class="col-12">
-                                    <label class="form-label">Artista / Marca</label>
-                                    <input type="text" formControlName="brandArtist"
-                                        class="form-control form-control-sm">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Categoría</label>
-                                    <input type="text" formControlName="category" class="form-control form-control-sm"
-                                        placeholder="Cerámica, Madera...">
-                                </div>
-                                <div class="col-6">
-                                    <label class="form-label">Peso (g)</label>
-                                    <input type="number" formControlName="weight" class="form-control form-control-sm">
-                                </div>
-                                @if (productForm.get('productType')?.value === 'craft') {
-                                <div class="mb-3">
-                                    <label class="form-label fw-bold">Materiales <span
-                                            class="text-danger">*</span></label>
-                                    <input type="text" formControlName="materials" class="form-control"
-                                        placeholder="Ej: Madera, Barniz"
-                                        [ngClass]="{'is-invalid': productForm.get('materials')?.invalid && productForm.get('materials')?.touched}">
-                                    @if (productForm.get('materials')?.invalid && productForm.get('materials')?.touched)
-                                    {
-                                    <div class="invalid-feedback d-block">Debes especificar al menos un material.</div>
-                                    }
-                                </div>
-                                }
+                        <div class="mt-3 d-flex gap-3">
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" formControlName="hasCaffeine" id="caf">
+                                <label class="form-check-label small" for="caf">Cafeína</label>
                             </div>
-                            <div class="mt-3">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" formControlName="isUnique"
-                                        id="uniq">
-                                    <label class="form-check-label" for="uniq">Pieza Única</label>
-                                </div>
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" formControlName="ecoFriendly"
-                                        id="eco">
-                                    <label class="form-check-label" for="eco">Eco-Friendly</label>
-                                </div>
+                            <div class="form-check form-switch">
+                                <input class="form-check-input" type="checkbox" formControlName="isOrganic" id="org">
+                                <label class="form-check-label small" for="org">Orgánico</label>
                             </div>
                         </div>
                     </div>
 
-                    <div class="card-footer bg-light mt-4 d-flex justify-content-end gap-2">
-                        <button type="button" class="btn btn-outline-secondary" (click)="onCancel()">Cancelar</button>
-                        <button type="submit" [disabled]="productForm.invalid || loading" class="btn btn-primary">
-                            @if (loading) {
-                            <span class="spinner-border spinner-border-sm"></span> Guardando...
-                            } @else {
-                            {{ productForm.get('id')?.value ? 'Actualizar' : 'Crear' }}
-                            }
-                        </button>
+                    <div class="col-md-6 craft-section" [class.opacity-inactive]="productForm.get('productType')?.value !== 'craft'">
+                        <h5 class="section-title text-craft mb-3"><i class="bi bi-palette"></i> Detalles de Artesanía</h5>
+                        <div class="row g-2">
+                            <div class="col-12">
+                                <label class="form-label small">Artista / Marca</label>
+                                <input type="text" formControlName="brandArtist" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Categoría</label>
+                                <input type="text" formControlName="category" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label small">Peso (g)</label>
+                                <input type="number" formControlName="weight" class="form-control form-control-sm">
+                            </div>
+                            <div class="col-12 mt-2">
+                                <label class="form-label small main-label">Materiales <span class="text-danger">*</span></label>
+                                <input type="text" formControlName="materials" class="form-control form-control-sm"
+                                    placeholder="Ej: Madera, Barniz"
+                                    [ngClass]="{'is-invalid': productForm.get('materials')?.invalid && productForm.get('materials')?.touched}">
+                            </div>
+                        </div>
+                        <div class="mt-3 d-flex gap-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" formControlName="isUnique" id="uniq">
+                                <label class="form-check-label small" for="uniq">Pieza Única</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" formControlName="ecoFriendly" id="eco">
+                                <label class="form-check-label small" for="eco">Eco-Friendly</label>
+                            </div>
+                        </div>
                     </div>
-                </form>
-            </div>
+                </div>
+
+                <div class="card-footer-custom mt-4 d-flex justify-content-end gap-3">
+                    <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+                    <button type="submit" [disabled]="productForm.invalid || loading" class="btn btn-save shadow-sm">
+                        @if (loading) {
+                            <span class="spinner-border spinner-border-sm me-2"></span> Guardando...
+                        } @else {
+                            <i class="bi bi-check-lg me-1"></i>
+                            {{ productForm.get('id')?.value ? 'Actualizar Producto' : 'Crear Producto' }}
+                        }
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
