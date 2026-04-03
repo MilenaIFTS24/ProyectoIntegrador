@@ -1,25 +1,37 @@
-/* --- ESTRUCTURA Y FONDO --- */
+/* --- ESTRUCTURA Y FONDO TOTAL (Gris de la Paleta) --- */
 :host {
     display: block;
+    /* Expansión total para anular el padding del padre */
+    margin: -10rem -10rem -10rem -10rem !important;
+    padding: 10rem !important;
     background-color: #cbc9c3 !important;
-    min-height: calc(100vh - 85px);
-    padding: 2rem;
+    min-height: 120vh;
+    overflow-x: hidden;
+    position: relative;
 }
 
 .manage-container {
     max-width: 1300px;
     margin: 0 auto;
+    background-color: transparent !important;
 }
 
-/* --- TABLA PREMIUM --- */
-.custom-table {
+/* --- TABLA PREMIUM (Negro y Oro) --- */
+.table-responsive {
+    /* Margen de cortesía para que el Navbar no tape la tabla al scrollear */
+    scroll-margin-top: 120px;
     background-color: #ffffff !important;
     border: 2px solid #000000 !important;
     border-radius: 12px;
     overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.custom-table {
     border-collapse: separate;
     border-spacing: 0;
     width: 100%;
+    margin-bottom: 0;
 }
 
 .custom-table thead {
@@ -35,6 +47,7 @@
     letter-spacing: 1px;
 }
 
+/* Anchos de columna */
 .col-id {
     width: 80px;
 }
@@ -70,12 +83,16 @@
 
 /* --- PAGINACIÓN --- */
 .pagination-wrapper {
-    padding: 0 0.5rem;
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 .pagination-info {
     font-size: 0.9rem;
-    color: #444;
+    color: #333;
+    font-weight: 500;
 }
 
 .btn-pagination {
@@ -118,7 +135,7 @@
     color: var(--color-oro-rico);
 }
 
-/* --- BADGES Y BOTONES ACCIÓN --- */
+/* --- BADGES E INDICADORES --- */
 .badge-tea {
     background-color: rgba(60, 179, 113, 0.15);
     color: #3CB371;
@@ -145,6 +162,7 @@
     font-weight: bold;
 }
 
+/* --- BOTONES DE ACCIÓN (TABLA) --- */
 .btn-action {
     width: 38px;
     height: 38px;
@@ -175,12 +193,16 @@
     color: white;
 }
 
-/* --- FORMULARIO --- */
+/* --- TARJETA DEL FORMULARIO (PRODUCT-CARD) --- */
 .product-card {
+    /* SOLUCIÓN AL NAVBAR: Margen de cortesía para el scroll automático */
+    scroll-margin-top: 120px;
+
     border: 2px solid #000000 !important;
     border-radius: 12px;
     overflow: hidden;
     background: white;
+    margin-bottom: 8rem;
 }
 
 .card-header {
@@ -188,9 +210,6 @@
     color: var(--color-oro-antiguo) !important;
     padding: 1.5rem;
     border-bottom: 2px solid var(--color-oro-antiguo) !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
 }
 
 .header-title {
@@ -206,6 +225,7 @@
     padding: 0.5rem 1rem;
 }
 
+/* --- FORMULARIO Y LABELS --- */
 .main-label {
     font-weight: bold;
     color: #000000;
@@ -216,9 +236,10 @@
 }
 
 .custom-input {
-    border: 1px solid #ccc;
+    border: 1px solid #cccccc;
     border-radius: 8px;
     padding: 0.7rem;
+    transition: all 0.3s;
 }
 
 .custom-input:focus {
@@ -227,6 +248,7 @@
     outline: none;
 }
 
+/* --- SECCIONES TÉ Y ARTESANÍA --- */
 .tea-section {
     border-left: 4px solid #3CB371;
     padding-left: 1.5rem;
@@ -259,6 +281,7 @@
     margin: 2rem 0;
 }
 
+/* --- BOTONES FINALES --- */
 .btn-save {
     background-color: var(--color-celeste-ahumado) !important;
     color: white !important;
@@ -275,6 +298,7 @@
     background: transparent;
 }
 
+/* --- ESTADOS AUXILIARES --- */
 .opacity-inactive {
     opacity: 0.25;
     filter: grayscale(1);
@@ -290,6 +314,7 @@
     padding: 1rem;
 }
 
+/* --- RESPONSIVE --- */
 @media (max-width: 768px) {
     .col-id {
         display: none;
