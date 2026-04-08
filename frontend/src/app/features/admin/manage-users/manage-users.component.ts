@@ -3,6 +3,7 @@ import { FormBuilder, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { User } from '../../../core/models/user.model';
 import { UserService } from '../../../core/services/user.service';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-manage-users',
@@ -14,11 +15,10 @@ import { UserService } from '../../../core/services/user.service';
 export class ManageUsersComponent implements OnInit {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  private notify = inject(NotificationService);
 
   public users: User[] = [];
   public loading: boolean = false;
-
-  // Paginación
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
   private readonly NAVBAR_OFFSET = 110;
@@ -40,7 +40,6 @@ export class ManageUsersComponent implements OnInit {
     this.loadUsers();
   }
 
-  // --- PERSISTENCIA: OBTENER TODOS ---
   loadUsers(): void {
     this.loading = true;
     this.userService.getUsers().subscribe({
@@ -48,14 +47,13 @@ export class ManageUsersComponent implements OnInit {
         this.users = data;
         this.loading = false;
       },
-      error: (err) => {
-        console.error('Error al cargar usuarios:', err);
+      error: () => {
         this.loading = false;
+        this.notify.toast('Error al cargar usuarios', 'error');
       }
     });
   }
 
-  // --- LÓGICA DE PAGINACIÓN ---
   get paginatedUsers(): User[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.users.slice(start, start + this.itemsPerPage);
@@ -72,107 +70,65 @@ export class ManageUsersComponent implements OnInit {
     }
   }
 
-  // --- CRUD: PREPARAR EDICIÓN ---
-  editUser(user: User): void {
-    // 1. Habilitamos todo para limpiar el estado previo
-    this.userForm.enable();
-    this.userForm.reset();
-
-    // 2. Cargamos los datos (ponemos un hash falso en password para cumplir el formulario)
-    this.userForm.patchValue({
-      ...user,
-      password: 'PROTECTED_PASSWORD' 
-    });
-
-    // 3. Bloqueamos el campo contraseña para edición (Regla de negocio)
-    const passwordControl = this.userForm.get('password');
-    passwordControl?.disable();
-    passwordControl?.setValidators(null);
-    passwordControl?.updateValueAndValidity();
-
-    this.scrollToElement('.user-card');
-  }
-
-  // --- CRUD: PROCESAR FORMULARIO ---
   onSubmit(): void {
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
       return;
     }
 
-    // Usamos getRawValue para incluir el 'id' que puede estar deshabilitado
+    this.loading = true;
     const formData = this.userForm.getRawValue() as User;
-    const isEdit = !!formData.id;
 
-    if (isEdit) {
-      this.updateUserLogic(formData);
-    } else {
-      this.createUserLogic(formData);
-    }
-  }
-
-  private createUserLogic(userData: User): void {
-    this.loading = true;
-    // Omitimos el ID para que Sequelize lo autogenere
-    const { id, ...newUser } = userData;
-
-    this.userService.addUser(newUser).subscribe({
-      next: (res) => {
-        // Actualización inmutable para refrescar la tabla al instante
-        this.users = [...this.users, res];
-        this.onCancel();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al crear usuario:', err);
-        this.loading = false;
-      }
-    });
-  }
-
-  private updateUserLogic(userData: User): void {
-    this.loading = true;
-    // Quitamos password para NO sobreescribir la real con el valor ficticio del formulario
-    const { password, ...dataToSave } = userData;
-
-    this.userService.updateUser(userData.id!, dataToSave).subscribe({
-      next: (res) => {
-        // Reemplazamos solo el usuario editado en la lista local
-        this.users = this.users.map(u => u.id === res.id ? res : u);
-        this.onCancel();
-        this.loading = false;
-      },
-      error: (err) => {
-        console.error('Error al actualizar usuario:', err);
-        this.loading = false;
-      }
-    });
-  }
-
-  // --- CRUD: ELIMINAR ---
-  deleteUser(id: number): void {
-    if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-      this.userService.deleteUser(id).subscribe({
+    if (formData.id) {
+      const { password, ...dataToSave } = formData;
+      this.userService.updateUser(formData.id, dataToSave).subscribe({
         next: () => {
-          this.users = this.users.filter(u => u.id !== id);
+          this.notify.toast('Usuario actualizado');
+          this.loadUsers(); // Recarga automática
+          this.onCancel();
         },
-        error: (err) => console.error('Error al eliminar:', err)
+        error: () => (this.loading = false)
+      });
+    } else {
+      this.userService.addUser(formData).subscribe({
+        next: () => {
+          this.notify.toast('Usuario creado');
+          this.loadUsers(); // Recarga automática
+          this.onCancel();
+        },
+        error: () => (this.loading = false)
       });
     }
   }
 
-  // --- LIMPIEZA Y UI ---
+  editUser(user: User): void {
+    this.userForm.enable();
+    this.userForm.reset();
+    this.userForm.patchValue({ ...user, password: 'PROTECTED_PASSWORD' });
+    this.userForm.get('password')?.disable();
+    this.scrollToElement('.user-card');
+  }
+
+  deleteUser(id: number | undefined): void {
+    if (!id) return;
+    this.notify.confirm('¿Eliminar usuario?', 'Esta acción no se puede deshacer').then(res => {
+      if (res.isConfirmed) {
+        this.userService.deleteUser(id).subscribe({
+          next: () => {
+            this.notify.toast('Eliminado correctamente');
+            this.loadUsers();
+          }
+        });
+      }
+    });
+  }
+
   onCancel(): void {
     this.userForm.enable();
-    this.userForm.reset({
-      role: 'user',
-      isEnabled: true,
-      isEmailVerified: false
-    });
-
-    // Restauramos validadores obligatorios para futuros registros nuevos
+    this.userForm.reset({ role: 'user', isEnabled: true, isEmailVerified: false });
     this.userForm.get('password')?.setValidators([Validators.required, Validators.minLength(6)]);
     this.userForm.get('password')?.updateValueAndValidity();
+    this.loading = false;
   }
 
   private scrollToElement(selector: string): void {

@@ -1,9 +1,9 @@
 :root {
     /* Acentos */
-    --color-oro-rico: #DAA520;             /* Títulos H2 */
-    --color-oro-antiguo: #D4A559;          /* Botones Primarios (CTA) */
-    --color-bronce-profundo: #8B6E4A;      /* Enlaces de Tarjetas */
-    --color-celeste-ahumado: #6082B6;      /* Botones Secundarios */
+    --color-oro-rico: #DAA520;
+    --color-oro-antiguo: #D4A559;
+    --color-bronce-profundo: #8B6E4A;
+    --color-celeste-ahumado: #6082B6;
 
     /* Colores de Feedback */
     --color-feedback-error: #B22222;
@@ -11,14 +11,28 @@
     --color-feedback-alerta: #FFD700;
 }
 
-body {
-  background-color: #cbc9c3 !important;
-  color: #000000; /* Texto en Negro para máxima legibilidad */
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background-color: #cbc9c3 !important;
+    color: #000000;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* EL MOTOR DEL FONDO: Flexbox en la raíz */
+app-root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Ocupa al menos el alto de la pantalla */
+    background-color: #cbc9c3 !important;
+}
+
+/* El contenedor que envuelve al router-outlet */
 .main-content {
-  background-color: #cbc9c3;
-  min-height: 100vh;
+    flex: 1; /* Esto estira el div para llenar el espacio vacío */
+    display: flex;
+    flex-direction: column;
+    background-color: #cbc9c3 !important;
+    width: 100%;
 }

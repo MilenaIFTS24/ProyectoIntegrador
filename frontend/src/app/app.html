@@ -1,7 +1,11 @@
 @if (authService.isLoggedIn()) {
   <app-navbar />
 }
-<router-outlet />
+
+<div class="main-content">
+  <router-outlet />
+</div>
+
 @if (authService.isLoggedIn()) {
   <app-footer />
 }
