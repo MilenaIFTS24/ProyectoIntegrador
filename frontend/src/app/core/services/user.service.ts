@@ -22,7 +22,7 @@ export class UserService {
     return this._apiService.post<User>('users', user);
   };
 
-  updateUser(user: User): Observable<User> {
+  updateUser(id: number, user: Partial<User>): Observable<User> {
     return this._apiService.put<User>(`users/${user.id}`, user);
   };
 

@@ -1,1 +1,156 @@
-<p>manage-users works!</p>
+<div class="container-fluid manage-container animate__animated animate__fadeIn">
+  
+  <div class="table-responsive mb-4 shadow-sm">
+    <table class="table custom-table">
+      <thead>
+        <tr>
+          <th class="col-id">ID</th>
+          <th>Nombre Completo</th>
+          <th>Email</th>
+          <th>Rol</th>
+          <th>Estado</th>
+          <th class="text-center col-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (user of paginatedUsers; track user.id) {
+          <tr>
+            <td class="product-id-cell">#{{ user.id }}</td>
+            <td><span class="user-name">{{ user.fullName }}</span></td>
+            <td>{{ user.email }}</td>
+            <td>
+              <span class="badge" [ngClass]="user.role === 'admin' ? 'badge-admin' : 'badge-user'">
+                {{ user.role | uppercase }}
+              </span>
+            </td>
+            <td>
+              <div class="stock-wrapper">
+                <span class="stock-indicator" [ngClass]="user.isEnabled ? 'bg-success' : 'bg-danger'"></span>
+                <span class="stock-value">{{ user.isEnabled ? 'Habilitado' : 'Suspendido' }}</span>
+              </div>
+            </td>
+            <td class="text-center">
+              <div class="btn-group gap-2 justify-content-center">
+                <button class="btn btn-action btn-edit" (click)="editUser(user)">
+                  <i class="bi bi-pencil-square"></i>
+                </button>
+                <button class="btn btn-action btn-delete">
+                  <i class="bi bi-trash3-fill"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
+    <span class="pagination-info">
+      Mostrando <strong>{{ paginatedUsers.length }}</strong> de <strong>{{ users.length }}</strong> usuarios
+    </span>
+    <div class="pagination-controls d-flex gap-2">
+      <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+      <div class="page-numbers d-flex gap-1">
+        @for (p of [].constructor(totalPages); track $index) {
+          <button class="btn btn-page-number" 
+                  [class.active]="$index + 1 === currentPage" 
+                  (click)="goToPage($index + 1)">
+            {{ $index + 1 }}
+          </button>
+        }
+      </div>
+      <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0" (click)="goToPage(currentPage + 1)">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <div class="card user-card shadow">
+    <div class="card-header">
+      <h3 class="header-title">
+        <i class="bi" [ngClass]="userForm.get('id')?.value ? 'bi-person-gear' : 'bi-person-plus-fill'"></i>
+        {{ userForm.get('id')?.value ? 'Editar Usuario' : 'Nuevo Usuario' }}
+      </h3>
+      <span class="badge badge-id">ID: {{ userForm.get('id')?.value || 'NUEVO' }}</span>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label main-label">Nombre Completo <span class="text-danger">*</span></label>
+            <input type="text" formControlName="fullName" class="form-control custom-input" 
+                   [class.is-invalid]="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched">
+            @if (userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched) {
+              <div class="error-message">El nombre es obligatorio (mín. 3 caracteres)</div>
+            }
+          </div>
+          <div class="col-md-6">
+            <label class="form-label main-label">Email <span class="text-danger">*</span></label>
+            <input type="email" formControlName="email" class="form-control custom-input"
+                   [class.is-invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
+            @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
+              <div class="error-message">Ingresa un correo electrónico válido</div>
+            }
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label" [class.main-label]="userForm.get('password')?.enabled">
+              Contraseña 
+              @if (userForm.get('password')?.enabled) { <span class="text-danger">*</span> } @else { (Protegida) }
+            </label>
+            <input type="password" formControlName="password" class="form-control custom-input"
+                   [class.is-invalid]="userForm.get('password')?.invalid && userForm.get('password')?.touched"
+                   [placeholder]="userForm.get('password')?.disabled ? '********' : 'Mín. 6 caracteres'">
+            @if (userForm.get('password')?.disabled) {
+              <small class="text-muted d-block mt-1"><i class="bi bi-shield-lock"></i> Solo modificable por el usuario.</small>
+            } @else if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
+              <div class="error-message">La contraseña debe tener al menos 6 caracteres</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label main-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
+            <input type="date" formControlName="birthDate" class="form-control custom-input"
+                   [class.is-invalid]="userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched">
+            @if (userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched) {
+              <div class="error-message">La fecha es obligatoria</div>
+            }
+          </div>
+          <div class="col-md-4">
+            <label class="form-label main-label">Rol <span class="text-danger">*</span></label>
+            <select formControlName="role" class="form-select custom-input">
+              <option value="user">User</option>
+              <option value="admin">Admin</option>
+            </select>
+          </div>
+        </div>
+
+        <hr class="divider">
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">Teléfono</label>
+            <input type="text" formControlName="phone" class="form-control custom-input" placeholder="+54...">
+          </div>
+          <div class="col-md-8">
+            <label class="form-label">Dirección Particular</label>
+            <input type="text" formControlName="address" class="form-control custom-input" placeholder="Calle, Ciudad...">
+          </div>
+        </div>
+
+        <div class="d-flex justify-content-end gap-3 mt-4">
+          <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+          <button type="submit" [disabled]="userForm.invalid" class="btn btn-save">
+            {{ userForm.get('id')?.value ? 'Actualizar Usuario' : 'Crear Usuario' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
