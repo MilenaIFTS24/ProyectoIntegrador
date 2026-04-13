@@ -20,7 +20,6 @@ const Product = sequelize.define('Product', {
 
     // --- Atributos específicos de Tés ---
     brand: { type: DataTypes.STRING }, // brand para tés
-    type: { type: DataTypes.STRING }, // "en polvo", "hebras"
     origin: { type: DataTypes.STRING },
     hasCaffeine: { type: DataTypes.BOOLEAN, defaultValue: false },
     isOrganic: { type: DataTypes.BOOLEAN, defaultValue: false },
@@ -31,7 +30,7 @@ const Product = sequelize.define('Product', {
     // --- Atributos específicos de Artesanías ---
     brandArtist: { type: DataTypes.STRING }, // brandArtist para artesanías
     category: { type: DataTypes.STRING }, // "accesorios", "vajilla"
-    creationDate: { type: DataTypes.STRING }, // Podría ser DATE, pero mantengo STRING por tu ejemplo
+    creationDate: { type: DataTypes.STRING }, // Podría ser DATE, pero mantengo STRING
     weight: { type: DataTypes.FLOAT },
     isUnique: { type: DataTypes.BOOLEAN, defaultValue: false },
     materials: { 

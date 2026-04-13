@@ -6,9 +6,9 @@ export const routes: Routes = [
     // --- RUTAS PÚBLICAS ---
     { path: "login", loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent) },
     { path: "register", loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent) },
-    { path: "", loadComponent: () => import('./features/home/home-page/home-page.component').then(m => m.HomePageComponent) },
+    { path: "", loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent) },
     
-    // ... resto de rutas públicas (contacto, products, etc) igual ...
+    // ... resto de rutas públicas (contacto, products, etc)
 
     // --- RUTA DE ADMINISTRACIÓN ---
     {
@@ -39,6 +39,6 @@ export const routes: Routes = [
         ]
     },
 
-    // Si no encuentra la ruta, al HOME (público)
+    // Si no encuentra la ruta, redigire al home
     { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

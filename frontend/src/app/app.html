@@ -6,6 +6,6 @@
   <router-outlet />
 </div>
 
-@if (authService.isLoggedIn()) {
+@if (authService.isLoggedIn() && showFooter()) {
   <app-footer />
 }

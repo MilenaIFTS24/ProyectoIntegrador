@@ -19,9 +19,11 @@ export class ManageProductsComponent implements OnInit {
 
   public products: Product[] = [];
   public loading: boolean = true;
+  public maxDate: string = '';
   public errorMessage: string = '';
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
+  private readonly NAVBAR_OFFSET = 110;
 
   public productForm = this.fb.group({
     id: [null as number | null],
@@ -32,9 +34,8 @@ export class ManageProductsComponent implements OnInit {
     image: [''],
     productType: ['', Validators.required],
 
-    // Atributos de Té
+    // Atributos de Té (Se eliminó 'type')
     brand: ['', [Validators.maxLength(50)]],
-    type: [''],
     origin: [''],
     hasCaffeine: [false],
     isOrganic: [false],
@@ -60,8 +61,19 @@ export class ManageProductsComponent implements OnInit {
     });
 
     this.toggleFields('');
+    this.setupUniqueProductListener();
+    this.calculateMaxDate();
   }
 
+  private calculateMaxDate(): void {
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = (today.getMonth() + 1).toString().padStart(2, '0');
+    const day = today.getDate().toString().padStart(2, '0');
+    
+    this.maxDate = `${year}-${month}-${day}`;
+  }
+  
   loadProducts(): void {
     this.loading = true;
     this.productService.getProducts().subscribe({
@@ -77,12 +89,24 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  private setupUniqueProductListener(): void {
+    this.productForm.get('isUnique')?.valueChanges.subscribe((isUnique: boolean | null) => {
+      const stockControl = this.productForm.get('stock');
+      if (!!isUnique) {
+        this.productForm.patchValue({ stock: 1 });
+        stockControl?.disable();
+      } else {
+        stockControl?.enable();
+      }
+    });
+  }
+
   toggleFields(type: string | null | undefined): void {
     const val = type ? type.toLowerCase().trim() : '';
     const esTe = val === 'tea' || val === 'té';
     const esArtesania = val === 'craft' || val === 'artesanía';
 
-    const camposTe = ['brand', 'type', 'origin', 'format', 'weightPerUnit'];
+    const camposTe = ['brand', 'origin', 'format', 'weightPerUnit'];
     const camposArtesania = ['brandArtist', 'category', 'weight', 'materials'];
 
     [...camposTe, ...camposArtesania].forEach(name => {
@@ -112,18 +136,16 @@ export class ManageProductsComponent implements OnInit {
 
   updateProduct(product: Product) {
     this.productForm.reset();
+    this.productForm.get('stock')?.enable();
 
     const apiToUiMap: Record<string, string> = { 'tea': 'tea', 'craft': 'craft' };
     const uiType = apiToUiMap[product.productType] || 'tea';
 
     this.toggleFields(uiType);
 
-    let materialsText = '';
-    if (product.materials && Array.isArray(product.materials)) {
-      materialsText = product.materials.join(', ');
-    } else {
-      materialsText = (product.materials as any) || '';
-    }
+    let materialsText = product.materials && Array.isArray(product.materials)
+      ? product.materials.join(', ')
+      : (product.materials as any) || '';
 
     this.productForm.patchValue({
       ...product,
@@ -131,10 +153,13 @@ export class ManageProductsComponent implements OnInit {
     } as any);
 
     this.productForm.get('productType')?.setValue(product.productType, { emitEvent: false });
-    this.notify.toast(`Editando: ${product.name}`, 'info');
 
-    // SCROLL AL FORMULARIO
-    document.querySelector('.product-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    if (product.isUnique) {
+      this.productForm.get('stock')?.disable();
+    }
+
+    this.notify.toast(`Editando: ${product.name}`, 'info');
+    this.scrollTo('.product-card');
   }
 
   onSubmit() {
@@ -162,7 +187,6 @@ export class ManageProductsComponent implements OnInit {
     if (isTea) {
       payload.brand = f.brand || '';
       payload.origin = f.origin || '';
-      payload.type = f.type || '';
       payload.format = f.format || '';
       payload.weightPerUnit = f.weightPerUnit || 0;
       payload.hasCaffeine = !!f.hasCaffeine;
@@ -174,6 +198,7 @@ export class ManageProductsComponent implements OnInit {
       payload.weight = f.weight || 0;
       payload.isUnique = !!f.isUnique;
       payload.ecoFriendly = !!f.ecoFriendly;
+      payload.creationDate = f.creationDate || '';
       payload.materials = f.materials ? f.materials.split(',').map(m => m.trim()) : [];
     }
 
@@ -182,8 +207,7 @@ export class ManageProductsComponent implements OnInit {
         this.notify.toast(f.id ? 'Actualizado con éxito' : 'Creado con éxito');
         this.loadProducts();
         this.onCancel();
-        // SCROLL A LA TABLA
-        document.querySelector('.custom-table')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        this.scrollTo('.custom-table');
       },
       error: () => {
         this.loading = false;
@@ -207,6 +231,7 @@ export class ManageProductsComponent implements OnInit {
   }
 
   onCancel() {
+    this.productForm.get('stock')?.enable();
     this.productForm.reset({
       id: null,
       name: '',
@@ -222,6 +247,17 @@ export class ManageProductsComponent implements OnInit {
     this.toggleFields('');
     this.productForm.markAsPristine();
     this.productForm.markAsUntouched();
+    this.loading = false;
+  }
+
+  private scrollTo(selector: string): void {
+    setTimeout(() => {
+      const element = document.querySelector(selector);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => window.scrollBy(0, -this.NAVBAR_OFFSET), 300);
+      }
+    }, 100);
   }
 
   get paginatedProducts() {
@@ -236,6 +272,7 @@ export class ManageProductsComponent implements OnInit {
   goToPage(page: number) {
     if (page >= 1 && page <= this.totalPages) {
       this.currentPage = page;
+      this.scrollTo('.custom-table');
     }
   }
 }

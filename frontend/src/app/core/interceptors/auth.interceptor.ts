@@ -5,40 +5,58 @@ import { catchError, throwError } from "rxjs";
 import { NotificationService } from "../services/notification.service";
 import { AuthService } from "../services/auth.service";
 
+/**
+ * Interceptor encargado de adjuntar el token JWT a las peticiones 
+ * y manejar globalmente los errores de autenticación/autorización.
+ */
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('userToken');
   const router = inject(Router);
   const notify = inject(NotificationService);
   const authService = inject(AuthService);
 
-  // --- PASO 0: BYPASS PARA LOGIN ---
-  // Si la petición es para loguearse, NO inyectamos token y NO capturamos el 401 globalmente
+  // --- 1. BYPASS PARA RUTAS PÚBLICAS O DE AUTH ---
+  // Si la petición es para el login, no intervenimos para evitar bucles de redirección
   if (req.url.includes('auth/login')) {
     return next(req);
   }
 
   let cloned = req;
 
-  // 1. Añadir el Token si existe (Para el resto de las rutas)
+  // --- 2. INYECCIÓN DEL TOKEN ---
+  // Si existe un token almacenado, lo clonamos en la cabecera de la petición
   if (token) {
     cloned = req.clone({
-      setHeaders: { Authorization: `Bearer ${token}` }
+      setHeaders: {
+        Authorization: `Bearer ${token}`
+      }
     });
   }
 
-  // 2. Procesar la petición y capturar errores globales
+  // --- 3. PROCESAMIENTO Y MANEJO DE ERRORES ---
   return next(cloned).pipe(
     catchError((error: HttpErrorResponse) => {
-      if (error.status === 401) {
-        // Solo llegamos aquí si NO es la ruta de login
-        notify.toast('Sesión expirada. Por favor, ingresa de nuevo.', 'error');
-        authService.logout();
-        router.navigate(['/login']);
-      }
-      else if (error.status === 403) {
-        notify.toast('No tienes permisos para realizar esta acción.', 'error');
+      
+      // 401: Unauthorized (Token inválido o ausente)
+      // 403: Forbidden (Token expirado o falta de roles necesarios)
+      if (error.status === 401 || error.status === 403) {
+        
+        // Ejecutamos la limpieza solo si no estamos ya en la página de login
+        // para evitar múltiples mensajes por una sola sesión caída.
+        if (!req.url.includes('auth/login')) {
+          
+          notify.toast('Su sesión ha expirado o no tiene permisos. Por favor, reingrese.', 'error');
+          
+          // Limpia el localStorage y el estado del usuario en el servicio
+          authService.logout(); 
+
+          // Redirección forzada al login
+          router.navigate(['/auth/login']);
+        }
       }
 
+      // Re-lanzamos el error para que el componente que hizo la petición 
+      // también pueda manejarlo si es necesario (ej: apagar un spinner)
       return throwError(() => error);
     })
   );

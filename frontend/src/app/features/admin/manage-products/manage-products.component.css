@@ -67,17 +67,14 @@
 }
 
 .product-id-cell {
-    font-weight: bold;
     color: #6c757d;
 }
 
 .product-name {
-    font-weight: bold;
     color: #000000;
 }
 
 .product-price {
-    font-weight: bold;
     color: #000000;
 }
 
@@ -194,10 +191,8 @@
 }
 
 /* --- TARJETA DEL FORMULARIO (PRODUCT-CARD) --- */
-.product-card {
-    /* SOLUCIÓN AL NAVBAR: Margen de cortesía para el scroll automático */
+.product-card {    
     scroll-margin-top: 120px;
-
     border: 2px solid #000000 !important;
     border-radius: 12px;
     overflow: hidden;

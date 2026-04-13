@@ -1,5 +1,5 @@
 <div class="container-fluid manage-container animate__animated animate__fadeIn">
-    
+
     <div class="table-responsive shadow-sm mb-4">
         <table class="table custom-table">
             <thead>
@@ -14,50 +14,75 @@
             </thead>
             <tbody>
                 @if (errorMessage) {
-                    <tr><td colspan="6" class="text-center py-4"><div class="alert-error-container">{{ errorMessage }}</div></td></tr>
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="alert-error-container">{{ errorMessage }}</div>
+                    </td>
+                </tr>
                 } @else if (loading && products.length === 0) {
-                    <tr><td colspan="6" class="text-center py-5"><div class="spinner-border text-oro"></div></td></tr>
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <div class="spinner-border text-oro"></div>
+                    </td>
+                </tr>
                 }
 
                 @for (product of paginatedProducts; track product.id) {
-                    <tr>
-                        <td class="product-id-cell">#{{ product.id }}</td>
-                        <td><span class="product-name">{{ product.name }}</span></td>
-                        <td>
-                            <span class="badge" [ngClass]="product.productType === 'tea' ? 'badge-tea' : 'badge-craft'">
-                                <i class="bi" [ngClass]="product.productType === 'tea' ? 'bi-leaf-fill' : 'bi-palette-fill'"></i>
-                                {{ (product.productType || 'N/A') | uppercase }}
-                            </span>
-                        </td>
-                        <td class="product-price">${{ (product.price || 0) | number:'1.2-2' }}</td>
-                        <td>
-                            <div class="stock-wrapper">
-                                <span class="stock-indicator" [ngClass]="(product.stock || 0) > 5 ? 'bg-success' : 'bg-danger'"></span>
-                                <span class="stock-value">{{ product.stock || 0 }}</span>
-                            </div>
-                        </td>
-                        <td class="text-center">
-                            <div class="btn-group gap-2 justify-content-center">
-                                <button class="btn btn-action btn-edit" (click)="updateProduct(product)"><i class="bi bi-pencil-square"></i></button>
-                                <button class="btn btn-action btn-delete" (click)="deleteProduct(product)"><i class="bi bi-trash3-fill"></i></button>
-                            </div>
-                        </td>
-                    </tr>
+                <tr>
+                    <td class="product-id-cell">#{{ product.id }}</td>
+                    <td><span class="product-name">{{ product.name }}</span></td>
+                    <td>
+                        <span class="badge" [ngClass]="product.productType === 'tea' ? 'badge-tea' : 'badge-craft'">
+                            <i class="bi"
+                                [ngClass]="product.productType === 'tea' ? 'bi-leaf-fill' : 'bi-palette-fill'"></i>
+                            {{ (product.productType || 'N/A') | uppercase }}
+                        </span>
+                    </td>
+                    <td class="product-price">${{ (product.price || 0) | number:'1.2-2' }}</td>
+                    <td>
+                        <div class="stock-wrapper">
+                            <span class="stock-indicator"
+                                [ngClass]="(product.stock || 0) > 5 ? 'bg-success' : 'bg-danger'"></span>
+                            <span class="stock-value">{{ product.stock || 0 }}</span>
+                        </div>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group gap-2 justify-content-center">
+                            <button type="button" class="btn btn-action btn-edit" (click)="updateProduct(product)"
+                                title="Editar">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            <button type="button" class="btn btn-action btn-delete" (click)="deleteProduct(product)"
+                                title="Eliminar">
+                                <i class="bi bi-trash3-fill"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
                 }
             </tbody>
         </table>
     </div>
 
     <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
-        <span class="pagination-info">Mostrando <strong>{{ paginatedProducts.length }}</strong> de <strong>{{ products.length }}</strong></span>
+        <span class="pagination-info">Mostrando <strong>{{ paginatedProducts.length }}</strong> de <strong>{{
+                products.length }}</strong></span>
         <div class="pagination-controls d-flex gap-2">
-            <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)"><i class="bi bi-chevron-left"></i></button>
+            <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
             <div class="page-numbers d-flex gap-1">
                 @for (p of [].constructor(totalPages); track $index) {
-                    <button class="btn btn-page-number" [class.active]="$index + 1 === currentPage" (click)="goToPage($index + 1)">{{ $index + 1 }}</button>
+                <button class="btn btn-page-number" [class.active]="$index + 1 === currentPage"
+                    (click)="goToPage($index + 1)">
+                    {{ $index + 1 }}
+                </button>
                 }
             </div>
-            <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0" (click)="goToPage(currentPage + 1)"><i class="bi bi-chevron-right"></i></button>
+            <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0"
+                (click)="goToPage(currentPage + 1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
         </div>
     </div>
 
@@ -72,13 +97,14 @@
 
         <div class="card-body p-4">
             <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+
                 <div class="row g-3 mb-4">
                     <div class="col-md-6">
-                        <label class="form-label main-label">Nombre del Producto <span class="text-danger">*</span></label>
-                        <input type="text" formControlName="name" class="form-control custom-input" placeholder="Ej: Té Earl Grey Imperial"
+                        <label class="form-label main-label">Nombre del Producto <span
+                                class="text-danger">*</span></label>
+                        <input type="text" formControlName="name" class="form-control custom-input"
                             [ngClass]="{'is-invalid': productForm.get('name')?.invalid && productForm.get('name')?.touched}">
                     </div>
-
                     <div class="col-md-3">
                         <label class="form-label main-label">Tipo <span class="text-danger">*</span></label>
                         <select formControlName="productType" class="form-select custom-input">
@@ -87,7 +113,6 @@
                             <option value="craft">🎨 Artesanía</option>
                         </select>
                     </div>
-
                     <div class="col-md-3">
                         <label class="form-label main-label">Precio ($) <span class="text-danger">*</span></label>
                         <input type="number" formControlName="price" class="form-control custom-input">
@@ -97,18 +122,25 @@
                 <div class="row g-3 mb-4">
                     <div class="col-md-9">
                         <label class="form-label">Descripción</label>
-                        <textarea formControlName="description" class="form-control custom-input" rows="2" placeholder="Breve reseña..."></textarea>
+                        <textarea formControlName="description" class="form-control custom-input" rows="2"></textarea>
                     </div>
                     <div class="col-md-3">
                         <label class="form-label main-label">Stock Inicial <span class="text-danger">*</span></label>
-                        <input type="number" formControlName="stock" class="form-control custom-input">
+                        <input type="number" formControlName="stock" class="form-control custom-input"
+                            [class.opacity-50]="productForm.get('isUnique')?.value">
+                        @if (productForm.get('isUnique')?.value) {
+                        <small class="text-primary d-block mt-1 animate__animated animate__fadeIn">
+                            <i class="bi bi-info-circle"></i> Pieza única.
+                        </small>
+                        }
                     </div>
                 </div>
 
                 <hr class="divider">
 
                 <div class="row g-4">
-                    <div class="col-md-6 tea-section" [class.opacity-inactive]="productForm.get('productType')?.value !== 'tea'">
+                    <div class="col-md-6 tea-section"
+                        [class.opacity-inactive]="productForm.get('productType')?.value !== 'tea'">
                         <h5 class="section-title text-tea mb-3"><i class="bi bi-leaf"></i> Detalles del Té</h5>
                         <div class="row g-2">
                             <div class="col-6">
@@ -116,7 +148,8 @@
                                 <input type="text" formControlName="brand" class="form-control form-control-sm">
                             </div>
                             <div class="col-6">
-                                <label class="form-label small main-label">Origen <span class="text-danger">*</span></label>
+                                <label class="form-label small main-label">Origen <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" formControlName="origin" class="form-control form-control-sm">
                             </div>
                             <div class="col-6">
@@ -125,13 +158,35 @@
                             </div>
                             <div class="col-6">
                                 <label class="form-label small">Peso (g)</label>
-                                <input type="number" formControlName="weightPerUnit" class="form-control form-control-sm">
+                                <input type="number" formControlName="weightPerUnit"
+                                    class="form-control form-control-sm">
+                            </div>
+
+                            <div class="col-12 mt-3 d-flex flex-column gap-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="hasCaffeine"
+                                        id="cafSwitch">
+                                    <label class="form-check-label small" for="cafSwitch">Contiene Cafeína</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="isOrganic"
+                                        id="orgSwitch">
+                                    <label class="form-check-label small" for="orgSwitch">Producto Orgánico</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="isFairTrade"
+                                        id="fairSwitch">
+                                    <label class="form-check-label small" for="fairSwitch">Comercio Justo (Fair
+                                        Trade)</label>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-6 craft-section" [class.opacity-inactive]="productForm.get('productType')?.value !== 'craft'">
-                        <h5 class="section-title text-craft mb-3"><i class="bi bi-palette"></i> Detalles de Artesanía</h5>
+                    <div class="col-md-6 craft-section"
+                        [class.opacity-inactive]="productForm.get('productType')?.value !== 'craft'">
+                        <h5 class="section-title text-craft mb-3"><i class="bi bi-palette"></i> Detalles de Artesanía
+                        </h5>
                         <div class="row g-2">
                             <div class="col-12">
                                 <label class="form-label small">Artista / Marca</label>
@@ -142,21 +197,46 @@
                                 <input type="text" formControlName="category" class="form-control form-control-sm">
                             </div>
                             <div class="col-6">
+                                <label class="form-label small">Fecha de Creación</label>
+                                <input type="date" formControlName="creationDate" [max]="maxDate"
+                                    class="form-control form-control-sm"
+                                    [class.is-invalid]="productForm.get('creationDate')?.invalid && productForm.get('creationDate')?.touched">
+                            </div>
+                            <div class="col-6">
                                 <label class="form-label small">Peso (g)</label>
                                 <input type="number" formControlName="weight" class="form-control form-control-sm">
                             </div>
                             <div class="col-12 mt-2">
-                                <label class="form-label small main-label">Materiales <span class="text-danger">*</span></label>
+                                <label class="form-label small main-label">Materiales <span
+                                        class="text-danger">*</span></label>
                                 <input type="text" formControlName="materials" class="form-control form-control-sm">
+                            </div>
+
+                            <div class="col-12 mt-3 d-flex flex-column gap-2">
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="isUnique"
+                                        id="unqSwitch">
+                                    <label class="form-check-label small" for="unqSwitch">Pieza
+                                        única</label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" formControlName="ecoFriendly"
+                                        id="ecoSwitch">
+                                    <label class="form-check-label small" for="ecoSwitch">
+                                        Eco-Friendly
+                                    </label>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="card-footer-custom mt-4 d-flex justify-content-end gap-3">
-                    <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+                    <button type="button" class="btn btn-cancel" (click)="onCancel()"
+                        [disabled]="loading">Cancelar</button>
                     <button type="submit" [disabled]="productForm.invalid || loading" class="btn btn-save">
-                        {{ productForm.get('id')?.value ? 'Actualizar Producto' : 'Crear Producto' }}
+                        {{ loading ? 'Procesando...' : (productForm.get('id')?.value ? 'Actualizar Producto' : 'Crear
+                        Producto') }}
                     </button>
                 </div>
             </form>
