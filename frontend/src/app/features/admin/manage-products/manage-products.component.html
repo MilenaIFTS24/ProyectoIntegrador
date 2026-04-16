@@ -1,5 +1,9 @@
 <div class="container-fluid manage-container animate__animated animate__fadeIn">
-    
+    <form>
+        <input type="text" placeholder="Buscar por nombre o tipo..." #filter 
+        (keyup.enter)="filterResults(filter.value)">
+        <button class="primary" type="button" (click)="filterResults(filter.value)">Buscar</button>
+    </form>
     <div class="table-responsive shadow-sm mb-4">
         <table class="table custom-table">
             <thead>
@@ -65,7 +69,7 @@
 
     <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
         <span class="pagination-info">
-            Mostrando <strong>{{ paginatedProducts.length }}</strong> de <strong>{{ products.length }}</strong> productos
+            Mostrando <strong>{{ paginatedProducts.length }}</strong> de <strong>{{ filteredProductList.length }}</strong> productos
         </span>
         
         <div class="pagination-controls d-flex gap-2">

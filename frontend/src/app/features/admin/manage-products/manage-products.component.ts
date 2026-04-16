@@ -18,6 +18,7 @@ export class ManageProductsComponent implements OnInit {
   private notify = inject(NotificationService); //Notificaciones toast
 
   public products: Product[] = [];
+  public filteredProductList: Product[] = [];
   public loading: boolean = true;
   public errorMessage: string = '';
   public currentPage: number = 1;
@@ -62,7 +63,7 @@ export class ManageProductsComponent implements OnInit {
       this.toggleFields(val);
     });
 
-    // 2. IMPORTANTE: Forzamos el estado inicial a BLOQUEADO 
+    // 2. Forzamos el estado inicial a BLOQUEADO 
     // porque el form arranca en vacío ('')
     this.toggleFields('');
   }
@@ -72,15 +73,29 @@ export class ManageProductsComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.products = data;
+        this.filteredProductList = data;
         this.loading = false;
       },
       error: (err) => {
         this.loading = false;
-        // MODIFICACIÓN:
         this.notify.toast('No se pudieron cargar los productos', 'error');
         this.errorMessage = 'Error de conexión con el servidor.';
       }
     });
+  }
+
+  filterResults(text: string): void {
+    text = text.trim();
+    if (!text) {
+      this.filteredProductList = this.products;
+    } else {
+      this.filteredProductList = this.products.filter(
+        product => product.name.toLowerCase().includes(text.toLowerCase()) ||
+          product.productType.toLowerCase().includes(text.toLowerCase())
+      );
+    }
+
+    this.currentPage = 1;
   }
 
   toggleFields(type: string | null | undefined): void {
@@ -117,7 +132,7 @@ export class ManageProductsComponent implements OnInit {
       });
     }
 
-    // 4. ¡VITAL! Sincronizar el estado del formulario
+    // 4. Sincronizar el estado del formulario
     [...camposTe, ...camposArtesania].forEach(name => {
       this.productForm.get(name)?.updateValueAndValidity();
     });
@@ -275,11 +290,11 @@ export class ManageProductsComponent implements OnInit {
   get paginatedProducts() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;
-    return this.products.slice(startIndex, endIndex);
+    return this.filteredProductList.slice(startIndex, endIndex);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.products.length / this.itemsPerPage);
+    return Math.ceil(this.filteredProductList.length / this.itemsPerPage);
   }
 
   goToPage(page: number) {

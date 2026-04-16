@@ -1,11 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-:root {
-    /* Paleta de colores */
-    --color-cafe-oscuro: #45332C;          /* Fondo Principal */
-    --color-verde-musgo: #2D541E;          /* Fondo de Secciones */
-    --color-lino-calido: #EBEAE3;          /* Texto Principal */
-    --color-crema-vainilla: #F8F8F0;       /* Fondo de Tarjetas */
-    
+:root {    
     /* Acentos */
     --color-oro-rico: #DAA520;             /* Títulos H2 */
     --color-oro-antiguo: #D4A559;          /* Botones Primarios (CTA) */
