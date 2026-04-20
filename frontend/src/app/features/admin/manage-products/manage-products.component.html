@@ -1,8 +1,8 @@
 <div class="container-fluid manage-container animate__animated animate__fadeIn">
-    <form>
-        <input type="text" placeholder="Buscar por nombre o tipo..." #filter 
+    <form class="d-flex" role="search">
+        <input class="form-control me-2" type="search" placeholder="Buscar por nombre o tipo..." #filter 
         (keyup.enter)="filterResults(filter.value)">
-        <button class="primary" type="button" (click)="filterResults(filter.value)">Buscar</button>
+        <button class="btn btn-outline-success" type="submit" (click)="filterResults(filter.value)">Buscar</button>
     </form>
     <div class="table-responsive shadow-sm mb-4">
         <table class="table custom-table">
