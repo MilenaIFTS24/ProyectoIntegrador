@@ -18,6 +18,7 @@ export class ManageUsersComponent implements OnInit {
   private notify = inject(NotificationService);
 
   public users: User[] = [];
+  public filteredUserList: User[] = [];
   public loading: boolean = false;
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
@@ -47,6 +48,7 @@ export class ManageUsersComponent implements OnInit {
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
+        this.filteredUserList = data;
         this.loading = false;
       },
       error: () => {
@@ -54,6 +56,16 @@ export class ManageUsersComponent implements OnInit {
         this.notify.toast('Error al cargar usuarios', 'error');
       }
     });
+  }
+
+  filterResults(text: string): void {
+    text = text.trim();
+    if (!text) {
+      this.filteredUserList = this.users;
+    } else {
+      this.filteredUserList = this.users.filter(u => u.fullName.toLowerCase().includes(text.toLowerCase()) || u.email.toLowerCase().includes(text.toLowerCase()));
+    }
+    this.currentPage = 1;
   }
 
   private calculateMaxDate(): void {
@@ -68,10 +80,10 @@ export class ManageUsersComponent implements OnInit {
   get paginatedUsers(): User[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     const end = start + this.itemsPerPage;
-    return this.users.slice(start, end);
+    return this.filteredUserList.slice(start, end);
   }
   get totalPages(): number {
-    return Math.ceil(this.users.length / this.itemsPerPage) || 1;
+    return Math.ceil(this.filteredUserList.length / this.itemsPerPage) || 1;
   }
 
   goToPage(page: number): void {
