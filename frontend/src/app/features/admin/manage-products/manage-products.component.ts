@@ -11,7 +11,6 @@ import { Product } from '../../../core/models/product.model';
   styleUrls: ['./manage-products.component.css']
 })
 export class ManageProductsComponent implements OnInit {
-  // Inyección del servicio desde Core
   private productService = inject(ProductService);
 
   public products: Product[] = [];

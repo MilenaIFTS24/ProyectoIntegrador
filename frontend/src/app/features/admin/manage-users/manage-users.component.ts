@@ -16,6 +16,7 @@ export class ManageUsersComponent implements OnInit {
   private userService = inject(UserService);
 
   public users: User[] = [];
+  public filteredUserList: User[] = [];
   public loading: boolean = false;
 
   // Paginación
@@ -46,6 +47,7 @@ export class ManageUsersComponent implements OnInit {
     this.userService.getUsers().subscribe({
       next: (data) => {
         this.users = data;
+        this.filteredUserList = data;
         this.loading = false;
       },
       error: (err) => {
@@ -55,14 +57,25 @@ export class ManageUsersComponent implements OnInit {
     });
   }
 
+  filterResults(text: string): void {
+    text = text.trim();
+    if (!text) {
+      this.filteredUserList = this.users;
+    } else {
+      this.filteredUserList = this.users.filter(u => u.fullName.toLowerCase().includes(text.toLowerCase()) || u.email.toLowerCase().includes(text.toLowerCase()));
+    }
+    this.currentPage = 1;
+  }
+
   // --- LÓGICA DE PAGINACIÓN ---
   get paginatedUsers(): User[] {
     const start = (this.currentPage - 1) * this.itemsPerPage;
-    return this.users.slice(start, start + this.itemsPerPage);
+    const end = start + this.itemsPerPage;
+    return this.filteredUserList.slice(start, end);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.users.length / this.itemsPerPage) || 1;
+    return Math.ceil(this.filteredUserList.length / this.itemsPerPage) || 1;
   }
 
   goToPage(page: number): void {
