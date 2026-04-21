@@ -91,6 +91,19 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  filterResults(text: string): void {
+    text = text.trim();
+    if (!text) {
+      this.filteredProductList = this.products;
+    } else {
+      this.filteredProductList = this.products.filter(
+        product => product.name.toLowerCase().includes(text.toLowerCase()) ||
+          product.productType.toLowerCase().includes(text.toLowerCase())
+      );
+    }
+    this.currentPage = 1;
+  }
+
   private setupUniqueProductListener(): void {
     this.productForm.get('isUnique')?.valueChanges.subscribe((isUnique: boolean | null) => {
       const stockControl = this.productForm.get('stock');
@@ -104,9 +117,6 @@ export class ManageProductsComponent implements OnInit {
   }
 
   toggleFields(type: string | null | undefined): void {
-    const val = type ? type.toLowerCase().trim() : '';
-    const esTe = val === 'tea' || val === 'té';
-    const esArtesania = val === 'craft' || val === 'artesanía';
     const val = type ? type.toLowerCase().trim() : '';
     const esTe = val === 'tea' || val === 'té';
     const esArtesania = val === 'craft' || val === 'artesanía';
@@ -167,8 +177,6 @@ export class ManageProductsComponent implements OnInit {
     this.scrollTo('.product-card');
   }
 
-  onSubmit() {
-    this.productForm.markAllAsTouched();
   onSubmit() {
     this.productForm.markAllAsTouched();
 
@@ -273,11 +281,12 @@ export class ManageProductsComponent implements OnInit {
 
   get paginatedProducts() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.products.slice(startIndex, startIndex + this.itemsPerPage);
+    const endIndex = startIndex + this.itemsPerPage;
+    return this.filteredProductList.slice(startIndex, endIndex);
   }
 
   get totalPages(): number {
-    return Math.ceil(this.products.length / this.itemsPerPage) || 1;
+    return Math.ceil(this.filteredProductList.length / this.itemsPerPage) || 1;
   }
 
   goToPage(page: number) {
