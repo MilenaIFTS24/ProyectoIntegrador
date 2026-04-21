@@ -60,6 +60,7 @@ export class ManageUsersComponent implements OnInit {
 
   filterResults(text: string): void {
     text = text.trim();
+
     if (!text) {
       this.filteredUserList = this.users;
     } else {

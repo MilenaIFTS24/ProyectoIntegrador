@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { FooterComponent } from "./shared/components/footer/footer.component";
@@ -11,14 +11,27 @@ import { AuthService } from './core/services/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
-export class App {
+export class AppComponent implements OnInit {
   public authService = inject(AuthService);
-  public router = inject(Router);
-  constructor() { }
+  private router = inject(Router);
 
-  //Que el footer no se muestre en la pantalla de admin
+  ngOnInit() {
+    if (window.location.pathname.includes('/login')) {
+      this.authService.clearSession();
+    }
+  }
   showFooter(): boolean {
-  // Retorna falso si la URL actual contiene 'adminDashboard'
-  return !this.router.url.includes('adminDashboard');
-}
+    const url = this.router.url;
+
+    // Ocultar si:
+    // 1. Es la pantalla de admin
+    // 2. Es login
+    // 3. Es registro
+    const isExcludedPage = url.includes('adminDashboard') ||
+      url.includes('login') ||
+      url.includes('register');
+
+    return !isExcludedPage;
+  }
+
 }

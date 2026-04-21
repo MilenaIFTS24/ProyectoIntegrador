@@ -4,6 +4,7 @@ import { Router, RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../core/services/notification.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -47,7 +48,7 @@ export class LoginComponent {
         this.router.navigateByUrl('/userDashboard/userDashboardHome');
       }
     },
-    error: (err) => {
+    error: (err: HttpErrorResponse) => {
       this.loading = false;
       // Si el backend da 401, el error suele venir en err.error.message o err.error.error
       const msg = err.error?.error || err.error?.message || 'Credenciales incorrectas';

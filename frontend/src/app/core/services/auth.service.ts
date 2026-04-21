@@ -1,6 +1,6 @@
 import { inject, Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { ApiService } from './api.service'; 
+import { ApiService } from './api.service';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -10,22 +10,25 @@ export class AuthService {
   private api = inject(ApiService);
   private router = inject(Router);
 
-  // Signals sincronizados con el Storage
-  public userToken = signal<string | null>(localStorage.getItem('userToken'));
-  public userRole = signal<string | null>(localStorage.getItem('userRole'));
-  public userName = signal<string | null>(localStorage.getItem('userName'));
+  // Mantenemos esta Signal para la reactividad de la Navbar
+  private authState = signal<{ token: string | null, user: any | null }>({
+    token: localStorage.getItem('userToken'),
+    user: JSON.parse(localStorage.getItem('userData') || 'null')
+  });
 
-  // Estado computado: solo es verdadero si existe el TOKEN
-  public isLoggedIn = computed(() => !!this.userToken());
+  // Signals públicos para tu Navbar (estos son los que agregamos ahora)
+  public isLoggedIn = computed(() => !!this.authState().token);
+  public userName = computed(() => this.authState().user?.fullName || null);
+  public userRole = computed(() => this.authState().user?.role || null);
 
   constructor() {
-    // Si hay token pero no hay rol (estado corrupto), limpiamos
-    if (this.userToken() && !this.userRole()) {
+    // Tu validación original
+    if (this.authState().token && !this.authState().user?.role) {
       this.logout();
     }
   }
 
-  // --- ACCIONES HTTP ---
+  // --- Mantenemos loginAction tal cual ---
   loginAction(credentials: any): Observable<any> {
     return this.api.post('auth/login', credentials);
   }
@@ -34,26 +37,35 @@ export class AuthService {
     return this.api.post('auth/register', userData);
   }
 
-  // --- GESTIÓN DE SESIÓN ---
+  // --- Mantenemos el método login original con sus argumentos ---
   login(token: string, user: any): void {
     localStorage.setItem('userToken', token);
+    localStorage.setItem('userData', JSON.stringify(user));
+    // También guardamos estos si tu código viejo los busca por separado
     localStorage.setItem('userRole', user.role);
     localStorage.setItem('userName', user.fullName);
 
-    this.userToken.set(token);
-    this.userRole.set(user.role);
-    this.userName.set(user.fullName);
+    // ACTUALIZAMOS LA SIGNAL (esto es lo que arregla tu Navbar)
+    this.authState.set({ token, user });
 
     const route = user.role === 'admin' ? '/adminDashboard' : '/userDashboard';
     this.router.navigateByUrl(route);
   }
 
+  // --- Mantenemos logout original ---
   logout(): void {
     localStorage.clear();
-    this.userToken.set(null);
-    this.userRole.set(null);
-    this.userName.set(null);
+    
+    // RESETEAMOS LA SIGNAL (esto limpia el nombre en la Navbar al instante)
+    this.authState.set({ token: null, user: null });
+    
     this.router.navigateByUrl('/login');
+  }
+
+  // Tu método extra
+  clearSession() {
+    localStorage.clear();
+    this.authState.set({ token: null, user: null });
   }
 
   isAdmin(): boolean {
