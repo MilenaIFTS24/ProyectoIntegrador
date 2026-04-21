@@ -18,6 +18,7 @@ export class ManageProductsComponent implements OnInit {
   private notify = inject(NotificationService);
 
   public products: Product[] = [];
+  public filteredProductList: Product[] = [];
   public loading: boolean = true;
   public maxDate: string = '';
   public errorMessage: string = '';
@@ -79,6 +80,7 @@ export class ManageProductsComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (data: Product[]) => {
         this.products = data;
+        this.filteredProductList = data;
         this.loading = false;
       },
       error: () => {
@@ -102,6 +104,9 @@ export class ManageProductsComponent implements OnInit {
   }
 
   toggleFields(type: string | null | undefined): void {
+    const val = type ? type.toLowerCase().trim() : '';
+    const esTe = val === 'tea' || val === 'té';
+    const esArtesania = val === 'craft' || val === 'artesanía';
     const val = type ? type.toLowerCase().trim() : '';
     const esTe = val === 'tea' || val === 'té';
     const esArtesania = val === 'craft' || val === 'artesanía';
@@ -164,7 +169,13 @@ export class ManageProductsComponent implements OnInit {
 
   onSubmit() {
     this.productForm.markAllAsTouched();
+  onSubmit() {
+    this.productForm.markAllAsTouched();
 
+    if (this.productForm.invalid) {
+      this.notify.toast('Completa los campos obligatorios', 'warning');
+      return;
+    }
     if (this.productForm.invalid) {
       this.notify.toast('Completa los campos obligatorios', 'warning');
       return;
