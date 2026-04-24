@@ -1,8 +1,8 @@
-import { Component, inject, signal } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { Router, NavigationEnd, RouterLink, RouterLinkActive } from '@angular/router';
 import { filter } from 'rxjs';
-import { AuthService } from '../../../core/services/auth.service';
+import { AuthService } from '../../../core/services/auth.service'; 
 
 @Component({
   selector: 'app-navbar',
@@ -11,22 +11,32 @@ import { AuthService } from '../../../core/services/auth.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
-  // Inyectamos el AuthService para acceder a los Signals
-  // Lo ponemos público para que el HTML pueda leerlo directamente
+export class NavbarComponent implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
 
-  isAuthPage = signal(false);
+  public isAuthPage = signal(false);
+
+  ngOnInit() {
+    // Lógica para detectar la ruta
+    const url = window.location.pathname;
+    this.isAuthPage.set(url.includes('/login') || url.includes('/register'));
+  }
+
   constructor() {
+    // 1. Detectar la ruta apenas se crea el componente (Para el F5)
+    const currentUrl = window.location.pathname;
+    this.isAuthPage.set(currentUrl.includes('/login') || currentUrl.includes('/register'));
+
+    // 2. Detectar cambios de ruta mientras navegamos
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Si la URL es /login o /register, solo muestro logo y nombre
-      const url = event.urlAfterRedirects;
+      const url = event.urlAfterRedirects || event.url;
       this.isAuthPage.set(url.includes('/login') || url.includes('/register'));
     });
   }
+
   logout() {
     this.authService.logout();
   }

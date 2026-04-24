@@ -3,7 +3,6 @@
   <header class="welcome-banner shadow">
     <div class="welcome-text">
       <h1 class="text-oro">{{ greeting }}, {{ authService.userName() }}!</h1>
-      <p class="text-white opacity-75">Panel de administración de Té & Artesanías.</p>
     </div>
     <div class="status-indicator">
       <span [ngClass]="isSystemOnline ? 'badge-online' : 'badge-offline'">
