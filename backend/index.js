@@ -45,7 +45,7 @@ app.use("/api/users", usersRouter);
 
 // --- MANEJO DE ERRORES: RUTA NO ENCONTRADA ---
 app.use((req, res, next) => {
-  res.status(404).json({ error: "MIDDLE: Ruta no encontrada" });
+  res.status(404).json({ error: "Ruta no encontrada" });
 });
 await sequelize.sync({ alter: true });
 // --- INICIALIZACIÓN DEL SERVIDOR Y BASE DE DATOS ---
