@@ -29,6 +29,10 @@ export class ApiService {
     );
   };
 
+  patch<T>(path: string, body: any): Observable<T> {
+    return this._httpClient.patch<T>(`${this.baseUrl}/${path}`, body);
+  }
+
   delete<T>(path: string, params?: HttpParams, headers?: HttpHeaders): Observable<T> {
     return this._httpClient.delete<T>(`${this.baseUrl}/${path}`, { params, headers }).pipe(
       catchError(this.handleError)
@@ -39,6 +43,6 @@ export class ApiService {
   private handleError(error: any): Observable<never> {
     let errorMensaje = `Código de error:${error.status}\n Descripción:${error.message}`;
     return throwError(() => new Error(errorMensaje));
-  };    
+  };
 
 }
