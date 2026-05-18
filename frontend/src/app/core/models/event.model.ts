@@ -10,6 +10,7 @@ export interface Event {
   type: 'taller' | 'feria' | 'degustacion' | 'otro'; 
   imageUrl?: string;        
   status: 'programado' | 'en_curso' | 'finalizado' | 'cancelado';
+  currentRegistrations?: number;
   
   createdAt?: Date;
   updatedAt?: Date;

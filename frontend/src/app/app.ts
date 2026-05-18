@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { FooterComponent } from "./shared/components/footer/footer.component";
@@ -12,6 +12,7 @@ import { AuthService } from './core/services/auth.service';
   styleUrl: './app.css'
 })
 export class App {
+  public authService = inject(AuthService);
 
   constructor(private router: Router) { }
   
