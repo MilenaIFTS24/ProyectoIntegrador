@@ -1,1 +1,196 @@
-<p>manage-events works!</p>
+<div class="container-fluid manage-container animate__animated animate__fadeIn">
+  <div class="search-wrapper mb-5">
+    <form class="search-form-organic" role="search" (submit)="$event.preventDefault()">
+      <div class="input-container">
+        <input class="search-input" type="search" placeholder="Buscar por título o tipo de evento..." #filter
+          (input)="filterResults(filter.value)">
+      </div>
+      <button 
+        class="btn-organic-search" 
+        type="button" 
+        (click)="filter.value = ''; filterResults('')">
+        Limpiar
+      </button>
+    </form>
+  </div>
+
+  <div class="table-responsive shadow-sm mb-4">
+    <table class="table custom-table">
+      <thead>
+        <tr>
+          <th class="col-id">ID</th>
+          <th>Evento</th>
+          <th>Tipo</th>
+          <th>Fecha y Hora</th>
+          <th class="col-stock">Inscriptos / Cupo</th>
+          <th class="text-center col-actions">Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (errorMessage) {
+        <tr>
+          <td colspan="6" class="text-center py-4">
+            <div class="alert-error-container">{{ errorMessage }}</div>
+          </td>
+        </tr>
+        } @else if (loading && events().length === 0) {
+        <tr>
+          <td colspan="6" class="text-center py-5">
+            <div class="spinner-border text-oro"></div>
+          </td>
+        </tr>
+        }
+
+        @for (event of paginatedEvents; track event.id) {
+        <tr>
+          <td class="product-id-cell" [title]="event.id">#{{ event.id?.substring(0,8) }}...</td>
+          <td><span class="product-name">{{ event.title }}</span></td>
+          <td>
+            <span class="badge" 
+              [ngClass]="{
+                'badge-tea': event.type === 'degustacion', 
+                'badge-craft': event.type === 'taller',
+                'bg-secondary': event.type === 'feria' || event.type === 'presentacion'
+              }">
+              <i class="bi"
+                [ngClass]="{
+                  'bi-cup-hot-fill': event.type === 'degustacion', 
+                  'bi-tools': event.type === 'taller',
+                  'bi-shop-window': event.type === 'feria',
+                  'bi-megaphone': event.type === 'presentacion'
+                }"></i>
+              {{ (event.type || 'N/A') | uppercase }}
+            </span>
+          </td>
+          <td class="product-price">
+            {{ event.date | date:'dd/MM/yyyy' }} - {{ event.startTime }}hs
+          </td>
+          <td>
+            <div class="stock-wrapper">
+              @if (event.requiresRegistration) {
+                <span class="stock-indicator"
+                  [ngClass]="(event.currentRegistrations || 0) < (event.maxCapacity || 0) ? 'bg-success' : 'bg-danger'">
+                </span>
+                <span class="stock-value">
+                  {{ event.currentRegistrations || 0 }} / {{ event.maxCapacity }}
+                </span>
+              } @else {
+                <span class="stock-indicator bg-info"></span>
+                <span class="stock-value text-muted small">LIBRE</span>
+              }
+            </div>
+          </td>
+          <td class="text-center">
+            <div class="btn-group gap-2 justify-content-center">
+              <button type="button" class="btn btn-action btn-edit" (click)="updateEvent(event)" title="Editar">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+              <button type="button" class="btn btn-action btn-delete" (click)="deleteEvent(event.id!)" title="Eliminar">
+                <i class="bi bi-trash3-fill"></i>
+              </button>
+            </div>
+          </td>
+        </tr>
+        } @empty {
+        <tr>
+          <td colspan="6" class="text-center py-4">No se encontraron eventos.</td>
+        </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card product-card shadow mb-5 event-card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <h3 class="header-title">
+        <i class="bi" [ngClass]="eventForm.get('id')?.value ? 'bi-pencil-fill' : 'bi-plus-circle-fill'"></i>
+        {{ eventForm.get('id')?.value ? 'Editar Evento' : 'Nuevo Evento' }}
+      </h3>
+      <span class="badge badge-id">ID: {{ eventForm.get('id')?.value ? 'ASIGNADO' : 'NUEVO' }}</span>
+    </div>
+
+    <div class="card-body p-4">
+      <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label main-label">Título del Evento <span class="text-danger">*</span></label>
+            <input type="text" formControlName="title" class="form-control custom-input"
+              [ngClass]="{'is-invalid': eventForm.get('title')?.invalid && eventForm.get('title')?.touched}">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label main-label">Tipo <span class="text-danger">*</span></label>
+            <select formControlName="type" class="form-select custom-input">
+              <option value="taller">🎨 Taller</option>
+              <option value="degustacion">🍃 Degustación</option>
+              <option value="feria">🎪 Feria</option>
+              <option value="presentacion">📢 Presentación</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <label class="form-label main-label">Precio <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" formControlName="price" class="form-control custom-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label main-label">Fecha <span class="text-danger">*</span></label>
+            <input type="date" formControlName="date" class="form-control custom-input">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label main-label">Hora Inicio <span class="text-danger">*</span></label>
+            <input type="time" formControlName="startTime" class="form-control custom-input">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label main-label">Capacidad Máxima</label>
+            <input type="number" formControlName="maxCapacity" class="form-control custom-input"
+              [class.opacity-inactive]="!eventForm.get('requiresRegistration')?.value">
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-6">
+            <label class="form-label main-label">Ubicación / Link <span class="text-danger">*</span></label>
+            <input type="text" formControlName="location" class="form-control custom-input">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label main-label">Contacto Organizador <span class="text-danger">*</span></label>
+            <input type="text" formControlName="organizerContact" class="form-control custom-input" placeholder="Email o Teléfono">
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-12">
+            <label class="form-label main-label">Descripción <span class="text-danger">*</span></label>
+            <textarea formControlName="description" class="form-control custom-input" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="requiresRegistration" id="reqSwitch">
+              <label class="form-check-label" for="reqSwitch">Requiere Inscripción</label>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="isFree" id="freeSwitch">
+              <label class="form-check-label" for="freeSwitch">Es Gratuito</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="card-footer-custom mt-4 d-flex justify-content-end gap-3">
+          <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">Cancelar</button>
+          <button type="submit" [disabled]="eventForm.invalid || loading" class="btn btn-save">
+            {{ loading ? 'Procesando...' : (eventForm.get('id')?.value ? 'Actualizar Evento' : 'Crear Evento') }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

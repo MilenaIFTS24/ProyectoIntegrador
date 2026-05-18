@@ -29,6 +29,10 @@ export class ApiService {
     );
   };
 
+  patch<T>(path: string, body: any): Observable<T> {
+    return this._httpClient.patch<T>(`${this.baseUrl}/${path}`, body);
+  }
+
   delete<T>(path: string, params?: HttpParams, headers?: HttpHeaders): Observable<T> {
     return this._httpClient.delete<T>(`${this.baseUrl}/${path}`, { params, headers }).pipe(
       catchError(this.handleError)
@@ -37,9 +41,15 @@ export class ApiService {
 
   // Método para manejar errores en las peticiones HTTP
   private handleError(error: any): Observable<never> {
+<<<<<<< HEAD
     // No creamos un "new Error", simplemente devolvemos el error tal cual viene de HttpClient
     // para que el Interceptor y el Componente tengan acceso al .status y al .error (el body del fallo)
     return throwError(() => error);
   };   
+=======
+    let errorMensaje = `Código de error:${error.status}\n Descripción:${error.message}`;
+    return throwError(() => new Error(errorMensaje));
+  };
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 
 }

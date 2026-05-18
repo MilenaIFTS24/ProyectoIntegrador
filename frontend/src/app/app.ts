@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import { Component, inject, OnInit, signal } from '@angular/core';
+=======
+import { Component, inject, signal } from '@angular/core';
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 import { Router, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from "./shared/components/navbar/navbar.component";
 import { FooterComponent } from "./shared/components/footer/footer.component";
@@ -11,9 +15,14 @@ import { AuthService } from './core/services/auth.service';
   templateUrl: './app.html',
   styleUrl: './app.css'
 })
+<<<<<<< HEAD
 export class AppComponent implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
+=======
+export class App {
+  public authService = inject(AuthService);
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 
   ngOnInit() {
     if (window.location.pathname.includes('/login')) {
@@ -21,6 +30,7 @@ export class AppComponent implements OnInit {
     }
   }
   showFooter(): boolean {
+<<<<<<< HEAD
     const url = this.router.url;
 
     // Ocultar si:
@@ -34,4 +44,9 @@ export class AppComponent implements OnInit {
     return !isExcludedPage;
   }
 
+=======
+  // Retorna falso si la URL actual contiene 'adminDashboard'
+  return !this.router.url.includes('adminDashboard');
+}
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 }
