@@ -1,17 +1,20 @@
 export interface Event {
-  id?: number;              
-  name: string;             
+  id?: string;
+  title: string;
+  date: string;
+  startTime: string;
+  endTime?: string;
   description: string;
-  date: Date | string;      
-  time: string;             
-  location: string;         
-  maxCapacity?: number;     
-  requiresRegistration: boolean; 
-  type: 'taller' | 'feria' | 'degustacion' | 'otro'; 
-  imageUrl?: string;        
-  status: 'programado' | 'en_curso' | 'finalizado' | 'cancelado';
-  currentRegistrations?: number;
-  
-  createdAt?: Date;
-  updatedAt?: Date;
+  type: 'taller' | 'feria' | 'presentacion' | 'degustacion' | 'actividad';
+  location: string;
+  isVirtual: boolean;
+  isFree: boolean;
+  price: number;
+  requiresRegistration: boolean;
+  maxCapacity?: number;
+  organizerContact: string;
+  promoImage?: string;
+  materials?: string;
+  isCancelledByRain?: boolean;
+  currentRegistrations?: number; // Calculado por el backend
 }

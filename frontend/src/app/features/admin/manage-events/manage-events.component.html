@@ -2,7 +2,7 @@
   <div class="search-wrapper mb-5">
     <form class="search-form-organic" role="search" (submit)="$event.preventDefault()">
       <div class="input-container">
-        <input class="search-input" type="search" placeholder="Buscar por nombre o tipo de evento..." #filter
+        <input class="search-input" type="search" placeholder="Buscar por título o tipo de evento..." #filter
           (input)="filterResults(filter.value)">
       </div>
       <button 
@@ -33,7 +33,7 @@
             <div class="alert-error-container">{{ errorMessage }}</div>
           </td>
         </tr>
-        } @else if (loading && events.length === 0) {
+        } @else if (loading && events().length === 0) {
         <tr>
           <td colspan="6" class="text-center py-5">
             <div class="spinner-border text-oro"></div>
@@ -43,26 +43,27 @@
 
         @for (event of paginatedEvents; track event.id) {
         <tr>
-          <td class="product-id-cell">#{{ event.id }}</td>
-          <td><span class="product-name">{{ event.name }}</span></td>
+          <td class="product-id-cell" [title]="event.id">#{{ event.id?.substring(0,8) }}...</td>
+          <td><span class="product-name">{{ event.title }}</span></td>
           <td>
             <span class="badge" 
               [ngClass]="{
                 'badge-tea': event.type === 'degustacion', 
                 'badge-craft': event.type === 'taller',
-                'bg-secondary': event.type === 'feria'
+                'bg-secondary': event.type === 'feria' || event.type === 'presentacion'
               }">
               <i class="bi"
                 [ngClass]="{
                   'bi-cup-hot-fill': event.type === 'degustacion', 
                   'bi-tools': event.type === 'taller',
-                  'bi-shop-window': event.type === 'feria'
+                  'bi-shop-window': event.type === 'feria',
+                  'bi-megaphone': event.type === 'presentacion'
                 }"></i>
               {{ (event.type || 'N/A') | uppercase }}
             </span>
           </td>
           <td class="product-price">
-            {{ event.date | date:'dd/MM/yyyy' }} - {{ event.time }}hs
+            {{ event.date | date:'dd/MM/yyyy' }} - {{ event.startTime }}hs
           </td>
           <td>
             <div class="stock-wrapper">
@@ -84,9 +85,9 @@
               <button type="button" class="btn btn-action btn-edit" (click)="updateEvent(event)" title="Editar">
                 <i class="bi bi-pencil-square"></i>
               </button>
-              <!-- <button type="button" class="btn btn-action btn-delete" (click)="deleteEvent(event)" title="Eliminar">
+              <button type="button" class="btn btn-action btn-delete" (click)="deleteEvent(event.id!)" title="Eliminar">
                 <i class="bi bi-trash3-fill"></i>
-              </button> -->
+              </button>
             </div>
           </td>
         </tr>
@@ -99,58 +100,38 @@
     </table>
   </div>
 
-  <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
-    <span class="pagination-info">Mostrando <strong>{{ paginatedEvents.length }}</strong> de <strong>{{ filteredEventList.length }}</strong></span>
-    <div class="pagination-controls d-flex gap-2">
-      <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
-        <i class="bi bi-chevron-left"></i>
-      </button>
-      <div class="page-numbers d-flex gap-1">
-        @for (p of [].constructor(totalPages); track $index) {
-        <button class="btn btn-page-number" [class.active]="$index + 1 === currentPage" (click)="goToPage($index + 1)">
-          {{ $index + 1 }}
-        </button>
-        }
-      </div>
-      <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0" (click)="goToPage(currentPage + 1)">
-        <i class="bi bi-chevron-right"></i>
-      </button>
-    </div>
-  </div>
-
   <div class="card product-card shadow mb-5 event-card">
     <div class="card-header d-flex justify-content-between align-items-center">
       <h3 class="header-title">
         <i class="bi" [ngClass]="eventForm.get('id')?.value ? 'bi-pencil-fill' : 'bi-plus-circle-fill'"></i>
         {{ eventForm.get('id')?.value ? 'Editar Evento' : 'Nuevo Evento' }}
       </h3>
-      <span class="badge badge-id">ID: {{ eventForm.get('id')?.value || 'NUEVO' }}</span>
+      <span class="badge badge-id">ID: {{ eventForm.get('id')?.value ? 'ASIGNADO' : 'NUEVO' }}</span>
     </div>
 
     <div class="card-body p-4">
       <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
         <div class="row g-3 mb-4">
           <div class="col-md-6">
-            <label class="form-label main-label">Nombre del Evento <span class="text-danger">*</span></label>
-            <input type="text" formControlName="name" class="form-control custom-input"
-              [ngClass]="{'is-invalid': eventForm.get('name')?.invalid && eventForm.get('name')?.touched}">
+            <label class="form-label main-label">Título del Evento <span class="text-danger">*</span></label>
+            <input type="text" formControlName="title" class="form-control custom-input"
+              [ngClass]="{'is-invalid': eventForm.get('title')?.invalid && eventForm.get('title')?.touched}">
           </div>
           <div class="col-md-3">
             <label class="form-label main-label">Tipo <span class="text-danger">*</span></label>
             <select formControlName="type" class="form-select custom-input">
               <option value="taller">🎨 Taller</option>
               <option value="degustacion">🍃 Degustación</option>
-              <option value="feria">🎪 Feria / Bazar</option>
+              <option value="feria">🎪 Feria</option>
+              <option value="presentacion">📢 Presentación</option>
             </select>
           </div>
           <div class="col-md-3">
-            <label class="form-label main-label">Estado <span class="text-danger">*</span></label>
-            <select formControlName="status" class="form-select custom-input">
-              <option value="programado">📅 Programado</option>
-              <option value="en_curso">▶️ En curso</option>
-              <option value="finalizado">✅ Finalizado</option>
-              <option value="cancelado">❌ Cancelado</option>
-            </select>
+            <label class="form-label main-label">Precio <span class="text-danger">*</span></label>
+            <div class="input-group">
+              <span class="input-group-text">$</span>
+              <input type="number" formControlName="price" class="form-control custom-input">
+            </div>
           </div>
         </div>
 
@@ -160,34 +141,46 @@
             <input type="date" formControlName="date" class="form-control custom-input">
           </div>
           <div class="col-md-4">
-            <label class="form-label main-label">Hora <span class="text-danger">*</span></label>
-            <input type="time" formControlName="time" class="form-control custom-input">
+            <label class="form-label main-label">Hora Inicio <span class="text-danger">*</span></label>
+            <input type="time" formControlName="startTime" class="form-control custom-input">
           </div>
           <div class="col-md-4">
-            <label class="form-label main-label">Capacidad Máxima <span class="text-danger">*</span></label>
+            <label class="form-label main-label">Capacidad Máxima</label>
             <input type="number" formControlName="maxCapacity" class="form-control custom-input"
               [class.opacity-inactive]="!eventForm.get('requiresRegistration')?.value">
           </div>
         </div>
 
         <div class="row g-3 mb-4">
-          <div class="col-md-8">
+          <div class="col-md-6">
             <label class="form-label main-label">Ubicación / Link <span class="text-danger">*</span></label>
             <input type="text" formControlName="location" class="form-control custom-input">
           </div>
-          <div class="col-md-4">
-            <label class="form-label main-label">Inscripción</label>
-            <div class="form-check form-switch mt-2">
-              <input class="form-check-input" type="checkbox" formControlName="requiresRegistration" id="reqSwitch">
-              <label class="form-check-label" for="reqSwitch">Requiere anotarse</label>
-            </div>
+          <div class="col-md-6">
+            <label class="form-label main-label">Contacto Organizador <span class="text-danger">*</span></label>
+            <input type="text" formControlName="organizerContact" class="form-control custom-input" placeholder="Email o Teléfono">
           </div>
         </div>
 
         <div class="row g-3 mb-4">
-          <div class="col-12">
+          <div class="col-md-12">
             <label class="form-label main-label">Descripción <span class="text-danger">*</span></label>
             <textarea formControlName="description" class="form-control custom-input" rows="3"></textarea>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="requiresRegistration" id="reqSwitch">
+              <label class="form-check-label" for="reqSwitch">Requiere Inscripción</label>
+            </div>
+          </div>
+          <div class="col-md-4 d-flex align-items-center">
+            <div class="form-check form-switch">
+              <input class="form-check-input" type="checkbox" formControlName="isFree" id="freeSwitch">
+              <label class="form-check-label" for="freeSwitch">Es Gratuito</label>
+            </div>
           </div>
         </div>
 

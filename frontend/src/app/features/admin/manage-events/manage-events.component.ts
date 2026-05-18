@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { EventService } from '../../../core/services/event.service';
@@ -8,8 +8,7 @@ import { Event } from '../../../core/models/event.model';
 @Component({
   selector: 'app-manage-events',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
-  providers: [DatePipe],
+  imports: [CommonModule, ReactiveFormsModule, DatePipe],
   templateUrl: './manage-events.component.html',
   styleUrls: ['./manage-events.component.css']
 })
@@ -18,30 +17,27 @@ export class ManageEventsComponent implements OnInit {
   private fb = inject(FormBuilder);
   //private notify = inject(NotificationService);
 
-  // Estados
-  public events: Event[] = [];
-  public filteredEventList: Event[] = [];
-  public loading: boolean = true;
-  public errorMessage: string = '';
-  
-  // Paginación y UI
-  public currentPage: number = 1;
-  public itemsPerPage: number = 10;
+  public events = signal<Event[]>([]);
+  public filteredEventList = signal<Event[]>([]);
+  public loading = true;
+  public errorMessage = '';
+  public currentPage = 1;
+  public itemsPerPage = 10;
   private readonly NAVBAR_OFFSET = 110;
 
-  // Formulario Reactivo
   public eventForm = this.fb.group({
-    id: [null as number | null],
-    name: ['', [Validators.required, Validators.minLength(5)]],
-    description: ['', [Validators.required, Validators.maxLength(500)]],
+    id: [null as string | null],
+    title: ['', [Validators.required, Validators.minLength(5)]],
+    description: ['', [Validators.required]],
     date: ['', Validators.required],
-    time: ['', Validators.required],
+    startTime: ['', Validators.required],
     location: ['Tienda de Té', Validators.required],
-    maxCapacity: [null as number | null, [Validators.required, Validators.min(1)]],
-    requiresRegistration: [true],
     type: ['taller', Validators.required],
-    status: ['programado', Validators.required],
-    imageUrl: ['']
+    maxCapacity: [10, [Validators.min(1)]],
+    requiresRegistration: [true],
+    isFree: [true],
+    price: [0],
+    organizerContact: ['', Validators.required]
   });
 
   ngOnInit(): void {
@@ -51,112 +47,99 @@ export class ManageEventsComponent implements OnInit {
   loadEvents(): void {
     this.loading = true;
     this.eventService.getEvents().subscribe({
-      next: (data: Event[]) => {
-        this.events = data;
-        this.filteredEventList = data;
+      next: (data) => {
+        this.events.set(data);
+        this.filteredEventList.set(data);
         this.loading = false;
       },
       error: () => {
         this.loading = false;
-        //this.notify.toast('No se pudieron cargar los eventos', 'error');
-        this.errorMessage = 'Error de conexión con el servidor.';
+        //this.notify.toast('Error al cargar eventos', 'error');
       }
     });
   }
 
   filterResults(text: string): void {
-    text = text.trim().toLowerCase();
-    if (!text) {
-      this.filteredEventList = this.events;
-    } else {
-      this.filteredEventList = this.events.filter(
-        event => event.name.toLowerCase().includes(text) || 
-                 event.type.toLowerCase().includes(text)
-      );
-    }
+    const term = text.toLowerCase().trim();
+    this.filteredEventList.set(
+      this.events().filter(e => e.title.toLowerCase().includes(term) || e.type.includes(term))
+    );
     this.currentPage = 1;
   }
 
-  updateEvent(event: Event) {
+  updateEvent(event: Event): void {
     this.eventForm.reset();
-    
-    // Cargamos los datos en el formulario
-    this.eventForm.patchValue({
-      ...event
-    } as any);
-
-    //this.notify.toast(`Editando: ${event.name}`, 'info');
-    this.scrollTo('.event-card'); // Ajusta el selector según tu HTML
+    this.eventForm.patchValue({ ...event } as any);
+    //this.notify.toast(`Editando: ${event.title}`, 'info');
+    this.scrollTo('.event-card');
   }
 
-  onSubmit() {
-    this.eventForm.markAllAsTouched();
+  deleteEvent(id: string): void {
+    // Usamos una confirmación simple antes de proceder
+    if (confirm('¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer.')) {
+      this.loading = true;
+      this.eventService.deleteEvent(id).subscribe({
+        next: () => {
+          //his.notify.toast('Evento eliminado correctamente', 'success');
+          this.loadEvents(); // Recargamos la lista para actualizar la tabla
+        },
+        error: (err) => {
+          this.loading = false;
+          console.error('Error al eliminar:', err);
+          //this.notify.toast('No se pudo eliminar el evento', 'error');
+        }
+      });
+    }
+  }
 
+  onSubmit(): void {
     if (this.eventForm.invalid) {
-      //this.notify.toast('Completa los campos obligatorios', 'warning');
+      //this.notify.toast('Completa los campos requeridos', 'warning');
       return;
     }
 
     this.loading = true;
-    const formValue = this.eventForm.getRawValue();
+    const data = this.eventForm.getRawValue() as Event;
 
-    const payload: Event = {
-      ...(formValue as Event),
-      id: formValue.id || undefined
-    };
-
-    const request = payload.id 
-      ? this.eventService.updateEvent(payload.id, payload)
-      : this.eventService.createEvent(payload);
+    const request = data.id 
+      ? this.eventService.updateEvent(data.id, data)
+      : this.eventService.createEvent(data);
 
     request.subscribe({
       next: () => {
-        //this.notify.toast(payload.id ? 'Evento actualizado' : 'Evento creado');
+        //this.notify.toast(data.id ? 'Actualizado' : 'Creado');
         this.loadEvents();
         this.onCancel();
-        this.scrollTo('.custom-table');
       },
       error: () => {
         this.loading = false;
-        //this.notify.toast('Error al guardar el evento', 'error');
+        //this.notify.toast('Error al guardar', 'error');
       }
     });
   }
 
-  // deleteEvent(event: Event) {
-  //   this.notify.confirm('¿Eliminar evento?', `Vas a eliminar "${event.name}". Esta acción no se puede deshacer.`).then(result => {
-  //     if (result.isConfirmed) {
-  //       this.eventService.deleteEvent(event.id!).subscribe({
-  //         next: () => {
-  //           this.notify.toast('Evento eliminado');
-  //           this.loadEvents();
-  //         },
-  //         error: (err) => this.notify.toast(err.message, 'error')
-  //       });
-  //     }
-  //   });
-  // }
-
-  onCancel() {
-    this.eventForm.reset({
-      location: 'Tienda de Té',
-      requiresRegistration: true,
-      type: 'taller',
-      status: 'programado'
-    });
-    this.eventForm.markAsPristine();
-    this.eventForm.markAsUntouched();
+  onCancel(): void {
+    this.eventForm.reset({ location: 'Tienda de Té', type: 'taller', isFree: true, requiresRegistration: true });
     this.loading = false;
   }
 
-  // Helpers de UI (Paginación y Scroll)
-  get paginatedEvents() {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    return this.filteredEventList.slice(startIndex, startIndex + this.itemsPerPage);
+  private scrollTo(selector: string): void {
+    setTimeout(() => {
+      const el = document.querySelector(selector);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        setTimeout(() => window.scrollBy(0, -this.NAVBAR_OFFSET), 300);
+      }
+    }, 100);
   }
 
-  get totalPages(): number {
-    return Math.ceil(this.filteredEventList.length / this.itemsPerPage) || 1;
+  get paginatedEvents() {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    return this.filteredEventList().slice(start, start + this.itemsPerPage);
+  }
+
+  get totalPages() {
+    return Math.ceil(this.filteredEventList().length / this.itemsPerPage) || 1;
   }
 
   goToPage(page: number) {
@@ -164,15 +147,5 @@ export class ManageEventsComponent implements OnInit {
       this.currentPage = page;
       this.scrollTo('.custom-table');
     }
-  }
-
-  private scrollTo(selector: string): void {
-    setTimeout(() => {
-      const element = document.querySelector(selector);
-      if (element) {
-        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        setTimeout(() => window.scrollBy(0, -this.NAVBAR_OFFSET), 300);
-      }
-    }, 100);
   }
 }

@@ -22,11 +22,11 @@ export class EventService {
     return this.api.post<Event>(this.path, event);
   }
 
-  updateEvent(id: number, event: Partial<Event>): Observable<any> {
+  updateEvent(id: string, event: Partial<Event>): Observable<any> {
     return this.api.put(`${this.path}/${id}`, event);
   }
 
-  deleteEvent(id: number): Observable<any> {
+  deleteEvent(id: string): Observable<any> {
     return this.api.delete(`${this.path}/${id}`);
   }
 }
