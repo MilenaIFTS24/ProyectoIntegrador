@@ -26,7 +26,13 @@ const Events = sequelize.define('Events', {
   promoImage: { type: DataTypes.STRING, allowNull: true },
   ecoFocus: { type: DataTypes.STRING, allowNull: true },
   materials: { type: DataTypes.TEXT, allowNull: true },
-  isCancelledByRain: { type: DataTypes.BOOLEAN, defaultValue: false }
+  isCancelledByRain: { type: DataTypes.BOOLEAN, defaultValue: false },
+  currentRegistrations: {
+    type: DataTypes.VIRTUAL,
+    get() {
+      return this.getDataValue('currentRegistrations');
+    }
+  }
 }, {
   tableName: 'events',
   timestamps: true

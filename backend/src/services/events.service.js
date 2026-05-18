@@ -1,11 +1,38 @@
-import { Events } from '../models/index.js';
+import { Events, sequelize } from '../models/index.js';
 
 export const getAllEventsService = async () => {
-    return await Events.findAll({ order: [['date', 'ASC']] });
+    return await Events.findAll({
+        attributes: {
+            include: [
+                [
+                    sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM event_registrations AS registration
+                        WHERE registration.eventId = Events.id
+                    )`),
+                    'currentRegistrations'
+                ]
+            ]
+        },
+        order: [['date', 'ASC']]
+    });
 };
 
 export const getEventByIdService = async (id) => {
-    return await Events.findByPk(id);
+    return await Events.findByPk(id, {
+        attributes: {
+            include: [
+                [
+                    sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM event_registrations AS registration
+                        WHERE registration.eventId = Events.id
+                    )`),
+                    'currentRegistrations'
+                ]
+            ]
+        }
+    });
 };
 
 export const createEventService = async (eventData) => {
