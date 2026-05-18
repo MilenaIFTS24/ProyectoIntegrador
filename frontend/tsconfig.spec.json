@@ -10,12 +10,19 @@
     "types": [
       "jasmine",
       "node"
+      "jasmine",
+      "node"
     ]
   },
   "files": [
     "src/test.ts"
   ],
+  "files": [
+    "src/test.ts"
+  ],
   "include": [
+    "src/**/*.spec.ts",
+    "src/**/*.d.ts"
     "src/**/*.spec.ts",
     "src/**/*.d.ts"
   ]

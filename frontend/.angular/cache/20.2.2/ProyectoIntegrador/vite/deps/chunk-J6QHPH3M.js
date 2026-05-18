@@ -1,7 +1,11 @@
 import {
   withHttpTransferCache
 <<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 } from "./chunk-GC66YIDI.js";
+========
+} from "./chunk-3QGGR4IJ.js";
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 ========
 } from "./chunk-3QGGR4IJ.js";
 >>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
@@ -12,7 +16,11 @@ import {
   getDOM,
   setRootDomAdapter
 <<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 } from "./chunk-IDU4EOZP.js";
+========
+} from "./chunk-YTB2QOU7.js";
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 ========
 } from "./chunk-YTB2QOU7.js";
 >>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
@@ -84,7 +92,11 @@ import {
   ɵɵdefineNgModule,
   ɵɵinject
 <<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 } from "./chunk-UWGLRKLR.js";
+========
+} from "./chunk-HIRBPE3E.js";
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 ========
 } from "./chunk-HIRBPE3E.js";
 >>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
@@ -2086,7 +2098,11 @@ export {
    *)
 */
 <<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 //# sourceMappingURL=chunk-J6QHPH3M.js.map
+========
+//# sourceMappingURL=chunk-RGRIXVDD.js.map
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 ========
 //# sourceMappingURL=chunk-RGRIXVDD.js.map
 >>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js

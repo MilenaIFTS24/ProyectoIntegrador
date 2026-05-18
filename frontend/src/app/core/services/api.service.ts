@@ -50,6 +50,5 @@ export class ApiService {
     let errorMensaje = `Código de error:${error.status}\n Descripción:${error.message}`;
     return throwError(() => new Error(errorMensaje));
   };
->>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 
 }

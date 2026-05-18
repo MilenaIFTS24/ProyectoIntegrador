@@ -58,15 +58,30 @@ import {
   ɵɵinjectAttribute,
   ɵɵstyleProp
 <<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 } from "./chunk-UWGLRKLR.js";
 import {
   Subject
 } from "./chunk-MARUHEWW.js";
 ========
+<<<<<<< HEAD
+=======
+========
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 } from "./chunk-HIRBPE3E.js";
 import {
   Subject
 } from "./chunk-RSS3ODKE.js";
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js
+========
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 >>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js
 import {
   __async,
@@ -5199,7 +5214,17 @@ export {
    *)
 */
 <<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
+<<<<<<< HEAD
+=======
+<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
 //# sourceMappingURL=chunk-IDU4EOZP.js.map
 ========
 //# sourceMappingURL=chunk-YTB2QOU7.js.map
 >>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js
+<<<<<<< HEAD
+=======
+========
+//# sourceMappingURL=chunk-YTB2QOU7.js.map
+>>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js
+>>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
