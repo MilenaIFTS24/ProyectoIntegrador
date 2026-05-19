@@ -3,59 +3,59 @@ import sequelize from '../data/database.js';
 
 const User = sequelize.define('User', {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
     },
-    fullName: { 
-        type: DataTypes.STRING, 
-        allowNull: false 
+    fullName: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    birthDate: { 
+    birthDate: {
         type: DataTypes.DATEONLY, // Solo fecha, sin hora
-        allowNull: false 
+        allowNull: false
     },
-    email: { 
-        type: DataTypes.STRING, 
-        allowNull: false, 
+    email: {
+        type: DataTypes.STRING,
+        allowNull: false,
         unique: true,
-        validate: { isEmail: true } 
+        validate: { isEmail: true }
     },
-    password: { 
-        type: DataTypes.STRING, 
-        allowNull: false 
+    password: {
+        type: DataTypes.STRING,
+        allowNull: false
     },
-    isEmailVerified: { 
-        type: DataTypes.BOOLEAN, 
-        defaultValue: false 
+    isEmailVerified: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     },
-    isEnabled: { 
-        type: DataTypes.BOOLEAN, 
-        defaultValue: true 
+    isEnabled: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
     },
-    phone: { 
-        type: DataTypes.STRING, 
+    phone: {
+        type: DataTypes.STRING,
         allowNull: true // Opcional
     },
-    address: { 
-        type: DataTypes.TEXT, 
+    address: {
+        type: DataTypes.TEXT,
         allowNull: true // Opcional
     },
-    lastLogin: { 
-        type: DataTypes.DATE, 
-        allowNull: true 
+    lastLogin: {
+        type: DataTypes.DATE,
+        allowNull: true
     },
-    passwordRecoveryToken: { 
-        type: DataTypes.STRING, 
-        allowNull: true 
+    passwordRecoveryToken: {
+        type: DataTypes.STRING,
+        allowNull: true
     },
-    role: { 
-        type: DataTypes.ENUM('user', 'admin'), 
-        defaultValue: 'admin' 
+    role: {
+        type: DataTypes.ENUM('user', 'admin'),
+        defaultValue: 'admin'
     }
 }, {
     tableName: 'users',
-    timestamps: true // Esto crea automáticamente 'createdAt' (fecha de creación) y 'updatedAt'
+    timestamps: true // crea automáticamente 'createdAt' (fecha de creación) y 'updatedAt'
 });
 
 export default User;

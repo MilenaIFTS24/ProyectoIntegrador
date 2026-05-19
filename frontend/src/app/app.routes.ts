@@ -1,16 +1,29 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { roleGuard } from './core/guards/role.guard';
+import { LoginComponent } from './features/auth/login/login.component';
+import { RegisterComponent } from './features/auth/register/register.component';
+import { ContactPageComponent } from './features/contact/contact-page/contact-page.component';
+import { ProductsListComponent } from './features/products/products-list/products-list.component';
+import { ProductDetailComponent } from './features/products/product-detail/product-detail.component';
+import { EventsListComponent } from './features/events/events-list/events-list.component';
+import { EventDetailComponent } from './features/events/event-detail/event-detail.component';
+import { AdminDashboardComponent } from './features/admin/admin-dashboard/admin-dashboard.component';
+import { AdminDashboardHomeComponent } from './features/admin/admin-dashboard-home/admin-dashboard-home.component';
+import { ManageEventsComponent } from './features/admin/manage-events/manage-events.component';
+import { ManageOffersComponent } from './features/admin/manage-offers/manage-offers.component';
+import { ManageProductsComponent } from './features/admin/manage-products/manage-products.component';
+import { ManageReservationsComponent } from './features/admin/manage-reservations/manage-reservations.component';
+import { ManageUsersComponent } from './features/admin/manage-users/manage-users.component';
+import { UserDashboardComponent } from './features/user/user-dashboard/user-dashboard.component';
+import { UserDashboardHomeComponent } from './features/user/user-dashboard-home/user-dashboard-home.component';
+import { MyReservationsComponent } from './features/user/my-reservations/my-reservations.component';
+import { MakeReservationComponent } from './features/user/make-reservation/make-reservation.component';
 
 export const routes: Routes = [
-<<<<<<< HEAD
+
     // --- RUTAS PÚBLICAS ---
-    { path: "login", loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent) },
-    { path: "register", loadComponent: () => import('./features/auth/register/register.component').then(m => m.RegisterComponent) },
-    { path: "", loadComponent: () => import('./features/auth/login/login.component').then(m => m.LoginComponent) },
-    
-    // ... resto de rutas públicas (contacto, products, etc)
-=======
+
     { path: "", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) }, //dirijo al login
     { path: "login", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) },
     { path: "register", loadComponent: () => import('./features/auth/register/register.component').then(m => RegisterComponent) },
@@ -52,8 +65,8 @@ export const routes: Routes = [
         path:'**', 
         redirectTo:'',
         pathMatch: 'full'
-    }
->>>>>>> 5dcb2499a6bfe74d4e56c63bda162e8efec77b4a
+    },
+
 
     // --- RUTA DE ADMINISTRACIÓN ---
     {

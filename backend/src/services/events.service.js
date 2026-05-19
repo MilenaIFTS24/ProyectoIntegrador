@@ -6,10 +6,10 @@ export const getAllEventsService = async () => {
             include: [
                 [
                     sequelize.literal(`(
-                        SELECT COUNT(*)
-                        FROM event_registrations AS registration
-                        WHERE registration.eventId = Events.id
-                    )`),
+                        SELECT CAST(COUNT(*) AS INTEGER)
+                        FROM "event_registrations" AS registration
+                        WHERE registration."eventId" = "Events"."id"
+                    )`), 
                     'currentRegistrations'
                 ]
             ]

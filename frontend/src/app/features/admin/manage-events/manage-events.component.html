@@ -5,10 +5,7 @@
         <input class="search-input" type="search" placeholder="Buscar por título o tipo de evento..." #filter
           (input)="filterResults(filter.value)">
       </div>
-      <button 
-        class="btn-organic-search" 
-        type="button" 
-        (click)="filter.value = ''; filterResults('')">
+      <button class="btn-organic-search" type="button" (click)="filter.value = ''; filterResults('')">
         Limpiar
       </button>
     </form>
@@ -46,14 +43,12 @@
           <td class="product-id-cell" [title]="event.id">#{{ event.id?.substring(0,8) }}...</td>
           <td><span class="product-name">{{ event.title }}</span></td>
           <td>
-            <span class="badge" 
-              [ngClass]="{
+            <span class="badge" [ngClass]="{
                 'badge-tea': event.type === 'degustacion', 
                 'badge-craft': event.type === 'taller',
                 'bg-secondary': event.type === 'feria' || event.type === 'presentacion'
               }">
-              <i class="bi"
-                [ngClass]="{
+              <i class="bi" [ngClass]="{
                   'bi-cup-hot-fill': event.type === 'degustacion', 
                   'bi-tools': event.type === 'taller',
                   'bi-shop-window': event.type === 'feria',
@@ -68,15 +63,15 @@
           <td>
             <div class="stock-wrapper">
               @if (event.requiresRegistration) {
-                <span class="stock-indicator"
-                  [ngClass]="(event.currentRegistrations || 0) < (event.maxCapacity || 0) ? 'bg-success' : 'bg-danger'">
-                </span>
-                <span class="stock-value">
-                  {{ event.currentRegistrations || 0 }} / {{ event.maxCapacity }}
-                </span>
+              <span class="stock-indicator"
+                [ngClass]="(event.currentRegistrations || 0) < (event.maxCapacity || 0) ? 'bg-success' : 'bg-danger'">
+              </span>
+              <span class="stock-value">
+                {{ event.currentRegistrations || 0 }} / {{ event.maxCapacity }}
+              </span>
               } @else {
-                <span class="stock-indicator bg-info"></span>
-                <span class="stock-value text-muted small">LIBRE</span>
+              <span class="stock-indicator bg-info"></span>
+              <span class="stock-value text-muted small">LIBRE</span>
               }
             </div>
           </td>
@@ -85,7 +80,7 @@
               <button type="button" class="btn btn-action btn-edit" (click)="updateEvent(event)" title="Editar">
                 <i class="bi bi-pencil-square"></i>
               </button>
-              <button type="button" class="btn btn-action btn-delete" (click)="deleteEvent(event.id!)" title="Eliminar">
+              <button type="button" class="btn btn-action btn-delete" (click)="deleteEvent(event)" title="Eliminar">
                 <i class="bi bi-trash3-fill"></i>
               </button>
             </div>
@@ -99,6 +94,30 @@
       </tbody>
     </table>
   </div>
+  <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
+    <span class="pagination-info">
+      Mostrando <strong>{{ paginatedEvents.length }}</strong> de <strong>{{ filteredEventList().length }}</strong>
+      eventos
+    </span>
+    <div class="pagination-controls d-flex gap-2">
+      <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+        <i class="bi bi-chevron-left"></i>
+      </button>
+
+      <div class="page-numbers d-flex gap-1">
+        @for (p of [].constructor(totalPages); track $index) {
+        <button class="btn btn-page-number" [class.active]="$index + 1 === currentPage" (click)="goToPage($index + 1)">
+          {{ $index + 1 }}
+        </button>
+        }
+      </div>
+
+      <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0"
+        (click)="goToPage(currentPage + 1)">
+        <i class="bi bi-chevron-right"></i>
+      </button>
+    </div>
+  </div>
 
   <div class="card product-card shadow mb-5 event-card">
     <div class="card-header d-flex justify-content-between align-items-center">
@@ -111,83 +130,111 @@
 
     <div class="card-body p-4">
       <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+
         <div class="row g-3 mb-4">
-          <div class="col-md-6">
+          <div class="col-md-8">
             <label class="form-label main-label">Título del Evento <span class="text-danger">*</span></label>
-            <input type="text" formControlName="title" class="form-control custom-input"
-              [ngClass]="{'is-invalid': eventForm.get('title')?.invalid && eventForm.get('title')?.touched}">
+            <input type="text" formControlName="title" class="form-control custom-input">
           </div>
-          <div class="col-md-3">
-            <label class="form-label main-label">Tipo <span class="text-danger">*</span></label>
+          <div class="col-md-4">
+            <label class="form-label main-label">Tipo de Evento <span class="text-danger">*</span></label>
             <select formControlName="type" class="form-select custom-input">
-              <option value="taller">🎨 Taller</option>
-              <option value="degustacion">🍃 Degustación</option>
+              <option value="taller">🍃 Taller</option>
               <option value="feria">🎪 Feria</option>
-              <option value="presentacion">📢 Presentación</option>
+              <option value="presentacion">📖 Presentación</option>
+              <option value="degustacion">🍵 Degustación</option>
+              <option value="actividad">🎨 Actividad</option>
             </select>
-          </div>
-          <div class="col-md-3">
-            <label class="form-label main-label">Precio <span class="text-danger">*</span></label>
-            <div class="input-group">
-              <span class="input-group-text">$</span>
-              <input type="number" formControlName="price" class="form-control custom-input">
-            </div>
           </div>
         </div>
 
         <div class="row g-3 mb-4">
           <div class="col-md-4">
             <label class="form-label main-label">Fecha <span class="text-danger">*</span></label>
-            <input type="date" formControlName="date" class="form-control custom-input">
+            <input type="date" formControlName="date" [min]="minDate" class="form-control custom-input">
           </div>
           <div class="col-md-4">
             <label class="form-label main-label">Hora Inicio <span class="text-danger">*</span></label>
             <input type="time" formControlName="startTime" class="form-control custom-input">
           </div>
           <div class="col-md-4">
-            <label class="form-label main-label">Capacidad Máxima</label>
-            <input type="number" formControlName="maxCapacity" class="form-control custom-input"
-              [class.opacity-inactive]="!eventForm.get('requiresRegistration')?.value">
+            <label class="form-label">Hora Fin</label>
+            <input type="time" formControlName="endTime" class="form-control custom-input">
           </div>
         </div>
 
         <div class="row g-3 mb-4">
-          <div class="col-md-6">
-            <label class="form-label main-label">Ubicación / Link <span class="text-danger">*</span></label>
+          <div class="col-md-8">
+            <label class="form-label main-label">Ubicación <span class="text-danger">*</span></label>
             <input type="text" formControlName="location" class="form-control custom-input">
           </div>
-          <div class="col-md-6">
-            <label class="form-label main-label">Contacto Organizador <span class="text-danger">*</span></label>
-            <input type="text" formControlName="organizerContact" class="form-control custom-input" placeholder="Email o Teléfono">
+          <div class="col-md-4 d-flex align-items-end pb-2">
+            <div class="form-check form-switch ms-2">
+              <input class="form-check-input" type="checkbox" formControlName="isVirtual" id="virtualSwitch">
+              <label class="form-check-label fw-bold" for="virtualSwitch">Evento Virtual</label>
+            </div>
           </div>
         </div>
 
         <div class="row g-3 mb-4">
-          <div class="col-md-12">
+          <div class="col-md-3">
+            <div class="form-check form-switch mt-4">
+              <input class="form-check-input" type="checkbox" formControlName="isFree" id="freeSwitch">
+              <label class="form-check-label fw-bold" for="freeSwitch">Es Gratuito</label>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label main-label">Precio ($) <span class="text-danger">*</span></label>
+            <input type="number" formControlName="price" class="form-control custom-input">
+          </div>
+          <div class="col-md-3">
+            <label class="form-label main-label">Cupo Máximo <span class="text-danger">*</span></label>
+            <input type="number" formControlName="maxCapacity" class="form-control custom-input">
+          </div>
+          <div class="col-md-3">
+            <div class="form-check form-switch mt-4">
+              <input class="form-check-input" type="checkbox" formControlName="requiresRegistration" id="regSwitch">
+              <label class="form-check-label fw-bold" for="regSwitch">Requiere Inscripción</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <div class="col-md-4">
+            <label class="form-label">Enfoque Ecológico</label>
+            <input type="text" formControlName="ecoFocus" class="form-control custom-input"
+              placeholder="Ej: Residuo cero">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Materiales</label>
+            <input type="text" formControlName="materials" class="form-control custom-input"
+              placeholder="Ej: Traer cuaderno">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Contacto del Organizador</label>
+            <input type="text" formControlName="organizerContact" class="form-control custom-input">
+          </div>
+        </div>
+
+        <div class="row mb-4">
+          <div class="col-12">
             <label class="form-label main-label">Descripción <span class="text-danger">*</span></label>
             <textarea formControlName="description" class="form-control custom-input" rows="3"></textarea>
           </div>
         </div>
-
-        <div class="row g-3 mb-4">
-          <div class="col-md-4 d-flex align-items-center">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="requiresRegistration" id="reqSwitch">
-              <label class="form-check-label" for="reqSwitch">Requiere Inscripción</label>
-            </div>
-          </div>
-          <div class="col-md-4 d-flex align-items-center">
-            <div class="form-check form-switch">
-              <input class="form-check-input" type="checkbox" formControlName="isFree" id="freeSwitch">
-              <label class="form-check-label" for="freeSwitch">Es Gratuito</label>
-            </div>
+        <div class="col-md-3">
+          <div class="form-check form-switch mt-4">
+            <input class="form-check-input" type="checkbox" formControlName="isCancelledByRain" id="rainSwitch">
+            <label class="form-check-label fw-bold" for="rainSwitch">☔ Se cancela por lluvia</label>
           </div>
         </div>
 
-        <div class="card-footer-custom mt-4 d-flex justify-content-end gap-3">
-          <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">Cancelar</button>
-          <button type="submit" [disabled]="eventForm.invalid || loading" class="btn btn-save">
-            {{ loading ? 'Procesando...' : (eventForm.get('id')?.value ? 'Actualizar Evento' : 'Crear Evento') }}
+        <div class="divider"></div>
+        <div class="d-flex justify-content-end gap-3 mt-4">
+          <button type="button" class="btn btn-cancel" (click)="onCancel()">Cancelar</button>
+          <button type="submit" class="btn btn-save" [disabled]="eventForm.invalid || loading">
+            {{ eventForm.get('id')?.value ? 'Actualizar Evento' : 'Crear Evento' }}
           </button>
         </div>
       </form>

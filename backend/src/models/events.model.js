@@ -22,7 +22,7 @@ const Events = sequelize.define('Events', {
   price: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },
   requiresRegistration: { type: DataTypes.BOOLEAN, defaultValue: false },
   maxCapacity: { type: DataTypes.INTEGER, allowNull: true },
-  organizerContact: { type: DataTypes.STRING, allowNull: false },
+  organizerContact: { type: DataTypes.STRING, allowNull: true },
   promoImage: { type: DataTypes.STRING, allowNull: true },
   ecoFocus: { type: DataTypes.STRING, allowNull: true },
   materials: { type: DataTypes.TEXT, allowNull: true },

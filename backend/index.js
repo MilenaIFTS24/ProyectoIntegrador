@@ -52,7 +52,7 @@ async function startApplication() {
 
     // 3. Iniciar el servidor
     app.listen(PORT, () => {
-      console.log(`Servidor de CoreCode corriendo en: http://localhost:${PORT}`);
+      console.log(`Servidor corriendo en: http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('Error crítico al iniciar la aplicación:', error);

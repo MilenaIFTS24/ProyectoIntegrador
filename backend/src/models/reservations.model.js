@@ -1,5 +1,5 @@
 import { DataTypes } from 'sequelize';
-import sequelize from '../data/database.js'; 
+import sequelize from '../data/database.js';
 
 const Reservations = sequelize.define('Reservations', {
   id: {
@@ -7,7 +7,10 @@ const Reservations = sequelize.define('Reservations', {
     defaultValue: DataTypes.UUIDV4,
     primaryKey: true
   },
-  userId: { type: DataTypes.UUID, allowNull: false },
+  userId: {
+    type: DataTypes.UUID,
+    allowNull: false
+  },
   contactEmail: { type: DataTypes.STRING, allowNull: false },
   subtotal: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
   discount: { type: DataTypes.DECIMAL(10, 2), defaultValue: 0 },

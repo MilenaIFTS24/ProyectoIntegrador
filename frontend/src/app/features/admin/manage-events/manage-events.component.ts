@@ -2,8 +2,8 @@ import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { EventService } from '../../../core/services/event.service';
-import { Event } from '../../../core/models/event.model';
-//import { NotificationService } from '../../../core/services/notification.service';
+import { Event as CalendarEvent } from '../../../core/models/event.model'; // Alias para evitar conflicto con el DOM
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-manage-events',
@@ -15,33 +15,98 @@ import { Event } from '../../../core/models/event.model';
 export class ManageEventsComponent implements OnInit {
   private eventService = inject(EventService);
   private fb = inject(FormBuilder);
-  //private notify = inject(NotificationService);
+  private notify = inject(NotificationService);
 
-  public events = signal<Event[]>([]);
-  public filteredEventList = signal<Event[]>([]);
+  // Signals con el tipo correcto del alias
+  public events = signal<CalendarEvent[]>([]);
+  public filteredEventList = signal<CalendarEvent[]>([]);
+
   public loading = true;
   public errorMessage = '';
   public currentPage = 1;
-  public itemsPerPage = 10;
+  public itemsPerPage = 5;
   private readonly NAVBAR_OFFSET = 110;
 
+  // Formulario con campos opcionales y valores por defecto
   public eventForm = this.fb.group({
     id: [null as string | null],
     title: ['', [Validators.required, Validators.minLength(5)]],
     description: ['', [Validators.required]],
     date: ['', Validators.required],
     startTime: ['', Validators.required],
-    location: ['Tienda de Té', Validators.required],
+    endTime: [null as string | null],
+    location: ['Tienda de Té'],
     type: ['taller', Validators.required],
-    maxCapacity: [10, [Validators.min(1)]],
+    maxCapacity: [10, [Validators.min(0)]],
     requiresRegistration: [true],
     isFree: [true],
     price: [0],
-    organizerContact: ['', Validators.required]
+    organizerContact: [''],
+    isVirtual: [false],
+    ecoFocus: [''],
+    materials: [''],
+    isCancelledByRain: [false]
   });
+
+  get minDate(): string {
+    const today = new Date();
+    return today.toISOString().split('T')[0];
+  }
 
   ngOnInit(): void {
     this.loadEvents();
+    this.setupFormListeners();
+    this.checkInitialStates();
+  }
+
+  private checkInitialStates(): void {
+    // Verificación inicial para campos que deben nacer bloqueados
+    if (this.eventForm.get('isFree')?.value) {
+      this.eventForm.get('price')?.disable();
+    }
+    if (this.eventForm.get('isVirtual')?.value) {
+      this.eventForm.get('location')?.disable();
+    }
+    if (!this.eventForm.get('requiresRegistration')?.value) {
+      this.eventForm.get('maxCapacity')?.disable();
+    }
+  }
+
+  private setupFormListeners(): void {
+    // Listener: Gratuidad -> Precio
+    this.eventForm.get('isFree')?.valueChanges.subscribe((isFree: boolean | null) => {
+      const priceControl = this.eventForm.get('price');
+      if (isFree) {
+        priceControl?.setValue(0);
+        priceControl?.disable();
+      } else {
+        priceControl?.enable();
+      }
+    });
+
+    // Listener: Virtualidad -> Ubicación
+    this.eventForm.get('isVirtual')?.valueChanges.subscribe((isVirtual: boolean | null) => {
+      const locationControl = this.eventForm.get('location');
+      if (isVirtual) {
+        locationControl?.setValue('Virtual / Online');
+        locationControl?.disable();
+      } else {
+        locationControl?.enable();
+        locationControl?.setValue('Tienda de Té');
+      }
+    });
+
+    // Listener: Inscripción -> Cupo (0 = LIBRE)
+    this.eventForm.get('requiresRegistration')?.valueChanges.subscribe((requires: boolean | null) => {
+      const maxCapacityControl = this.eventForm.get('maxCapacity');
+      if (!requires) {
+        maxCapacityControl?.setValue(0);
+        maxCapacityControl?.disable();
+      } else {
+        maxCapacityControl?.enable();
+        if (maxCapacityControl?.value === 0) maxCapacityControl?.setValue(10);
+      }
+    });
   }
 
   loadEvents(): void {
@@ -54,7 +119,7 @@ export class ManageEventsComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
-        //this.notify.toast('Error al cargar eventos', 'error');
+        this.notify.toast('Error al cargar eventos', 'error');
       }
     });
   }
@@ -62,67 +127,128 @@ export class ManageEventsComponent implements OnInit {
   filterResults(text: string): void {
     const term = text.toLowerCase().trim();
     this.filteredEventList.set(
-      this.events().filter(e => e.title.toLowerCase().includes(term) || e.type.includes(term))
+      this.events().filter(e =>
+        e.title.toLowerCase().includes(term) ||
+        e.type.toLowerCase().includes(term)
+      )
     );
     this.currentPage = 1;
   }
 
-  updateEvent(event: Event): void {
+  updateEvent(event: CalendarEvent): void {
     this.eventForm.reset();
+
+    // Habilitar temporalmente para que patchValue escriba los datos
+    this.eventForm.get('price')?.enable();
+    this.eventForm.get('location')?.enable();
+    this.eventForm.get('maxCapacity')?.enable();
+
     this.eventForm.patchValue({ ...event } as any);
-    //this.notify.toast(`Editando: ${event.title}`, 'info');
+
+    // Re-aplicar bloqueos según los datos del evento cargado
+    this.checkInitialStates();
+
+    this.notify.toast(`Editando: ${event.title}`, 'info');
     this.scrollTo('.event-card');
   }
 
-  deleteEvent(id: string): void {
-    // Usamos una confirmación simple antes de proceder
-    if (confirm('¿Estás seguro de que deseas eliminar este evento? Esta acción no se puede deshacer.')) {
-      this.loading = true;
-      this.eventService.deleteEvent(id).subscribe({
-        next: () => {
-          //his.notify.toast('Evento eliminado correctamente', 'success');
-          this.loadEvents(); // Recargamos la lista para actualizar la tabla
-        },
-        error: (err) => {
-          this.loading = false;
-          console.error('Error al eliminar:', err);
-          //this.notify.toast('No se pudo eliminar el evento', 'error');
-        }
-      });
-    }
-  }
-
-  onSubmit(): void {
-    if (this.eventForm.invalid) {
-      //this.notify.toast('Completa los campos requeridos', 'warning');
+  deleteEvent(event: CalendarEvent): void {
+    if (!event || !event.id) {
+      this.notify.toast('No se pudo identificar el evento', 'error');
       return;
     }
 
-    this.loading = true;
-    const data = this.eventForm.getRawValue() as Event;
-
-    const request = data.id 
-      ? this.eventService.updateEvent(data.id, data)
-      : this.eventService.createEvent(data);
-
-    request.subscribe({
-      next: () => {
-        //this.notify.toast(data.id ? 'Actualizado' : 'Creado');
-        this.loadEvents();
-        this.onCancel();
-      },
-      error: () => {
-        this.loading = false;
-        //this.notify.toast('Error al guardar', 'error');
+    this.notify.confirm(
+      '¿Estás seguro?',
+      `Vas a eliminar el evento "${event.title}"`
+    ).then(result => {
+      if (result.isConfirmed) {
+        this.loading = true;
+        this.eventService.deleteEvent(event.id!).subscribe({
+          next: () => {
+            this.notify.toast('Evento eliminado');
+            this.loadEvents();
+          },
+          error: (err) => {
+            this.loading = false;
+            this.notify.toast(err.message || 'Error al eliminar', 'error');
+          }
+        });
       }
     });
   }
 
-  onCancel(): void {
-    this.eventForm.reset({ location: 'Tienda de Té', type: 'taller', isFree: true, requiresRegistration: true });
-    this.loading = false;
+  onSubmit(): void {
+  if (this.eventForm.invalid) return;
+
+  this.loading = true;
+  
+  const rawData = this.eventForm.getRawValue();
+  
+  const data: any = { 
+    ...rawData,
+    
+    price: rawData.isFree ? 0 : Number(rawData.price),
+    maxCapacity: rawData.requiresRegistration ? Number(rawData.maxCapacity) : null
+  };
+ 
+  const nullableFields = [
+    'endTime', 
+    'organizerContact', 
+    'promoImage', 
+    'ecoFocus', 
+    'materials', 
+    'maxCapacity'
+  ];
+
+  nullableFields.forEach(field => {
+    if (data[field] === '' || data[field] === undefined) {
+      data[field] = null;
+    }
+  });
+
+  if (!data.id) {
+    delete data.id;
   }
 
+  const request = data.id
+    ? this.eventService.updateEvent(data.id, data)
+    : this.eventService.createEvent(data);
+
+  request.subscribe({
+    next: () => {
+      this.notify.toast(data.id ? 'Evento actualizado' : 'Evento creado');
+      this.loadEvents();
+      this.onCancel();
+    },
+    error: (err) => {
+      this.loading = false;
+      console.error('Error del servidor:', err);
+      this.notify.toast('Error al procesar la solicitud', 'error');
+    }
+  });
+}
+  onCancel(): void {
+  this.eventForm.reset({ 
+    location: 'Tienda de Té', 
+    type: 'taller', 
+    isFree: true, 
+    requiresRegistration: true, 
+    isVirtual: false,
+    price: 0,
+    maxCapacity: 10,
+    isCancelledByRain: false
+  });
+  
+  // Re-aplicamos los estados de habilitación iniciales
+  this.eventForm.get('price')?.disable();
+  this.eventForm.get('location')?.enable();
+  this.eventForm.get('maxCapacity')?.enable();
+  
+  this.loading = false;
+}
+
+  // --- Helpers Visuales ---
   private scrollTo(selector: string): void {
     setTimeout(() => {
       const el = document.querySelector(selector);

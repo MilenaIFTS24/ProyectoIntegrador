@@ -34,7 +34,7 @@ export class AdminDashboardHomeComponent implements OnInit {
   public isSystemOnline = false;
 
   ngOnInit(): void {
-    // PROTECCIÓN: Solo cargar datos si el rol es Admin
+    // Solo cargar datos si el rol es Admin
     if (this.authService.isAdmin()) {
       this.loadDashboardData();
     } else {
@@ -49,7 +49,7 @@ export class AdminDashboardHomeComponent implements OnInit {
       products: this.productService.getProducts().pipe(catchError(err => { console.error('Error Productos:', err); return of(null); })),
       users: this.userService.getUsers().pipe(catchError(err => { console.error('Error Usuarios:', err); return of(null); })),
       events: this.eventService.getEvents().pipe(catchError(err => { console.error('Error Eventos:', err); return of(null); })),
-      reservations: this.reservationService.getReservations().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); }))
+      reservations: this.reservationService.findAllReservationsService().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); }))
     }).subscribe({
       next: (res) => {
         this.stats = [

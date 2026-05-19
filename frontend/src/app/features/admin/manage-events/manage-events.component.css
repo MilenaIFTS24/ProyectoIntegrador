@@ -108,6 +108,66 @@
 .col-stock { width: 120px; }
 .col-actions { width: 180px; }
 
+/* --- PAGINACIÓN --- */
+.pagination-wrapper {
+    padding: 0.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.pagination-info {
+    font-size: 0.9rem;
+    color: #333;
+    font-weight: 500;
+}
+
+.btn-pagination {
+    background-color: #000000 !important;
+    color: #d4a559 !important; /* Tu color-oro-antiguo */
+    border: 2px solid #000000 !important;
+    border-radius: 8px;
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.btn-pagination:disabled {
+    background-color: #e0e0e0 !important;
+    border-color: #e0e0e0 !important;
+    color: #999 !important;
+}
+
+.btn-page-number {
+    border: 2px solid #000000 !important;
+    background-color: #ffffff !important;
+    color: #000000 !important;
+    font-weight: bold;
+    border-radius: 8px;
+    min-width: 38px;
+    height: 38px;
+    transition: all 0.2s;
+}
+
+.btn-page-number.active {
+    background-color: #000000 !important;
+    color: #d4a559 !important;
+    border-color: #000000 !important;
+}
+
+.btn-page-number:hover:not(.active) {
+    border-color: #8b6e4a !important; 
+    color: #8b6e4a !important;
+}
+
+
+.btn-pagination i, .btn-page-number i {
+    -webkit-text-stroke: 0.5px;
+}
+
 .badge-id {
     background-color: var(--color-oro-antiguo) !important;
     color: #000000 !important;                            

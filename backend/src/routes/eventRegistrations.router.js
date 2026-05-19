@@ -4,7 +4,7 @@ import {
     getUserRegistrations, 
     cancelRegistration, 
     getEventAttendees 
-} from '../controllers/eventRegistrations.controller.js';
+} from '../controllers/eventRegistrations.controlles.js';
 import { authenticateToken, isAdmin } from '../middlewares/auth.middleware.js';
 
 const router = Router();

@@ -1,4 +1,4 @@
-// src/models/index.js
+import sequelize from '../data/database.js';
 import Users from './users.model.js';
 import Products from './products.model.js';
 import Reservations from './reservations.model.js';
@@ -46,6 +46,7 @@ EventRegistrations.belongsTo(Events, { foreignKey: 'eventId', as: 'event' });
 
 
 export {
+  sequelize,
   Users,
   Products,
   Reservations,

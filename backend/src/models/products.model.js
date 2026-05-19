@@ -3,9 +3,9 @@ import sequelize from '../data/database.js';
 
 const Product = sequelize.define('Product', {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true
+        type: DataTypes.UUID,
+        defaultValue: DataTypes.UUIDV4,
+        primaryKey: true
     },
     // --- Atributos Compartidos ---
     name: { type: DataTypes.STRING, allowNull: false },
@@ -13,9 +13,9 @@ const Product = sequelize.define('Product', {
     price: { type: DataTypes.FLOAT, allowNull: false },
     stock: { type: DataTypes.INTEGER, defaultValue: 0 },
     image: { type: DataTypes.STRING },
-    productType: { 
-        type: DataTypes.ENUM('tea', 'craft'), 
-        allowNull: false 
+    productType: {
+        type: DataTypes.ENUM('tea', 'craft'),
+        allowNull: false
     },
 
     // --- Atributos específicos de Tés ---
@@ -33,9 +33,9 @@ const Product = sequelize.define('Product', {
     creationDate: { type: DataTypes.STRING }, // Podría ser DATE, pero mantengo STRING
     weight: { type: DataTypes.FLOAT },
     isUnique: { type: DataTypes.BOOLEAN, defaultValue: false },
-    materials: { 
+    materials: {
         type: DataTypes.ARRAY(DataTypes.STRING), // PostgreSQL soporta arreglos nativos
-        defaultValue: [] 
+        defaultValue: []
     },
     ecoFriendly: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, {
