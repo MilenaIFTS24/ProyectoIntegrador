@@ -33,7 +33,6 @@ export const createReservationService = async (reservationData, items) => {
 };
 
 export const findAllReservationsService = async (status) => {
-    // Si viene un estado (pendiente, listo, etc), filtramos. Si no, trae todo.
     const where = status ? { status } : {};
     return await Reservations.findAll({
         where,
