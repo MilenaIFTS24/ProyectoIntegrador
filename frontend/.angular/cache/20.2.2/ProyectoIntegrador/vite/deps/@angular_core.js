@@ -497,15 +497,10 @@ import {
   ɵɵvalidateIframeAttribute,
   ɵɵviewQuery,
   ɵɵviewQuerySignal
-<<<<<<< HEAD
 } from "./chunk-UWGLRKLR.js";
 import "./chunk-HWYXSU2G.js";
 import "./chunk-JRFR6BLO.js";
 import "./chunk-MARUHEWW.js";
-=======
-} from "./chunk-HIRBPE3E.js";
-import "./chunk-RSS3ODKE.js";
->>>>>>> ca1b128745368753354883f740c8bca22c791bb9
 import "./chunk-WDMUDEB6.js";
 export {
   ANIMATION_MODULE_TYPE,

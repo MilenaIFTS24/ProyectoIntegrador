@@ -15,7 +15,7 @@
     background-color: transparent !important;
 }
 
-/* --- BARRA DE BÚSQUEDA --- */
+/* --- BARRA DE BÚSQUEDA (Corregida) --- */
 .search-wrapper {
     max-width: 550px;
     margin: 2rem auto;
@@ -36,7 +36,7 @@
 .input-container {
     display: flex;
     align-items: center;
-    flex: 1; /* Esto estira el input y empuja el botón al final */
+    flex: 1;
     margin-right: 15px;
 }
 
@@ -51,7 +51,7 @@
 }
 
 .btn-organic-search {
-    background-color: #8b6e4a; /* Bronce profundo */
+    background-color: #8b6e4a;
     color: #fff;
     border: none;
     padding: 10px 25px;
@@ -66,19 +66,14 @@
     background-color: #d4a559;
 }
 
-/* --- TABLA PREMIUM --- */
+/* --- TABLA PREMIUM (Negro y Oro) --- */
 .table-responsive {
     background-color: #ffffff !important;
     border: 2px solid #000000 !important;
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 2rem;
-}
-
-.custom-table {
-    border-collapse: separate;
-    border-spacing: 0;
-    width: 100%;
+    scroll-margin-top: 120px;
 }
 
 .custom-table thead {
@@ -99,6 +94,9 @@
     vertical-align: middle;
     border-bottom: 1px solid #eeeeee;
 }
+
+.product-id-cell { color: #6c757d; font-family: monospace; }
+.product-name { color: #000; }
 
 /* --- BADGES DE ESTADO --- */
 .badge-tea {
@@ -126,7 +124,7 @@
     border: 1px solid #B22222;
 }
 
-/* --- PAGINACIÓN --- */
+/* --- PAGINACIÓN (Fondo Gris en Disabled) --- */
 .pagination-wrapper {
     display: flex;
     justify-content: space-between;
@@ -144,15 +142,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.btn-pagination:disabled {
+    background-color: #e0e0e0 !important;
+    border-color: #e0e0e0 !important;
+    color: #999999 !important;
+    cursor: not-allowed;
 }
 
 .btn-page-number {
     border: 2px solid #000000;
     background-color: #ffffff;
+    color: #000000;
     font-weight: bold;
     border-radius: 8px;
     min-width: 38px;
     height: 38px;
+    transition: all 0.2s;
 }
 
 .btn-page-number.active {
@@ -160,12 +169,13 @@
     color: #d4a559;
 }
 
-/* --- PANEL DE GESTIÓN --- */
+/* --- PANEL DE GESTIÓN (RESERVATION-CARD) --- */
 .reservation-card {
     border: 2px solid #000000 !important;
     border-radius: 12px;
     background: white;
     margin-bottom: 8rem;
+    scroll-margin-top: 120px;
 }
 
 .card-header {
@@ -203,14 +213,9 @@ input:disabled, textarea:disabled {
     background: rgba(40, 167, 69, 0.02);
 }
 
-.text-tea {
-    color: #3CB371 !important;
-    font-weight: 800;
-    text-transform: uppercase;
-    font-size: 0.85rem;
-}
+.text-tea { color: #3CB371 !important; font-weight: 800; text-transform: uppercase; }
 
-/* BOTONES */
+/* BOTONES FINALES */
 .btn-save {
     background-color: #6082B6 !important; /* celeste ahumado */
     color: white !important;
@@ -219,40 +224,25 @@ input:disabled, textarea:disabled {
     font-weight: 700;
 }
 
-.btn-cancel {
-    border: 2px solid #000000;
-    color: #000000;
-    font-weight: 700;
-    padding: 0.8rem 2rem;
-    background: transparent;
+.btn-action {
+    width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+    border: 2px solid #000000; border-radius: 8px; background: transparent;
 }
 
-.divider {
-    border-top: 2px solid #000000;
-    opacity: 1;
-    margin: 2rem 0;
-}
+.btn-save-mini { background-color: #6082B6; color: white; border: 2px solid #000000; }
+
+.btn-cancel { border: 2px solid #000000; color: #000; font-weight: 700; padding: 0.8rem 2rem; }
+
+.divider { border-top: 2px solid #000; opacity: 1; margin: 2rem 0; }
 
 /* --- RESPONSIVE RESUMIDO --- */
 @media (max-width: 992px) {
-    .col-md-3, .col-md-4, .col-md-5, .col-md-6 {
-        width: 100% !important;
-    }
+    .col-md-3, .col-md-4, .col-md-5, .col-md-6 { width: 100% !important; }
 }
 
 @media (max-width: 768px) {
-    .col-id, .text-muted {
-        display: none;
-    }
-    .pagination-wrapper {
-        flex-direction: column;
-        gap: 1rem;
-        text-align: center;
-    }
-    .card-footer-custom {
-        flex-direction: column-reverse;
-    }
-    .btn-save, .btn-cancel {
-        width: 100%;
-    }
+    .col-id, .text-muted { display: none; }
+    .pagination-wrapper { flex-direction: column; gap: 1rem; text-align: center; }
+    .card-footer-custom { flex-direction: column-reverse; gap: 1rem; }
+    .btn-save, .btn-cancel { width: 100%; }
 }

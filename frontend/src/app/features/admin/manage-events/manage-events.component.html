@@ -15,7 +15,6 @@
     <table class="table custom-table">
       <thead>
         <tr>
-          <th class="col-id">ID</th>
           <th>Evento</th>
           <th>Tipo</th>
           <th>Fecha y Hora</th>
@@ -40,7 +39,6 @@
 
         @for (event of paginatedEvents; track event.id) {
         <tr>
-          <td class="product-id-cell" [title]="event.id">#{{ event.id?.substring(0,8) }}...</td>
           <td><span class="product-name">{{ event.title }}</span></td>
           <td>
             <span class="badge" [ngClass]="{

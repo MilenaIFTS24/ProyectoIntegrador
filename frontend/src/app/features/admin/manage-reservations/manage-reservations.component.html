@@ -15,7 +15,6 @@
         <table class="table custom-table">
             <thead>
                 <tr>
-                    <th class="col-id">ID</th>
                     <th>Cliente</th>
                     <th>Retiro</th>
                     <th>Total</th>
@@ -40,7 +39,6 @@
 
                 @for (res of paginatedReservations; track res.id) {
                 <tr>
-                    <td class="product-id-cell">#{{ res.id?.substring(0,8) }}</td>
                     <td>
                         <div class="d-flex flex-column">
                             <span class="product-name fw-bold">{{ res.contactEmail }}</span>

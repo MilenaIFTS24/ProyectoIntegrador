@@ -57,17 +57,10 @@ import {
   ɵɵinject,
   ɵɵinjectAttribute,
   ɵɵstyleProp
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
 } from "./chunk-UWGLRKLR.js";
 import {
   Subject
 } from "./chunk-MARUHEWW.js";
-========
-} from "./chunk-HIRBPE3E.js";
-import {
-  Subject
-} from "./chunk-RSS3ODKE.js";
->>>>>>>> ca1b128745368753354883f740c8bca22c791bb9:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js
 import {
   __async,
   __spreadProps,
@@ -5198,8 +5191,4 @@ export {
    * License: MIT
    *)
 */
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-IDU4EOZP.js
 //# sourceMappingURL=chunk-IDU4EOZP.js.map
-========
-//# sourceMappingURL=chunk-YTB2QOU7.js.map
->>>>>>>> ca1b128745368753354883f740c8bca22c791bb9:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-YTB2QOU7.js

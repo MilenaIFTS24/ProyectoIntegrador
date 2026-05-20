@@ -18,7 +18,6 @@
         <table class="table custom-table">
             <thead>
                 <tr>
-                    <th class="col-id">ID</th>
                     <th>Producto</th>
                     <th>Tipo</th>
                     <th>Precio</th>
@@ -43,7 +42,6 @@
 
                 @for (product of paginatedProducts; track product.id) {
                 <tr>
-                    <td class="product-id-cell">#{{ product.id }}</td>
                     <td><span class="product-name">{{ product.name }}</span></td>
                     <td>
                         <span class="badge" [ngClass]="product.productType === 'tea' ? 'badge-tea' : 'badge-craft'">

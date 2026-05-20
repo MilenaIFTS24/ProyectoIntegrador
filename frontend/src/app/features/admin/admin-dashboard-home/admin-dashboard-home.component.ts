@@ -49,7 +49,7 @@ export class AdminDashboardHomeComponent implements OnInit {
       products: this.productService.getProducts().pipe(catchError(err => { console.error('Error Productos:', err); return of(null); })),
       users: this.userService.getUsers().pipe(catchError(err => { console.error('Error Usuarios:', err); return of(null); })),
       events: this.eventService.getEvents().pipe(catchError(err => { console.error('Error Eventos:', err); return of(null); })),
-      reservations: this.reservationService.findAllReservationsService().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); }))
+      reservations: this.reservationService.getAll().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); }))
     }).subscribe({
       next: (res) => {
         this.stats = [

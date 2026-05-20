@@ -17,7 +17,6 @@
     <table class="table custom-table">
       <thead>
         <tr>
-          <th class="col-id">ID</th>
           <th>Nombre Completo</th>
           <th>Email</th>
           <th>Rol</th>
@@ -28,7 +27,6 @@
       <tbody>
         @for (user of paginatedUsers; track user.id) {
         <tr>
-          <td class="product-id-cell">#{{ user.id }}</td>
           <td class="user-name">{{ user.fullName }}</td>
           <td>{{ user.email }}</td>
           <td>

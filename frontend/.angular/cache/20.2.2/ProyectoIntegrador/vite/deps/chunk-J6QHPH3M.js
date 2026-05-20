@@ -1,21 +1,13 @@
 import {
   withHttpTransferCache
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 } from "./chunk-GC66YIDI.js";
-========
-} from "./chunk-3QGGR4IJ.js";
->>>>>>>> ca1b128745368753354883f740c8bca22c791bb9:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 import {
   CommonModule,
   DomAdapter,
   PLATFORM_BROWSER_ID,
   getDOM,
   setRootDomAdapter
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 } from "./chunk-IDU4EOZP.js";
-========
-} from "./chunk-YTB2QOU7.js";
->>>>>>>> ca1b128745368753354883f740c8bca22c791bb9:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 import {
   XhrFactory,
   parseCookieValue
@@ -83,11 +75,7 @@ import {
   ɵɵdefineInjector,
   ɵɵdefineNgModule,
   ɵɵinject
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 } from "./chunk-UWGLRKLR.js";
-========
-} from "./chunk-HIRBPE3E.js";
->>>>>>>> ca1b128745368753354883f740c8bca22c791bb9:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
 import {
   __spreadValues
 } from "./chunk-WDMUDEB6.js";
@@ -2085,8 +2073,4 @@ export {
    * License: MIT
    *)
 */
-<<<<<<<< HEAD:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-J6QHPH3M.js
 //# sourceMappingURL=chunk-J6QHPH3M.js.map
-========
-//# sourceMappingURL=chunk-RGRIXVDD.js.map
->>>>>>>> ca1b128745368753354883f740c8bca22c791bb9:frontend/.angular/cache/20.2.2/ProyectoIntegrador/vite/deps/chunk-RGRIXVDD.js
