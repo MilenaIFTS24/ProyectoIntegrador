@@ -1,33 +1,32 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { Observable } from 'rxjs';
 import { ApiService } from './api.service';
 import { Reservation } from '../models/reservation.model';
-import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ReservationService {
+  private api = inject(ApiService);
+  private path = 'reservations';
 
-  constructor(private _apiService: ApiService) { }
+  getAll(): Observable<Reservation[]> {
+    return this.api.get<Reservation[]>(this.path);
+  }
 
-  getReservations(): Observable<Reservation[]> {
-    return this._apiService.get<Reservation[]>('reservas');
-  };
+  getById(id: string): Observable<Reservation> {
+    return this.api.get<Reservation>(`${this.path}/${id}`);
+  }
 
-  getReservationById(id: number): Observable<Reservation> {
-    return this._apiService.get<Reservation>(`reservas/${id}`);
-  };
+  updateStatus(id: string, status: 'pendiente' | 'listo' | 'entregada' | 'cancelada'): Observable<any> {
+    return this.api.put(`${this.path}/${id}/status`, { status });
+  }
 
-  addReservation(reservation: Omit<Reservation, 'id'>): Observable<Reservation> {
-    return this._apiService.post<Reservation>('reservas', reservation);
-  };
+  updateReservation(id: string, reservation: Partial<Reservation>): Observable<any> {
+    return this.api.put(`${this.path}/${id}`, reservation);
+  }
 
-  updateReservation(reservation: Reservation): Observable<Reservation> {
-    return this._apiService.put<Reservation>(`reservas/${reservation.id}`, reservation);
-  };
-
-  deleteReservation(id: number): Observable<void> {
-    return this._apiService.delete<void>(`reservas/${id}`);
-  };
-  
+  deleteReservation(id: string): Observable<any> {
+    return this.api.delete(`${this.path}/${id}`);
+  }
 }

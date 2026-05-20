@@ -1,1 +1,195 @@
-<p>manage-reservations works!</p>
+<div class="container-fluid manage-container animate__animated animate__fadeIn">
+    <div class="search-wrapper mb-5">
+        <form class="search-form-organic" role="search" (submit)="$event.preventDefault()">
+            <div class="input-container">
+                <input class="search-input" type="search" placeholder="Email, ID o estado..." #filter
+                    (input)="filterResults(filter.value)">
+            </div>
+            <button class="btn-organic-search" type="button" (click)="filter.value = ''; filterResults('')">
+                Limpiar
+            </button>
+        </form>
+    </div>
+
+    <div class="table-responsive shadow-sm mb-4">
+        <table class="table custom-table">
+            <thead>
+                <tr>
+                    <th class="col-id">ID</th>
+                    <th>Cliente</th>
+                    <th>Retiro</th>
+                    <th>Total</th>
+                    <th class="text-center">Estado</th>
+                    <th class="text-center col-actions">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (errorMessage) {
+                <tr>
+                    <td colspan="6" class="text-center py-4">
+                        <div class="alert-error-container">{{ errorMessage }}</div>
+                    </td>
+                </tr>
+                } @else if (loading && reservations.length === 0) {
+                <tr>
+                    <td colspan="6" class="text-center py-5">
+                        <div class="spinner-border text-oro"></div>
+                    </td>
+                </tr>
+                }
+
+                @for (res of paginatedReservations; track res.id) {
+                <tr>
+                    <td class="product-id-cell">#{{ res.id?.substring(0,8) }}</td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <span class="product-name fw-bold">{{ res.contactEmail }}</span>
+                            <small class="text-muted text-uppercase" style="font-size: 0.7rem;">{{ res.paymentMethod }}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column">
+                            <span>{{ res.pickupDate | date:'dd/MM/yyyy' }}</span>
+                            <small class="text-tea fw-bold" style="font-size: 0.75rem;">{{ res.pickupTimeSlot }}</small>
+                        </div>
+                    </td>
+                    <td class="product-price fw-bold">{{ res.totalAmount | currency:'ARS':'symbol-narrow':'1.2-2' }}</td>
+                    <td class="text-center">
+                        <span class="badge w-75 py-2" [ngClass]="{
+                            'bg-warning text-dark': res.status === 'pendiente',
+                            'badge-tea': res.status === 'listo',
+                            'bg-success': res.status === 'entregada',
+                            'bg-danger': res.status === 'cancelada'
+                        }">
+                            {{ res.status | uppercase }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group gap-2">
+                            <button class="btn-action btn-edit" (click)="updateReservation(res)" title="Gestionar">
+                                <i class="bi bi-pencil-square"></i>
+                            </button>
+                            @if (res.status === 'listo') {
+                                <button class="btn-action btn-save-mini" (click)="quickStatusChange(res, 'entregada')" title="Entregar">
+                                    <i class="bi bi-check2-all"></i>
+                                </button>
+                            }
+                        </div>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pagination-wrapper d-flex justify-content-between align-items-center mb-5">
+        <span class="pagination-info">
+            Mostrando <strong>{{ paginatedReservations.length }}</strong> de <strong>{{ filteredReservationList.length }}</strong> reservas
+        </span>
+        
+        <div class="pagination-controls d-flex gap-2">
+            <button class="btn btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+                <i class="bi bi-chevron-left"></i>
+            </button>
+
+            <div class="page-numbers d-flex gap-1">
+                @for (p of [].constructor(totalPages); track $index) {
+                <button class="btn btn-page-number" [class.active]="$index + 1 === currentPage"
+                    (click)="goToPage($index + 1)">
+                    {{ $index + 1 }}
+                </button>
+                }
+            </div>
+
+            <button class="btn btn-pagination" [disabled]="currentPage === totalPages || totalPages === 0"
+                (click)="goToPage(currentPage + 1)">
+                <i class="bi bi-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="card product-card reservation-card shadow mb-5">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3 class="header-title"><i class="bi bi-box-seam"></i> Detalle y Logística</h3>
+            <span class="badge badge-id">ID: {{ reservationForm.get('id')?.value?.substring(0,8) || '---' }}</span>
+        </div>
+
+        <div class="card-body p-4">
+            <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+                
+                <div class="row g-3 mb-4">
+                    <div class="col-md-6">
+                        <label class="form-label main-label">Email de Contacto</label>
+                        <input type="text" formControlName="contactEmail" class="form-control custom-input bg-light border-0">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label main-label">Método de Pago</label>
+                        <input type="text" formControlName="paymentMethod" class="form-control custom-input bg-light border-0 text-uppercase">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label main-label text-tea">Estado de Gestión <span class="text-danger">*</span></label>
+                        <select formControlName="status" class="form-select custom-input border-oro fw-bold">
+                            <option value="pendiente">⏳ Pendiente</option>
+                            <option value="listo">📦 Listo para retirar</option>
+                            <option value="entregada">✅ Entregada</option>
+                            <option value="cancelada">❌ Cancelada</option>
+                        </select>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="row g-4 mb-4">
+                    <div class="col-md-4">
+                        <div class="p-4 border rounded bg-white shadow-sm border-oro h-100">
+                            <h5 class="section-title text-tea mb-3"><i class="bi bi-calendar-check"></i> Entrega</h5>
+                            
+                            <label class="form-label small fw-bold">Fecha de Retiro <span class="text-danger">*</span></label>
+                            <input type="date" formControlName="pickupDate" [min]="minDate" class="form-control custom-input mb-3">
+
+                            <label class="form-label small text-muted">Franja Horaria</label>
+                            <input type="text" formControlName="pickupTimeSlot" class="form-control form-control-sm bg-light border-0 mb-4">
+
+                            <div class="p-3 rounded border border-success-subtle bg-white">
+                                <div class="form-check form-switch m-0">
+                                    <input class="form-check-input custom-check" type="checkbox" formControlName="isEcoPackaging" id="ecoCheck">
+                                    <label class="form-check-label fw-bold text-success" for="ecoCheck">♻️ Eco-Packaging</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-5">
+                        <label class="form-label main-label">Notas del Cliente</label>
+                        <textarea formControlName="clientNotes" class="form-control custom-input bg-light border-0" rows="8"></textarea>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="p-4 border rounded bg-light h-100 d-flex flex-column">
+                            <label class="form-label fw-bold mb-3 border-bottom pb-2">Resumen Económico</label>
+                            <div class="d-flex justify-content-between mb-2">
+                                <small>Subtotal:</small> <span>{{ reservationForm.get('subtotal')?.value | currency:'ARS':'symbol-narrow' }}</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2 text-danger">
+                                <small>Descuento:</small> <span>-{{ reservationForm.get('discount')?.value | currency:'ARS':'symbol-narrow' }}</span>
+                            </div>
+                            <div class="mt-auto pt-3 border-top">
+                                <div class="d-flex justify-content-between fw-bold">
+                                    <span class="fs-5">TOTAL:</span> 
+                                    <span class="text-dark fs-4">{{ reservationForm.get('totalAmount')?.value | currency:'ARS':'symbol-narrow' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer-custom d-flex justify-content-end gap-3 pt-4">
+                    <button type="button" class="btn btn-cancel" (click)="onCancel()" [disabled]="loading">Limpiar</button>
+                    <button type="submit" [disabled]="reservationForm.invalid || loading" class="btn btn-save">
+                        {{ loading ? 'Actualizando...' : 'Guardar Cambios' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
