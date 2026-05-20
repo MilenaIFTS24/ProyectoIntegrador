@@ -10,24 +10,23 @@ export class ReservationService {
   private api = inject(ApiService);
   private path = 'reservations';
 
-  createReservationService(reservation: Reservation): Observable<Reservation> {
-    return this.api.post<Reservation>(this.path, reservation);
+  getAll(): Observable<Reservation[]> {
+    return this.api.get<Reservation[]>(this.path);
   }
 
-  findAllReservationsService(status?: string): Observable<Reservation[]> {
-    const url = status ? `${this.path}?status=${status}` : this.path;
-    return this.api.get<Reservation[]>(url);
+  getById(id: string): Observable<Reservation> {
+    return this.api.get<Reservation>(`${this.path}/${id}`);
   }
 
-  findReservationsByUserService(userId: number): Observable<Reservation[]> {
-    return this.api.get<Reservation[]>(`${this.path}/user/${userId}`);
+  updateStatus(id: string, status: 'pendiente' | 'listo' | 'entregada' | 'cancelada'): Observable<any> {
+    return this.api.put(`${this.path}/${id}/status`, { status });
   }
 
-  updateStatusService(id: number, status: string): Observable<any> {
-    return this.api.patch(`${this.path}/${id}/status`, { status });
+  updateReservation(id: string, reservation: Partial<Reservation>): Observable<any> {
+    return this.api.put(`${this.path}/${id}`, reservation);
   }
 
-  cancelReservationService(id: number): Observable<any> {
-    return this.api.patch(`${this.path}/cancel/${id}`, {});
+  deleteReservation(id: string): Observable<any> {
+    return this.api.delete(`${this.path}/${id}`);
   }
 }

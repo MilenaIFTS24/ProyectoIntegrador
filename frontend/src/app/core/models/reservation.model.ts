@@ -1,16 +1,23 @@
 import { ReservationItem } from './reservationItem.model';
 
 export interface Reservation {
-  id?: number;              
-  userId: number;           
-  totalAmount: number;      
-  status: 'pendiente' | 'listo' | 'entregado' | 'cancelado';
-  pickupDate?: Date | string;
-  notes?: string;
-
-  createdAt?: Date;
-  updatedAt?: Date;
-
-  // array de items
-  items: ReservationItem[];
+  id?: string;
+  userId: string;
+  contactEmail: string;
+  subtotal: number;
+  discount: number;
+  totalAmount: number;
+  paymentMethod: 'debito' | 'credito' | 'contado' | 'billetera_virtual';
+  paymentId?: string;
+  pickupDate?: string;
+  pickupTimeSlot: string;
+  isEcoPackaging: boolean;
+  clientNotes?: string;
+  status: 'pendiente' | 'listo' | 'entregada' | 'cancelada';
+  cancelledAt?: string;
+  
+  createdAt?: string;
+  updatedAt?: string;
+  
+  items?: any[]; 
 }
