@@ -35,7 +35,7 @@
 
                     <div class="col-md-6 mb-3">
                         <label class="form-label fw-bold">Fecha de Nacimiento <span class="text-danger">*</span></label>
-                        <input type="date" formControlName="birthDate" class="form-control"
+                        <input type="date" formControlName="birthDate" [max]="maxDate" class="form-control"
                             [ngClass]="{'is-invalid': registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.touched}">
                         @if (registerForm.get('birthDate')?.invalid && registerForm.get('birthDate')?.touched) {
                         <div class="invalid-feedback d-block">Fecha requerida.</div>
@@ -54,7 +54,7 @@
                 </div>
 
                 <div class="d-grid gap-2 mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading">
+                    <button type="submit" class="btn btn-primary btn-lg" [disabled]="registerForm.invalid || loading">
                         @if (loading) {
                         <span class="spinner-border spinner-border-sm me-2"></span> Cargando...
                         } @else {

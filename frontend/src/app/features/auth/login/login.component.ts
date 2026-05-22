@@ -6,11 +6,13 @@ import { CommonModule } from '@angular/common';
 import { NotificationService } from '../../../core/services/notification.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
+
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './login.component.html'
+  templateUrl: './login.component.html',
+  styleUrl: './login.component.css'
 })
 export class LoginComponent {
   private fb = inject(FormBuilder);
@@ -35,13 +37,13 @@ export class LoginComponent {
 
   this.authService.loginAction({ email, password }).subscribe({
     next: (res) => {
-      // 1. Guardamos sesión (Signals y LocalStorage)
+      // 1. Guarda sesión
       this.authService.login(res.token, res.user);
 
       this.notify.toast(`¡Bienvenido, ${res.user.fullName}!`, 'success');
 
       // 2. Redirección basada en el ROL que viene de la respuesta fresca
-      // Usamos navigateByUrl para una navegación absoluta y limpia
+      // Uso navigateByUrl para una navegación absoluta y limpia
       if (res.user.role === 'admin') {
         this.router.navigateByUrl('/adminDashboard/adminDashboardHome');
       } else {
