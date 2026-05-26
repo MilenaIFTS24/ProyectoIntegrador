@@ -35,6 +35,7 @@ yarn-error.log
 testem.log
 /typings
 
+
 # System files
 .DS_Store
 Thumbs.db
@@ -44,6 +45,8 @@ Thumbs.db
 /frontend/tmp
 /frontend/out-tsc
 /frontend/bazel-out
+/frontend/.angular/
+/frontend/.dist/
 
 ### Backend ###
 /backend/build
