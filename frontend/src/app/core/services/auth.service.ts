@@ -32,11 +32,26 @@ export class AuthService {
   }
 
   loginAction(credentials: any): Observable<any> {
-    return this.api.post('auth/login', credentials);
+    const body = {
+      email: credentials.email,
+      password: credentials.password
+    };
+    return this.api.post('token?grant_type=password', body);
   }
 
   registerAction(userData: any): Observable<any> {
-    return this.api.post('auth/register', userData);
+    const body = {
+      email: userData.email,
+      password: userData.password,
+      // Supabase guarda fullName y role dentro de los metadatos del usuario
+      data: {
+        fullName: userData.fullName,
+        role: userData.role || 'user'
+      }
+    };
+
+    // El endpoint correcto en Supabase es 'signup'
+    return this.api.post('signup', body);
   }
 
   login(token: string, user: any): void {

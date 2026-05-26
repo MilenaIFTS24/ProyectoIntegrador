@@ -28,35 +28,43 @@ export class LoginComponent {
   });
 
   onSubmit() {
-  if (this.loginForm.invalid) return;
-  
-  this.loading = true;
+    if (this.loginForm.invalid) return;
 
-  // Extraemos solo los valores planos para asegurar compatibilidad total con el Backend
-  const { email, password } = this.loginForm.getRawValue();
+    this.loading = true;
+    const { email, password } = this.loginForm.getRawValue();
 
-  this.authService.loginAction({ email, password }).subscribe({
-    next: (res) => {
-      // 1. Guarda sesión
-      this.authService.login(res.token, res.user);
+    this.authService.loginAction({ email, password }).subscribe({
+      next: (res) => {
+        // --- MAPEO PARA SUPABASE ---
+        // Supabase devuelve el token como 'access_token'
+        const token = res.access_token;
 
-      this.notify.toast(`¡Bienvenido, ${res.user.fullName}!`, 'success');
+        // Construimos el objeto user extrayendo los datos de los metadatos de Supabase
+        const user = {
+          fullName: res.user.user_metadata?.['fullName'] || res.user.email,
+          role: res.user.user_metadata?.['role'] || 'user', // Rol por defecto si no existe
+          email: res.user.email
+        };
 
-      // 2. Redirección basada en el ROL que viene de la respuesta fresca
-      // Uso navigateByUrl para una navegación absoluta y limpia
-      if (res.user.role === 'admin') {
-        this.router.navigateByUrl('/adminDashboard/adminDashboardHome');
-      } else {
-        this.router.navigateByUrl('/userDashboard/userDashboardHome');
+        // Ahora sí, llamamos a la función de guardado con la estructura que tus Signals esperan
+        this.authService.login(token, user);
+
+        this.notify.toast(`¡Bienvenido, ${user.fullName}!`, 'success');
+
+        // Redirección
+        if (user.role === 'admin') {
+          this.router.navigateByUrl('/adminDashboard/adminDashboardHome');
+        } else {
+          this.router.navigateByUrl('/userDashboard/userDashboardHome');
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        // Supabase suele enviar el error en err.error.error_description
+        const msg = err.error?.error_description || 'Credenciales incorrectas';
+        this.notify.toast(msg, 'error');
+        console.error('Error de Supabase:', err);
       }
-    },
-    error: (err: HttpErrorResponse) => {
-      this.loading = false;
-      // Si el backend da 401, el error suele venir en err.error.message o err.error.error
-      const msg = err.error?.error || err.error?.message || 'Credenciales incorrectas';
-      this.notify.toast(msg, 'error');
-      console.error('Error 401 Detalles:', err);
-    }
-  });
-}
+    });
+  }
 }
