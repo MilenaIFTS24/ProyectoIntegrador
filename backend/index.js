@@ -31,6 +31,7 @@ app.use("/api/events", eventsRouter);
 app.use("/api/reservations", reservationsRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/registrations", eventRegistrationsRouter);
+app.use('/api/offers', offersRouter);
 
 // --- MANEJO DE ERRORES: RUTA NO ENCONTRADA ---
 app.use((req, res, next) => {

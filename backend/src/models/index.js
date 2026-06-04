@@ -1,10 +1,11 @@
-// src/models/index.js
 import Users from './users.model.js';
 import Products from './products.model.js';
 import Reservations from './reservations.model.js';
 import ReservationItems from './reservationItems.model.js';
 import Events from './events.model.js';
-import EventRegistrations from './eventRegistrations.model.js'; // La nueva entidad
+import EventRegistrations from './eventRegistrations.model.js';
+import Offers from './offers.model.js';
+import ProductOffers from './productOffers.model.js';
 
 // --- RELACIONES DE PRODUCTOS Y RESERVAS ---
 // Un usuario puede realizar muchas reservas
@@ -44,6 +45,14 @@ Events.belongsToMany(Users, {
 EventRegistrations.belongsTo(Users, { foreignKey: 'userId', as: 'user' });
 EventRegistrations.belongsTo(Events, { foreignKey: 'eventId', as: 'event' });
 
+// -- RELACIÓN DE PRODUCTOS Y OFERTAS --
+
+Products.hasMany(ProductOffers, { foreignKey: 'productId' });
+ProductOffers.belongsTo(Products, { foreignKey: 'productId' });
+
+Offers.hasMany(ProductOffers, { foreignKey: 'offerId' });
+ProductOffers.belongsTo(Offers, { foreignKey: 'offerId' });
+
 
 export {
   Users,
@@ -51,5 +60,7 @@ export {
   Reservations,
   ReservationItems,
   Events,
-  EventRegistrations
+  EventRegistrations,
+  Offers,
+  ProductOffers
 };
