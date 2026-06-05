@@ -10,8 +10,6 @@ import { EventDetailComponent } from './features/events/event-detail/event-detai
 import { AdminDashboardComponent } from './features/admin/admin-dashboard/admin-dashboard.component';
 import { ManageEventsComponent } from './features/admin/manage-events/manage-events.component';
 import { ManageOffersComponent } from './features/admin/manage-offers/manage-offers.component';
-import { ManageProductsCraftsComponent } from './features/admin/manage-products-crafts/manage-products-crafts.component';
-import { ManageProductsTeasComponent } from './features/admin/manage-products-teas/manage-products-teas.component';
 import { ManageReservationsComponent } from './features/admin/manage-reservations/manage-reservations.component';
 import { ManageUsersComponent } from './features/admin/manage-users/manage-users.component';
 import { AdminDashboardHomeComponent } from './features/admin/admin-dashboard-home/admin-dashboard-home.component';
@@ -35,8 +33,6 @@ export const routes: Routes = [
                 { path: "adminDashboardHome", loadComponent: () => import('./features/admin/admin-dashboard-home/admin-dashboard-home.component').then(m => AdminDashboardHomeComponent) },
                 { path: "manageEvents", loadComponent: () => import('./features/admin/manage-events/manage-events.component').then(m => ManageEventsComponent) },
                 { path: "manageOffers", loadComponent: () => import('./features/admin/manage-offers/manage-offers.component').then(m => ManageOffersComponent) },
-                { path: "manageProductsCrafts", loadComponent: () => import('./features/admin/manage-products-crafts/manage-products-crafts.component').then(m => ManageProductsCraftsComponent) },
-                { path: "manageProductsTeas", loadComponent: () => import('./features/admin/manage-products-teas/manage-products-teas.component').then(m => ManageProductsTeasComponent) },
                 { path: "manageReservations", loadComponent: () => import('./features/admin/manage-reservations/manage-reservations.component').then(m => ManageReservationsComponent) },
                 { path: "manageUsers", loadComponent: () => import('./features/admin/manage-users/manage-users.component').then(m => ManageUsersComponent) },
                 {
