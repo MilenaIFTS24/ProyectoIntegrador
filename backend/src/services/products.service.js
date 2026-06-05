@@ -1,7 +1,6 @@
 import Product from '../models/products.model.js';
 
-export const createProductService = async (productData) => {
-    // 1. Validaciones de Lógica de Negocio
+export const createProductService = async (productData) => { 
     const { productType, origin, materials } = productData;
 
     if (productType === 'tea' && !origin) {
@@ -11,8 +10,7 @@ export const createProductService = async (productData) => {
     if (productType === 'craft' && (!materials || materials.length === 0)) {
         throw new Error('Las artesanías deben incluir al menos un material.');
     }
-
-    // 2. Persistencia
+    
     return await Product.create(productData);
 };
 
@@ -21,7 +19,6 @@ export const getAllProductsService = async () => {
 };
 
 export const getProductsByTypeService = async (type) => {
-    // Validamos que el tipo sea uno de los permitidos
     if (!['tea', 'craft'].includes(type)) {
         throw new Error("Tipo de producto no válido. Debe ser 'tea' o 'craft'.");
     }
