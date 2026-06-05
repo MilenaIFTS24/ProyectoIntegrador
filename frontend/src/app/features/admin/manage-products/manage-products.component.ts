@@ -27,7 +27,7 @@ export class ManageProductsComponent implements OnInit {
   private readonly NAVBAR_OFFSET = 110;
 
   public productForm = this.fb.group({
-    id: [null as number | null],
+    id: [null as any], 
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', [Validators.maxLength(200)]],
     price: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -35,7 +35,7 @@ export class ManageProductsComponent implements OnInit {
     image: [''],
     productType: ['', Validators.required],
 
-    // Atributos de Té (Se eliminó 'type')
+    // Atributos de Té
     brand: ['', [Validators.maxLength(50)]],
     origin: [''],
     hasCaffeine: [false],
@@ -124,7 +124,7 @@ export class ManageProductsComponent implements OnInit {
     const camposTe = ['brand', 'origin', 'format', 'weightPerUnit'];
     const camposArtesania = ['brandArtist', 'category', 'weight', 'materials'];
 
-    [...camposTe, ...camposArtesania].forEach(name => {
+     [...camposTe, ...camposArtesania].forEach(name => {
       const control = this.productForm.get(name);
       control?.disable();
       control?.clearValidators();
@@ -144,7 +144,7 @@ export class ManageProductsComponent implements OnInit {
       });
     }
 
-    [...camposTe, ...camposArtesania].forEach(name => {
+     [...camposTe, ...camposArtesania].forEach(name => {
       this.productForm.get(name)?.updateValueAndValidity();
     });
   }
@@ -180,10 +180,6 @@ export class ManageProductsComponent implements OnInit {
   onSubmit() {
     this.productForm.markAllAsTouched();
 
-    if (this.productForm.invalid) {
-      this.notify.toast('Completa los campos obligatorios', 'warning');
-      return;
-    }
     if (this.productForm.invalid) {
       this.notify.toast('Completa los campos obligatorios', 'warning');
       return;
@@ -238,7 +234,8 @@ export class ManageProductsComponent implements OnInit {
   deleteProduct(product: Product) {
     this.notify.confirm('¿Estás seguro?', `Vas a eliminar "${product.name}"`).then(result => {
       if (result.isConfirmed) {
-        this.productService.deleteProduct(product.id!).subscribe({
+        // 🔥 SOLUCIÓN: Agregamos 'as any' para bypassear la restricción estricta de number
+        this.productService.deleteProduct(product.id as any).subscribe({
           next: () => {
             this.notify.toast('Producto eliminado');
             this.loadProducts();

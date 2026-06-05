@@ -1,5 +1,5 @@
 import { Events } from '../models/index.js';
-import { sequelize } from '../data/database.js';
+import sequelize from '../data/database.js';
 
 export const getAllEventsService = async () => {
     return await Events.findAll({

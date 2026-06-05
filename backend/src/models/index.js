@@ -47,6 +47,8 @@ EventRegistrations.belongsTo(Users, { foreignKey: 'userId', as: 'user' });
 EventRegistrations.belongsTo(Events, { foreignKey: 'eventId', as: 'event' });
 
 // -- RELACIÓN DE PRODUCTOS Y OFERTAS --
+Offers.belongsToMany(Products, { through: ProductOffers, foreignKey: 'offerId', as: 'Products' });
+Products.belongsToMany(Offers, { through: ProductOffers, foreignKey: 'productId', as: 'Offers' });
 
 Products.hasMany(ProductOffers, { foreignKey: 'productId' });
 ProductOffers.belongsTo(Products, { foreignKey: 'productId' });

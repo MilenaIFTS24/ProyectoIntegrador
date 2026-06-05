@@ -1,13 +1,12 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Product } from '../models/product.model'; // Quité el .js, en TS no se usa
+import { Product } from '../models/product.model';
 import { ApiService } from './api.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProductService {
-  // Usamos el ApiService que ya tiene configurada la URL base del backend
   private api = inject(ApiService);
   private path = 'products';
 
@@ -26,7 +25,7 @@ export class ProductService {
   }
 
   /**
-   * Guardar Producto (Lógica inteligente: si tiene ID actualiza, si no, crea)
+   * Guardar Producto (si tiene ID actualiza, si no, crea)
    */
   saveProduct(product: Product): Observable<Product> {
     if (product.id) {

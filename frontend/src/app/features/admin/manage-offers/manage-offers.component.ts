@@ -3,13 +3,14 @@ import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { OfferService } from '../../../core/services/offer.service';
 import { ProductService } from '../../../core/services/product.service';
+import { NotificationService } from '../../../core/services/notification.service';
 import { Offer } from '../../../core/models/offer.model';
 import { Product } from '../../../core/models/product.model';
 
 @Component({
   selector: 'app-manage-offers',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, CurrencyPipe],
   templateUrl: './manage-offers.component.html',
   styleUrls: ['./manage-offers.component.css']
 })
@@ -17,6 +18,7 @@ export class ManageOffersComponent implements OnInit {
   private offerService = inject(OfferService);
   private productsService = inject(ProductService);
   private fb = inject(FormBuilder);
+  private notify = inject(NotificationService);
 
   public offers: Offer[] = [];
   public filteredOfferList: Offer[] = [];
@@ -27,20 +29,30 @@ export class ManageOffersComponent implements OnInit {
   public itemsPerPage: number = 5;
   private readonly NAVBAR_OFFSET = 110;
 
-  // Lista auxiliar para guardar los IDs de los checkboxes seleccionados
-  public selectedProductIds: number[] = [];
+  public selectedProductIds: any[] = [];
 
-  // Formulario Reactivo adaptado
+  
   public offerForm = this.fb.group({
     id: [null as string | null],
-    title: ['', [Validators.required, Validators.minLength(3)]],
-    type: ['percentage' as const, Validators.required],
-    value: [0, [Validators.required, Validators.min(0)]],
+    title: [null as string | null, [Validators.required, Validators.minLength(3)]],
+    type: ['percentage' as unknown as any, Validators.required],
+    value: [null as number | null, [Validators.required, Validators.min(1)]],
     active: [true]
   });
 
   get selectedOfferType(): string {
     return this.offerForm.get('type')?.value || 'percentage';
+  }
+
+ 
+  isFieldInvalid(fieldName: string): boolean {
+    const field = this.offerForm.get(fieldName);
+    if (!field) return false;
+    
+    const value = field.value;
+    const isEmpty = value === null || value === undefined || value.toString().trim() === '';
+    
+    return field.touched && isEmpty;
   }
 
   ngOnInit(): void {
@@ -59,6 +71,7 @@ export class ManageOffersComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.errorMessage = 'Error de conexión con el servidor.';
+        this.notify.toast('Error al cargar la lista de ofertas', 'error');
       }
     });
   }
@@ -70,6 +83,7 @@ export class ManageOffersComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error al cargar la lista de productos:', err);
+        this.notify.toast('No se pudieron sincronizar los productos disponibles', 'error');
       }
     });
   }
@@ -95,26 +109,42 @@ export class ManageOffersComponent implements OnInit {
       active: offer.active
     } as any);
 
-    // Mapeamos los productos vinculados de la oferta seleccionada
-    if (offer.Products) {
-      this.selectedProductIds = offer.Products.map(p => p.id!);
+    const associatedProducts = offer.Products || (offer as any).products;
+
+    if (associatedProducts && Array.isArray(associatedProducts)) {
+      this.selectedProductIds = associatedProducts
+        .filter(p => p && p.id !== undefined && p.id !== null)
+        .map(p => p.id);
     } else {
       this.selectedProductIds = [];
     }
 
+    this.notify.toast(`Consultando oferta: ${offer.title}`, 'info');
     this.scrollTo('.event-card');
   }
 
-  onProductSelect(event: any, productId: number): void {
+  onProductSelect(event: any, productId: any): void {
+    const incomingId = productId.toString().trim();
+    
     if (event.target.checked) {
-      this.selectedProductIds.push(productId);
+      const exists = this.selectedProductIds.some(id => id.toString().trim() === incomingId);
+      if (!exists) {
+        this.selectedProductIds.push(productId);
+      }
     } else {
-      this.selectedProductIds = this.selectedProductIds.filter(id => id !== productId);
+      this.selectedProductIds = this.selectedProductIds.filter(
+        id => id.toString().trim() !== incomingId
+      );
     }
   }
 
-  isProductSelected(productId: number): boolean {
-    return this.selectedProductIds.includes(productId);
+  isProductSelected(productId: any): boolean {
+    if (productId === undefined || productId === null || this.selectedProductIds.length === 0) {
+      return false;
+    }
+    return this.selectedProductIds
+      .map(id => id.toString().trim())
+      .includes(productId.toString().trim());
   }
 
   onSubmit(): void {
@@ -124,7 +154,6 @@ export class ManageOffersComponent implements OnInit {
     const f = this.offerForm.getRawValue();
     this.loading = true;
 
-    // Payload que unifica los campos de la oferta y los IDs para la tabla intermedia
     const payload: any = {
       title: f.title || '',
       type: f.type!,
@@ -134,7 +163,6 @@ export class ManageOffersComponent implements OnInit {
     };
 
     if (f.id) {
-      // Modo edición: Pasamos el id dentro del objeto oferta tal como requiere updateOfferService
       payload.id = f.id;
 
       this.offerService.updateOfferService(payload as Offer).subscribe({
@@ -142,50 +170,64 @@ export class ManageOffersComponent implements OnInit {
           this.loadOffers();
           this.onCancel();
           this.scrollTo('.custom-table');
+          this.notify.toast('Oferta actualizada con éxito', 'success');
         },
         error: (err) => {
           this.loading = false;
           console.error('Error al actualizar la oferta:', err);
           this.errorMessage = 'Error al actualizar la oferta.';
+          this.notify.toast('Error al intentar guardar los cambios de la oferta', 'error');
         }
       });
     } else {
-      // Modo creación: El servicio espera Omit<Offer, 'id'>, por ende enviamos el payload sin el campo 'id'
       this.offerService.createOfferService(payload).subscribe({
         next: () => {
           this.loadOffers();
           this.onCancel();
           this.scrollTo('.custom-table');
+          this.notify.toast('Nueva oferta creada de forma exitosa', 'success');
         },
         error: (err) => {
           this.loading = false;
           console.error('Error al crear la oferta:', err);
           this.errorMessage = 'Error al crear la oferta.';
+          this.notify.toast('No se pudo dar de alta la oferta en el sistema', 'error');
         }
       });
     }
   }
 
   deleteOffer(offer: Offer): void {
-    if (confirm(`¿Estás seguro de eliminar la oferta "${offer.title}"?`)) {
-      this.offerService.deleteOfferService(offer.id!).subscribe({
-        next: () => {
-          this.loadOffers();
-        },
-        error: (err) => {
-          console.error('Error al eliminar la oferta:', err);
-          this.errorMessage = 'No se pudo eliminar la oferta.';
-        }
-      });
-    }
+    this.notify.confirm(
+      '¿Estás seguro?', 
+      `Vas a eliminar la oferta "${offer.title}"`
+    ).then(result => {
+      if (result.isConfirmed) {
+        this.offerService.deleteOfferService(offer.id!).subscribe({
+          next: () => {
+          
+            const currentIdInForm = this.offerForm.get('id')?.value;
+            if (currentIdInForm === offer.id) {
+              this.onCancel();
+            }
+            this.notify.toast('Oferta eliminada');
+            this.loadOffers();
+          },
+          error: (err) => {
+            console.error('Error al eliminar la oferta:', err);
+            this.notify.toast(err.message || 'Error al intentar borrar la oferta', 'error');
+          }
+        });
+      }
+    });
   }
 
   onCancel(): void {
     this.offerForm.reset({
       id: null,
-      title: '',
+      title: null,
       type: 'percentage',
-      value: 0,
+      value: null,
       active: true
     });
 

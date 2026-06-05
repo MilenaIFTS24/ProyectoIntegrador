@@ -1,7 +1,18 @@
-import { Offers } from "../models/index.js";
+import { Offers, Products } from "../models/index.js";
+import ProductOffers from '../models/productOffers.model.js';
 
 export const getAllOffersService = async () => {
-    return await Offers.findAll();
+    const offers = await Offers.findAll({
+        include: [
+            {
+                model: Products,
+                as: 'Products',
+                attributes: ['id', 'name', 'price'],
+                through: { attributes: [] } // Limpia las columnas crudas de la tabla puente
+            }
+        ]
+    });
+    return offers;
 }
 
 export const getOfferByIdService = async (id) => {
@@ -25,30 +36,40 @@ export const getOfferByIdService = async (id) => {
 }
 
 export const createOfferService = async (data) => {
-    export const createOfferService = async (data) => {
-        const { title, type, value, productIds } = data;
+    const { title, type, value, productIds } = data;
 
-        if (!title || !type || !value) {
-            throw new Error("Todos los campos son obligatorios");
-        }
+    // 1. Validar campos obligatorios de forma segura
+    if (!title || !type || value === undefined || value === null) {
+        throw new Error("Todos los campos son obligatorios");
+    }
 
-        // 1. Oferta principal
-        const newOffer = await Offers.create({ title, type, value });
+    // 2. Crear la oferta principal en la base de datos
+    const newOffer = await Offers.create({
+        title,
+        type,
+        value,
+        active: data.active !== undefined ? data.active : true
+    });
 
-        // 2. Si el usuario seleccionó productos, crear los vínculos en la tabla intermedia
-        if (productIds && Array.isArray(productIds) && productIds.length > 0) {
-            const relations = productIds.map(productId => ({
-                productId: productId,
-                offerId: newOffer.id
+    // 3. Guardado relacional aislado en bloque try/catch propio
+    if (productIds && Array.isArray(productIds) && productIds.length > 0) {
+        try {
+            const relations = productIds.map(id => ({
+                offerId: newOffer.id,
+                productId: id.toString().trim() // 🔥 ELIMINADO EL Number() ACÁ. Enviamos el UUID limpio como string.
             }));
 
-            // Inserción masiva en la tabla intermedia
+            // Inserción masiva en la tabla intermedia de Supabase
             await ProductOffers.bulkCreate(relations);
+            console.log(`✅ Productos asociados con éxito a la oferta ID: ${newOffer.id}`);
+        } catch (relationError) {
+            console.error("⚠️ Alerta: La oferta se creó pero falló la asociación de productos en la tabla intermedia:");
+            console.error(relationError.message);
         }
-
-        return newOffer;
     }
+    return newOffer;
 }
+
 
 export const updateOfferService = async (id, data) => {
     const offer = await Offers.findByPk(id);
