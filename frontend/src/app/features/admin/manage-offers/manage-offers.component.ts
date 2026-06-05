@@ -28,7 +28,7 @@ export class ManageOffersComponent implements OnInit {
   private readonly NAVBAR_OFFSET = 110;
 
   // Lista auxiliar para guardar los IDs de los checkboxes seleccionados
-  public selectedProductIds: string[] = [];
+  public selectedProductIds: number[] = [];
 
   // Formulario Reactivo adaptado
   public offerForm = this.fb.group({
@@ -105,7 +105,7 @@ export class ManageOffersComponent implements OnInit {
     this.scrollTo('.event-card');
   }
 
-  onProductSelect(event: any, productId: string): void {
+  onProductSelect(event: any, productId: number): void {
     if (event.target.checked) {
       this.selectedProductIds.push(productId);
     } else {
@@ -113,7 +113,7 @@ export class ManageOffersComponent implements OnInit {
     }
   }
 
-  isProductSelected(productId: string): boolean {
+  isProductSelected(productId: number): boolean {
     return this.selectedProductIds.includes(productId);
   }
 
