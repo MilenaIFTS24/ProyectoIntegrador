@@ -2,6 +2,7 @@ import { inject, Injectable, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { ApiService } from './api.service';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -36,22 +37,32 @@ export class AuthService {
       email: credentials.email,
       password: credentials.password
     };
-    return this.api.post('token?grant_type=password', body);
-  }
 
+    return this.api['_httpClient'].post(
+      `${environment.authUrl}/token?grant_type=password`,
+      body,
+      {
+        headers: this.api['getHeaders']()
+      }
+    );
+  }
   registerAction(userData: any): Observable<any> {
     const body = {
       email: userData.email,
       password: userData.password,
-      // Supabase guarda fullName y role dentro de los metadatos del usuario
       data: {
         fullName: userData.fullName,
         role: userData.role || 'user'
       }
     };
 
-    // El endpoint correcto en Supabase es 'signup'
-    return this.api.post('signup', body);
+    return this.api['_httpClient'].post(
+      `${environment.authUrl}/signup`,
+      body,
+      {
+        headers: this.api['getHeaders']()
+      }
+    );
   }
 
   login(token: string, user: any): void {
