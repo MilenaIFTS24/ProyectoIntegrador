@@ -10,7 +10,9 @@ export class ApiService {
 
   private baseUrl = environment.apiUrl;
 
-  constructor(private _httpClient: HttpClient) { }
+  constructor(private _httpClient: HttpClient) {
+    console.log('API URL ACTUAL:', this.baseUrl);
+  }
 
   private getHeaders(extraHeaders?: HttpHeaders): HttpHeaders {
     let headers = extraHeaders || new HttpHeaders();
