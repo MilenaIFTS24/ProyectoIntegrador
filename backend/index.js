@@ -47,7 +47,7 @@ async function startApplication() {
     console.log('Conexión exitosa a PostgreSQL (Supabase).');
 
     // 2. Sincronizar modelos con la DB
-    await sequelize.sync({ alter: true });
+    await sequelize.sync({ force: true });
     console.log('Modelos y Relaciones de Sequelize sincronizados.');
 
     // 3. Iniciar el servidor
