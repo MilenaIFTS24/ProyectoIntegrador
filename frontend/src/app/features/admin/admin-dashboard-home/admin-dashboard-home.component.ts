@@ -12,6 +12,7 @@ import { UserService } from '../../../core/services/user.service';
 import { EventService } from '../../../core/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReservationService } from '../../../core/services/reservation.service';
+import { OfferService } from '../../../core/services/offer.service';
 import { RouterModule } from '@angular/router';
 
 @Component({
@@ -27,6 +28,7 @@ export class AdminDashboardHomeComponent implements OnInit {
   private userService = inject(UserService);
   private eventService = inject(EventService);
   private reservationService = inject(ReservationService);
+  private offerService = inject(OfferService);
 
   public currentDate = new Date();
   public stats: StatCard[] = [];
@@ -49,7 +51,8 @@ export class AdminDashboardHomeComponent implements OnInit {
       products: this.productService.getProducts().pipe(catchError(err => { console.error('Error Productos:', err); return of(null); })),
       users: this.userService.getUsers().pipe(catchError(err => { console.error('Error Usuarios:', err); return of(null); })),
       events: this.eventService.getEvents().pipe(catchError(err => { console.error('Error Eventos:', err); return of(null); })),
-      reservations: this.reservationService.getAll().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); }))
+      reservations: this.reservationService.getAll().pipe(catchError(err => { console.error('Error Reservas:', err); return of(null); })),
+      offers: this.offerService.findAllOffersService().pipe(catchError(err => { console.error('Error Ofertas:', err); return of(null); }))
     }).subscribe({
       next: (res) => {
         this.stats = [
@@ -80,6 +83,13 @@ export class AdminDashboardHomeComponent implements OnInit {
             icon: 'bi-journal-check', 
             color: '#D4A559',
             error: res.reservations === null
+          },
+          { 
+            label: 'Ofertas', 
+            value: res.offers ? res.offers.length : 'Error', 
+            icon: 'bi-percent', 
+            color: '#d47c59',
+            error: res.offers === null
           }
         ];
 

@@ -3,7 +3,6 @@ import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ReservationService } from '../../../core/services/reservation.service';
 import { Reservation } from '../../../core/models/reservation.model';
-// import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-manage-reservations',
@@ -15,7 +14,6 @@ import { Reservation } from '../../../core/models/reservation.model';
 export class ManageReservationsComponent implements OnInit {
   private reservationService = inject(ReservationService);
   private fb = inject(FormBuilder);
-  // private notify = inject(NotificationService);
 
   public reservations: Reservation[] = [];
   public filteredReservationList: Reservation[] = [];
@@ -26,19 +24,16 @@ export class ManageReservationsComponent implements OnInit {
   private readonly NAVBAR_OFFSET = 110;
   public minDate: string = '';
 
-  // Formulario: Solo 'status' y 'pickupDate' son editables
   public reservationForm = this.fb.group({
     id: [null as string | null],
-    contactEmail: [{ value: '', disabled: true }],
-    paymentMethod: [{ value: '', disabled: true }],
-    totalAmount: [{ value: 0, disabled: true }],
-    subtotal: [{ value: 0, disabled: true }],
+    contactEmail: [{ value: '', disabled: true }, Validators.required],
+    paymentMethod: [{ value: '', disabled: true }, Validators.required],
+    totalAmount: [{ value: 0, disabled: true }, Validators.required],
+    subtotal: [{ value: 0, disabled: true }, Validators.required],
     discount: [{ value: 0, disabled: true }],
     clientNotes: [{ value: '', disabled: true }],
-    pickupTimeSlot: [{ value: '', disabled: true }],
-
-    // Campos que el Admin SI puede modificar
-    status: ['pendiente', Validators.required],
+    pickupTimeSlot: [{ value: '', disabled: true }, Validators.required],
+    status: ['', Validators.required],
     isEcoPackaging: [false],
     pickupDate: ['', Validators.required]
   });
@@ -68,7 +63,6 @@ export class ManageReservationsComponent implements OnInit {
       error: () => {
         this.loading = false;
         this.errorMessage = 'Error de conexión con el servidor.';
-        // this.notify.toast('Error al cargar reservas', 'error');
       }
     });
   }
@@ -91,7 +85,6 @@ export class ManageReservationsComponent implements OnInit {
       pickupDate: reservation.pickupDate ? new Date(reservation.pickupDate).toISOString().split('T')[0] : ''
     } as any);
 
-    // this.notify.toast(`Consultando reserva de: ${reservation.contactEmail}`, 'info');
     this.scrollTo('.reservation-card');
   }
 
@@ -136,7 +129,6 @@ export class ManageReservationsComponent implements OnInit {
   quickStatusChange(reservation: Reservation, newStatus: any): void {
     this.reservationService.updateStatus(reservation.id!, newStatus).subscribe(() => {
       this.loadReservations();
-      // this.notify.toast(`Estado: ${newStatus}`);
     });
   }
 
@@ -150,7 +142,7 @@ export class ManageReservationsComponent implements OnInit {
       discount: 0,
       clientNotes: '',
       pickupTimeSlot: '',
-      status: 'pendiente',
+      status: '',
       pickupDate: '',
       isEcoPackaging: false
     });

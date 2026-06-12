@@ -7,7 +7,7 @@ const router = Router();
 // Solo el admin puede ver la lista completa de usuarios
 router.get("/", authenticateToken, isAdmin, usersController.getUsers);
 
-router.post("/", usersController.createUser);
+router.post("/", authenticateToken, isAdmin, usersController.createUser);
 
 // El resto requiere estar logueado (authenticateToken)
 router.get("/:id", authenticateToken, usersController.getUserById);

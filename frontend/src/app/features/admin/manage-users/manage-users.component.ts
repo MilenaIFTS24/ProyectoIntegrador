@@ -31,7 +31,7 @@ export class ManageUsersComponent implements OnInit {
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]],
     birthDate: ['', [Validators.required]],
-    role: ['user', [Validators.required]],
+    role: ['', [Validators.required]],
     phone: [''],
     address: [''],
     isEnabled: [true],
@@ -103,6 +103,10 @@ export class ManageUsersComponent implements OnInit {
     this.loading = true;
     const formData = this.userForm.getRawValue() as User;
 
+    if (!formData.id) {
+      delete formData.id;
+    }
+
     if (formData.id) {
       const { password, ...dataToSave } = formData;
       this.userService.updateUser(formData.id, dataToSave).subscribe({
@@ -110,6 +114,7 @@ export class ManageUsersComponent implements OnInit {
           this.notify.toast('Usuario actualizado');
           this.loadUsers();
           this.onCancel();
+          this.scrollToElement('.custom-table');
         },
         error: () => (this.loading = false)
       });
@@ -119,6 +124,7 @@ export class ManageUsersComponent implements OnInit {
           this.notify.toast('Usuario creado');
           this.loadUsers();
           this.onCancel();
+          this.scrollToElement('.custom-table');
         },
         error: () => (this.loading = false)
       });
@@ -131,7 +137,6 @@ export class ManageUsersComponent implements OnInit {
     this.userForm.patchValue({ ...user, password: 'PROTECTED_PASSWORD' });
     this.userForm.get('password')?.disable();
 
-    // Ejecutamos el scroll al formulario
     this.scrollToElement('.user-card');
   }
 
@@ -157,22 +162,16 @@ export class ManageUsersComponent implements OnInit {
     this.loading = false;
   }
 
-  /**
-   * Método de Scroll Mejorado
-   * Usa getBoundingClientRect para precisión y setTimeout para esperar al DOM.
-   */
   private scrollToElement(selector: string): void {
     setTimeout(() => {
       const element = document.querySelector(selector);
       if (element) {
-        // 1. Forzamos el scroll al elemento
         element.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
-        // 2. Esperamos a que termine el scroll (aprox 300ms) y ajustamos la posición.
         setTimeout(() => {
           window.scrollBy(0, -this.NAVBAR_OFFSET);
         }, 300);
       }
-    }, 100); // Aumentamos a 100ms para asegurar que el DOM reaccionó
+    }, 100);
   }
 }

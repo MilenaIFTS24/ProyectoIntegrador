@@ -38,17 +38,6 @@ h2 {
     box-shadow: 0 0 0 0.2rem rgba(212, 165, 89, 0.1);
 }
 
-/* Resaltado de validación */
-.is-invalid {
-    border-color: #B22222 !important;
-}
-
-.invalid-feedback {
-    color: #B22222;
-    font-weight: 500;
-    font-size: 0.85rem;
-}
-
 /* --- BOTÓN REGISTRAR --- */
 .btn-primary {
     background-color: #000000 !important;

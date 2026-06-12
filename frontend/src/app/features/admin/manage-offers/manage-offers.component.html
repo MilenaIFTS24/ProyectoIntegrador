@@ -52,19 +52,19 @@
                   'bi-tags-fill': offer.type === 'quantity'
                 }"></i>
               @switch (offer.type) {
-                @case ('percentage') { PORCENTUAL }
-                @case ('fixed') { MONTO FIJO }
-                @case ('quantity') { CANTIDAD (XvY) }
-                @default { {{ offer.type | uppercase }} }
+              @case ('percentage') { PORCENTUAL }
+              @case ('fixed') { MONTO FIJO }
+              @case ('quantity') { CANTIDAD (XvY) }
+              @default { {{ offer.type | uppercase }} }
               }
             </span>
           </td>
           <td class="product-price">
             @switch (offer.type) {
-              @case ('percentage') { {{ offer.value }}% OFF }
-              @case ('fixed') { {{ offer.value | currency }} }
-              @case ('quantity') { {{ offer.value }}x1 }
-              @default { {{ offer.value }} }
+            @case ('percentage') { {{ offer.value }}% OFF }
+            @case ('fixed') { {{ offer.value | currency }} }
+            @case ('quantity') { {{ offer.value }}x1 }
+            @default { {{ offer.value }} }
             }
           </td>
           <td>
@@ -134,45 +134,52 @@
         <div class="row g-3 mb-4">
           <div class="col-md-8">
             <label class="form-label main-label">Título de la Oferta <span class="text-danger">*</span></label>
-            <input type="text" formControlName="title" class="form-control custom-input" 
-                   [class.is-invalid]="isFieldInvalid('title')" placeholder="Ej: Especial Lunes de Hebras">
+            <input type="text" formControlName="title" class="form-control custom-input"
+              [class.is-invalid]="isFieldInvalid('title')" placeholder="Ej: Especial Lunes de Hebras">
             @if (isFieldInvalid('title')) {
-              <div class="invalid-feedback animate__animated animate__fadeIn">
-                El título es un campo obligatorio.
-              </div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">
+              El título es un campo obligatorio.
+            </div>
             }
           </div>
           <div class="col-md-4">
             <label class="form-label main-label">Tipo de Oferta <span class="text-danger">*</span></label>
             <select formControlName="type" class="form-select custom-input" [class.is-invalid]="isFieldInvalid('type')">
-              <option value="percentage">📈 Porcentual (% OFF)</option>
-              <option value="fixed">💵 Monto Fijo ($ Descuento)</option>
-              <option value="quantity">🏷️ Por Cantidad (2x1, 3x2)</option>
+              <option value="">Seleccione...</option>
+              <option value="percentage">Porcentual (% OFF)</option>
+              <option value="fixed">Monto Fijo ($ Descuento)</option>
+              <option value="quantity">Por Cantidad (2x1, 3x2)</option>
             </select>
+            @if (isFieldInvalid('type')) {
+            <div class="invalid-feedback animate__animated animate__fadeIn">
+              Debe seleccionar un tipo de oferta.
+            </div>
+            }
           </div>
         </div>
 
         <div class="row g-3 mb-4">
           <div class="col-md-6">
             <label class="form-label main-label">
-              @if (selectedOfferType === 'percentage') { Porcentaje de Descuento (%) } 
-              @else if (selectedOfferType === 'fixed') { Monto a Descontar ($) } 
-              @else if (selectedOfferType === 'quantity') { Multiplicador de Promoción (Ej: 2 para 2x1) } 
-              @else { Valor } 
+              @if (selectedOfferType === 'percentage') { Porcentaje de Descuento (%) }
+              @else if (selectedOfferType === 'fixed') { Monto a Descontar ($) }
+              @else if (selectedOfferType === 'quantity') { Multiplicador de Promoción (Ej: 2 para 2x1) }
+              @else { Valor }
               <span class="text-danger">*</span>
             </label>
-            <input type="number" formControlName="value" class="form-control custom-input" min="0" [class.is-invalid]="isFieldInvalid('value')">
+            <input type="number" formControlName="value" class="form-control custom-input" min="0"
+              [class.is-invalid]="isFieldInvalid('value')">
             @if (isFieldInvalid('value')) {
-              <div class="invalid-feedback animate__animated animate__fadeIn">
-                El valor es obligatorio para poder dar de alta la promoción.
-              </div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">
+              El valor es obligatorio para poder dar de alta la promoción.
+            </div>
             }
           </div>
-          
+
           <div class="col-md-6 d-flex align-items-end pb-2">
             <div class="form-check form-switch ms-2">
               <input class="form-check-input" type="checkbox" formControlName="active" id="activeSwitch">
-              <label class="form-check-label fw-bold" for="activeSwitch">Oferta Activa de Inmediato</label>
+              <label class="form-check-label fw-bold" for="activeSwitch">Activa</label>
             </div>
           </div>
         </div>
@@ -181,24 +188,20 @@
           <div class="col-12">
             <label class="form-label main-label">Seleccionar Productos Aplicables</label>
             <div class="p-3 border rounded custom-input content-scroll" style="max-height: 200px; overflow-y: auto;">
-              
+
               @for (product of availableProducts; track product.id) {
-                <div class="form-check mb-2">
-                  <input class="form-check-input" type="checkbox" 
-                         [value]="product.id" 
-                         [id]="'prod-' + product.id"
-                         (change)="onProductSelect($event, product.id!)"
-                         [checked]="isProductSelected(product.id!)">
-                  <label class="form-check-label" [for]="'prod-' + product.id">
-                    {{ product.name }} <span class="text-muted">({{ product.price | currency }})</span>
-                  </label>
-                </div>
+              <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" [value]="product.id" [id]="'prod-' + product.id"
+                  (change)="onProductSelect($event, product.id!)" [checked]="isProductSelected(product.id!)">
+                <label class="form-check-label" [for]="'prod-' + product.id">
+                  {{ product.name }} <span class="text-muted">({{ product.price | currency }})</span>
+                </label>
+              </div>
               } @empty {
-                <p class="text-muted small mb-0">No hay productos disponibles en el sistema.</p>
+              <p class="text-muted small mb-0">No hay productos disponibles en el sistema.</p>
               }
 
             </div>
-            <small class="text-muted">Los productos seleccionados quedarán guardados de forma explícita en la tabla puente del servidor.</small>
           </div>
         </div>
 

@@ -95,7 +95,7 @@
         <i class="bi" [ngClass]="userForm.get('id')?.value ? 'bi-person-gear' : 'bi-person-plus-fill'"></i>
         {{ userForm.get('id')?.value ? 'Editar Usuario' : 'Nuevo Usuario' }}
       </h3>
-      <span class="badge badge-id">ID: {{ userForm.get('id')?.value || 'NUEVO' }}</span>
+      <span class="badge badge-id">ID: {{ userForm.get('id')?.value ? 'ASIGNADO' : 'NUEVO' }}</span>
     </div>
 
     <div class="card-body p-4">
@@ -107,7 +107,7 @@
             <input type="text" formControlName="fullName" class="form-control custom-input"
               [class.is-invalid]="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched">
             @if (userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched) {
-            <div class="error-message">El nombre es obligatorio (mín. 3 caracteres)</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">El nombre es obligatorio (mín. 3 caracteres)</div>
             }
           </div>
 
@@ -116,7 +116,7 @@
             <input type="email" formControlName="email" class="form-control custom-input"
               [class.is-invalid]="userForm.get('email')?.invalid && userForm.get('email')?.touched">
             @if (userForm.get('email')?.invalid && userForm.get('email')?.touched) {
-            <div class="error-message">Ingresa un correo electrónico válido</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">Ingresa un correo electrónico válido</div>
             }
           </div>
         </div>
@@ -133,17 +133,18 @@
             @if (userForm.get('password')?.disabled) {
             <small class="text-muted d-block mt-1"><i class="bi bi-shield-lock"></i> No modificable desde aquí.</small>
             } @else if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
-            <div class="error-message">La contraseña debe tener al menos 6 caracteres</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">La contraseña debe tener al menos 6 caracteres</div>
             }
           </div>
 
           <div class="col-md-4">
             <label class="form-label main-label">Fecha de Nacimiento <span class="text-danger">*</span></label>
             <input type="date" formControlName="birthDate" [max]="maxDate" class="form-control custom-input"
-              [class.is-invalid]="userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched">
+              [style.border-color]="userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched ? '#dc3545' : ''"
+              [style.background-image]="userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched ? 'none' : ''">
 
             @if (userForm.get('birthDate')?.invalid && userForm.get('birthDate')?.touched) {
-            <div class="error-message">
+            <div class="text-danger small mt-1 animate__animated animate__fadeIn">
               @if (userForm.get('birthDate')?.hasError('required')) {
               La fecha es obligatoria.
               } @else {
@@ -155,10 +156,15 @@
 
           <div class="col-md-4">
             <label class="form-label main-label">Rol <span class="text-danger">*</span></label>
-            <select formControlName="role" class="form-select custom-input">
+            <select formControlName="role" class="form-select custom-input"
+              [class.is-invalid]="userForm.get('role')?.invalid && userForm.get('role')?.touched">
+              <option value="">Seleccione...</option>
               <option value="user">User</option>
               <option value="admin">Admin</option>
             </select>
+            @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
+            <div class="invalid-feedback animate__animated animate__fadeIn">Debe seleccionar un rol para el usuario</div>
+            }
           </div>
         </div>
 

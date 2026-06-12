@@ -24,11 +24,14 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   let cloned = req;
 
   // --- 2. INYECCIÓN DEL TOKEN ---
-  // Si existe un token almacenado, lo clonamos en la cabecera de la petición
+  // Si existe un token almacenado, lo clona en la cabecera de la petición
   if (token) {
+    // Limpia comillas dobles o simples que se hayan podido infiltrar en los extremos del token
+    const cleanToken = token.replace(/^["']|["']$/g, '');
+
     cloned = req.clone({
       setHeaders: {
-        Authorization: `Bearer ${token}`
+        Authorization: `Bearer ${cleanToken}`
       }
     });
   }
@@ -36,19 +39,19 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
   // --- 3. PROCESAMIENTO Y MANEJO DE ERRORES ---
   return next(cloned).pipe(
     catchError((error: HttpErrorResponse) => {
-      
+
       // 401: Unauthorized (Token inválido o ausente)
       // 403: Forbidden (Token expirado o falta de roles necesarios)
       if (error.status === 401 || error.status === 403) {
-        
+
         // Ejecutamos la limpieza solo si no estamos ya en la página de login
         // para evitar múltiples mensajes por una sola sesión caída.
         if (!req.url.includes('auth/login')) {
-          
+
           notify.toast('Su sesión ha expirado o no tiene permisos. Por favor, reingrese.', 'error');
-          
+
           // Limpia el localStorage y el estado del usuario en el servicio
-          authService.logout(); 
+          authService.logout();
 
           // Redirección forzada al login
           router.navigate(['/auth/login']);

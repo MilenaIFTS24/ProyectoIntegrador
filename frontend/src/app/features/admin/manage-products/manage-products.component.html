@@ -104,7 +104,7 @@
                 <i class="bi" [ngClass]="productForm.get('id')?.value ? 'bi-pencil-fill' : 'bi-plus-circle-fill'"></i>
                 {{ productForm.get('id')?.value ? 'Editar Producto' : 'Nuevo Producto' }}
             </h3>
-            <span class="badge badge-id">ID: {{ productForm.get('id')?.value || 'NUEVO' }}</span>
+            <span class="badge badge-id">ID: {{ productForm.get('id')?.value ? 'ASIGNADO' : 'NUEVO' }}</span>
         </div>
 
         <div class="card-body p-4">
@@ -115,19 +115,30 @@
                         <label class="form-label main-label">Nombre del Producto <span
                                 class="text-danger">*</span></label>
                         <input type="text" formControlName="name" class="form-control custom-input"
-                            [ngClass]="{'is-invalid': productForm.get('name')?.invalid && productForm.get('name')?.touched}">
+                            [class.is-invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+                        @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
+                        <div class="invalid-feedback animate__animated animate__fadeIn">El nombre es obligatorio (mín. 3 caracteres)</div>
+                        }
                     </div>
                     <div class="col-md-3">
                         <label class="form-label main-label">Tipo <span class="text-danger">*</span></label>
-                        <select formControlName="productType" class="form-select custom-input">
+                        <select formControlName="productType" class="form-select custom-input"
+                            [class.is-invalid]="productForm.get('productType')?.invalid && productForm.get('productType')?.touched">
                             <option value="">Seleccione...</option>
-                            <option value="tea">🍃 Té</option>
-                            <option value="craft">🎨 Artesanía</option>
+                            <option value="tea">Té</option>
+                            <option value="craft">Artesanía</option>
                         </select>
+                        @if (productForm.get('productType')?.invalid && productForm.get('productType')?.touched) {
+                        <div class="invalid-feedback animate__animated animate__fadeIn">Debe seleccionar un tipo de producto</div>
+                        }
                     </div>
                     <div class="col-md-3">
                         <label class="form-label main-label">Precio ($) <span class="text-danger">*</span></label>
-                        <input type="number" formControlName="price" class="form-control custom-input">
+                        <input type="number" formControlName="price" class="form-control custom-input"
+                            [class.is-invalid]="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+                        @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
+                        <div class="invalid-feedback animate__animated animate__fadeIn">El precio es obligatorio y debe ser mayor a 0</div>
+                        }
                     </div>
                 </div>
 
@@ -139,7 +150,11 @@
                     <div class="col-md-3">
                         <label class="form-label main-label">Stock Inicial <span class="text-danger">*</span></label>
                         <input type="number" formControlName="stock" class="form-control custom-input"
-                            [class.opacity-50]="productForm.get('isUnique')?.value">
+                            [class.opacity-50]="productForm.get('isUnique')?.value"
+                            [class.is-invalid]="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
+                        @if (productForm.get('stock')?.invalid && productForm.get('stock')?.touched) {
+                        <div class="invalid-feedback animate__animated animate__fadeIn">El stock es obligatorio</div>
+                        }
                         @if (productForm.get('isUnique')?.value) {
                         <small class="text-primary d-block mt-1 animate__animated animate__fadeIn">
                             <i class="bi bi-info-circle"></i> Pieza única.
@@ -162,7 +177,11 @@
                             <div class="col-6">
                                 <label class="form-label small main-label">Origen <span
                                         class="text-danger">*</span></label>
-                                <input type="text" formControlName="origin" class="form-control form-control-sm">
+                                <input type="text" formControlName="origin" class="form-control form-control-sm"
+                                    [class.is-invalid]="productForm.get('origin')?.invalid && productForm.get('origin')?.touched">
+                                @if (productForm.get('origin')?.invalid && productForm.get('origin')?.touched) {
+                                <div class="invalid-feedback animate__animated animate__fadeIn">El origen es obligatorio para los tés</div>
+                                }
                             </div>
                             <div class="col-6">
                                 <label class="form-label small">Formato</label>
@@ -221,7 +240,11 @@
                             <div class="col-12 mt-2">
                                 <label class="form-label small main-label">Materiales <span
                                         class="text-danger">*</span></label>
-                                <input type="text" formControlName="materials" class="form-control form-control-sm">
+                                <input type="text" formControlName="materials" class="form-control form-control-sm"
+                                    [class.is-invalid]="productForm.get('materials')?.invalid && productForm.get('materials')?.touched">
+                                @if (productForm.get('materials')?.invalid && productForm.get('materials')?.touched) {
+                                <div class="invalid-feedback animate__animated animate__fadeIn">Los materiales son obligatorios para las artesanías</div>
+                                }
                             </div>
 
                             <div class="col-12 mt-3 d-flex flex-column gap-2">

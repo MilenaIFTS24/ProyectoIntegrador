@@ -125,6 +125,13 @@
     font-weight: 700;
 }
 
+.btn-oro-oferta {
+    background-color: rgb(201, 121, 75) !important;
+    color: #000000 !important;
+    border: 2px solid #000000 !important;
+    font-weight: 700;
+}
+
 /* BADGES DE ESTADO */
 .badge-online {
     background-color: rgba(60, 179, 113, 0.15);

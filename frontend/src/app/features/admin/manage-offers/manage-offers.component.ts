@@ -35,7 +35,7 @@ export class ManageOffersComponent implements OnInit {
   public offerForm = this.fb.group({
     id: [null as string | null],
     title: [null as string | null, [Validators.required, Validators.minLength(3)]],
-    type: ['percentage' as unknown as any, Validators.required],
+    type: ['' as unknown as any, Validators.required],
     value: [null as number | null, [Validators.required, Validators.min(1)]],
     active: [true]
   });
