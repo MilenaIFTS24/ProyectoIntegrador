@@ -19,12 +19,14 @@ import { UserDashboardComponent } from './features/user/user-dashboard/user-dash
 import { UserDashboardHomeComponent } from './features/user/user-dashboard-home/user-dashboard-home.component';
 import { MyReservationsComponent } from './features/user/my-reservations/my-reservations.component';
 import { MakeReservationComponent } from './features/user/make-reservation/make-reservation.component';
+import { HOST_TAG_NAME } from '@angular/core';
+import { HomePageComponent } from './features/home/home-page/home-page.component';
 
 export const routes: Routes = [
 
     // --- RUTAS PÚBLICAS ---
 
-    { path: "", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) }, //dirijo al login
+    { path: "", loadComponent: () => import('./features/home/home-page/home-page.component').then(m => HomePageComponent) }, //dirijo al login
     { path: "login", loadComponent: () => import('./features/auth/login/login.component').then(m => LoginComponent) },
     { path: "register", loadComponent: () => import('./features/auth/register/register.component').then(m => RegisterComponent) },
     { path: "contacto", loadComponent: () => import('./features/contact/contact-page/contact-page.component').then(m => ContactPageComponent) },

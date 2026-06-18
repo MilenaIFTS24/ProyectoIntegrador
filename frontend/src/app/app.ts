@@ -16,37 +16,31 @@ export class AppComponent implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
 
-  // Empezamos en false para evitar el "flicker" (parpadeo) del footer al cargar
+  // Signals para controlar las estructuras globales de la app
+  public isNavbarVisible = signal(false);
   public isFooterVisible = signal(false); 
 
   constructor() {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // Usamos urlAfterRedirects para capturar el "/login" final 
-      // aunque el usuario haya tipeado "/"
       this.updateVisibility(event.urlAfterRedirects || event.url);
     });
   }
 
   ngOnInit() {
-    // Forzamos el chequeo inicial considerando la redirección
     this.updateVisibility(window.location.pathname);
-
-    if (window.location.pathname.includes('/login')) {
-      this.authService.clearSession();
-    }
   }
 
   private updateVisibility(currentPath: string): void {
-    const excludedPaths = ['/login', '/register', 'adminDashboard'];
+    const authPaths = ['/login', '/register'];
+    const isAdminDashboard = currentPath.toLowerCase().includes('admindashboard');
     
-    // CASO ESPECIAL: Si el path es la raíz "/" y sabemos que redirige a login,
-    // o si el path contiene alguna de las palabras excluidas.
-    const isExcluded = currentPath === '/' || excludedPaths.some(path => 
+    // Es una ruta de auth si contiene /login o /register
+    const isAuthRoute = authPaths.some(path => 
       currentPath.toLowerCase().includes(path.toLowerCase())
     );
-
-    this.isFooterVisible.set(!isExcluded);
+    this.isNavbarVisible.set(true);
+    this.isFooterVisible.set(!isAuthRoute && !isAdminDashboard);
   }
 }

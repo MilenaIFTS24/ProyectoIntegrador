@@ -37,14 +37,10 @@ export class NavbarComponent implements OnInit {
   }
 
   private updateAuthStatus(url: string): void {
-    // Rutas que contienen login o register
-    const isLoginOrRegister = url.includes('/login') || url.includes('/register');
+    const currentUrl = url.toLowerCase();
+    const isLoginOrRegister = currentUrl.includes('/login') || currentUrl.includes('/register');
     
-    // Comparación exacta para la Home (evita que entre /productos, etc...)
-    const isHome = url === '/';
-
-    // Si es cualquiera de las tres, activa el modo "limpio"
-    this.isAuthPage.set(isLoginOrRegister || isHome);
+    this.isAuthPage.set(isLoginOrRegister);
   }
 
   logout() {

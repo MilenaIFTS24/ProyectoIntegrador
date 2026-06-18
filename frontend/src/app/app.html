@@ -1,9 +1,11 @@
-<app-navbar />
+@if (isNavbarVisible()) {
+  <app-navbar />
+}
 
-<div class="main-content">
+<main>
   <router-outlet />
-</div>
+</main>
 
 @if (isFooterVisible()) {
-<app-footer />
+  <app-footer />
 }
