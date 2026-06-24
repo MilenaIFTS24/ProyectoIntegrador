@@ -1,15 +1,14 @@
 /* --- 1. CONFIGURACIÓN BASE (ESTADO NORMAL) --- */
 .navbar {
-  background-color: #523b2f !important; /* Tu Marrón base */
-  min-height: 85px; 
-  /* Usamos Oro Antiguo para el borde inferior */
+  background-color: #523b2f !important;
+  min-height: 85px;
   border-bottom: 3px solid var(--color-oro-antiguo, #D4A559); 
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
   padding: 0.8rem 1rem;
 }
 
-/* --- 2. EL BRAND (LOGOTIPO Y TEXTO) --- */
+/* --- 2. MARCA (LOGOTIPO Y TEXTO) --- */
 .brand-wrapper {
   display: flex !important;
   align-items: center;
@@ -23,7 +22,7 @@
   text-decoration: none !important;
 }
 
-/* Colores para el modo Auth (Sobre fondo Gris #cbc9c3) */
+/* Colores para el modo Auth */
 .brand-icon {
   font-size: 2.2rem;
   color: #523b2f !important; 
@@ -38,9 +37,8 @@
   letter-spacing: 1px;
 }
 
-/* Colores para el modo Normal (Sobre fondo Marrón) */
+/* Colores para el modo Normal */
 .navbar:not(.navbar-auth) .brand-icon {
-  /* El icono brilla en Oro Rico */
   color: var(--color-oro-rico, #DAA520) !important; 
 }
 
@@ -74,7 +72,6 @@
 }
 
 .nav-link:hover, .nav-link.active {
-  /* El Celeste Ahumado para estados activos/hover */
   color: var(--color-celeste-ahumado, #6082B6) !important;
   transform: translateY(-2px);
 }
@@ -83,9 +80,8 @@
 .avatar-circle {
   width: 42px;
   height: 42px;
-  /* El avatar destaca en Oro Antiguo */
   background-color: var(--color-oro-antiguo, #D4A559);
-  color: #523b2f; /* Texto marrón para contraste */
+  color: #523b2f;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -95,7 +91,6 @@
 
 .dropdown-menu-dark {
   background-color: #523b2f !important;
-  /* Borde en Bronce Profundo para el menú */
   border: 1px solid var(--color-bronce-profundo, #8B6E4A) !important;
   border-radius: 8px;
   margin-top: 15px;
@@ -106,7 +101,22 @@
   color: var(--color-oro-rico, #DAA520) !important;
 }
 
-/* --- 6. MOBILE --- */
+.btn-cta-register {
+  background-color: transparent !important;
+  color: #cbc9c3 !important;
+  border: 1px solid #cbc9c3 !important;
+  font-weight: 600;
+  transition: all 0.3s ease !important;
+}
+
+.btn-cta-register:hover {
+  background-color: var(--color-celeste-ahumado, #6082B6) !important;
+  color: #ffffff !important;
+  border-color: var(--color-celeste-ahumado, #6082B6) !important;
+  transform: translateY(-1px);
+}
+
+/* --- MOBILE --- */
 @media (max-width: 991px) {
   .navbar-collapse {
     background-color: #523b2f !important;
