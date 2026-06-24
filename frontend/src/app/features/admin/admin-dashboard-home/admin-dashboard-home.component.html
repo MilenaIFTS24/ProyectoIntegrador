@@ -2,7 +2,7 @@
   
   <header class="welcome-banner shadow">
     <div class="welcome-text">
-      <h1 class="text-oro">{{ greeting }}, {{ authService.userName() }}!</h1>
+      <h1 class="text-oro">{{ greeting }}, {{ firstAdminName() }}!</h1>
     </div>
     <div class="status-indicator">
       <span [ngClass]="isSystemOnline ? 'badge-online' : 'badge-offline'">

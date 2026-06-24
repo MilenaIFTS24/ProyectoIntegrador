@@ -1,16 +1,17 @@
 /* Layout Principal */
 .admin-layout {
   display: flex;
-  height: calc(100vh - 85px); 
+  height: calc(100vh - 95px); 
+  width: 100vw;
   overflow: hidden;
   background-color: #f8f7f2;
 }
 
-/* Sidebar con medidas optimizadas */
 .admin-sidebar {
   width: 260px;
   background-color: #523b2f;
   border-right: 4px solid var(--color-oro-antiguo);
+  box-shadow: 4px 0 15px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -18,11 +19,19 @@
   padding: 1rem 0;
 }
 
+.admin-main-content {
+  flex-grow: 1;
+  height: 100%;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background-color: #ffffff;
+}
+
 /* Header más compacto */
 .sidebar-header {
-  padding: 0 1rem 1rem; 
+  padding: 0 1rem 1rem;
   border-bottom: 1px solid rgba(212, 165, 89, 0.15);
-  margin-bottom: 0.5rem; 
+  margin-bottom: 0.5rem;
   text-align: center;
 }
 
@@ -50,8 +59,10 @@
   border-radius: 8px;
   display: flex;
   align-items: center;
-  margin-bottom: 3px; /* Espacio mínimo entre botones */
-  font-size: 0.9rem; /* Fuente más pequeña */
+  margin-bottom: 3px;
+  /* Espacio mínimo entre botones */
+  font-size: 0.9rem;
+  /* Fuente más pequeña */
   transition: all 0.2s ease;
 }
 
@@ -67,7 +78,7 @@
 
 /* Divisores mucho más delgados */
 .nav-divider {
-  font-size: 0.65rem; 
+  font-size: 0.65rem;
   color: rgba(203, 201, 195, 0.3);
   text-transform: uppercase;
   letter-spacing: 1.5px;
@@ -77,10 +88,4 @@
 
 .sidebar-decoration {
   display: none;
-}
-
-.admin-main-content {
-  flex-grow: 1;
-  overflow-y: auto;
-  background-color: #ffffff;
 }

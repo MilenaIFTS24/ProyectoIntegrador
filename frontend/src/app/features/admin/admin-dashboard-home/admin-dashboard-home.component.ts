@@ -1,19 +1,16 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { forkJoin, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { RouterModule } from '@angular/router';
 
-// Modelo
 import { StatCard } from '../../../core/models/stat-card.model';
-
-// Servicios Core
 import { ProductService } from '../../../core/services/product.service';
 import { UserService } from '../../../core/services/user.service';
 import { EventService } from '../../../core/services/event.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReservationService } from '../../../core/services/reservation.service';
 import { OfferService } from '../../../core/services/offer.service';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-admin-dashboard-home',
@@ -35,8 +32,12 @@ export class AdminDashboardHomeComponent implements OnInit {
   public loading = true;
   public isSystemOnline = false;
 
+  public firstAdminName = computed(() => {
+    const fullName = this.authService.userName();
+    return fullName ? fullName.split(' ')[0] : 'Administrador';
+  });
+
   ngOnInit(): void {
-    // Solo cargar datos si el rol es Admin
     if (this.authService.isAdmin()) {
       this.loadDashboardData();
     } else {

@@ -1,11 +1,20 @@
 /* --- 1. CONFIGURACIÓN BASE (ESTADO NORMAL) --- */
 .navbar {
   background-color: #523b2f !important;
-  min-height: 85px;
+  --navbar-height: 95px; 
+  
+  height: var(--navbar-height) !important;
+  min-height: var(--navbar-height) !important;
+  max-height: var(--navbar-height) !important;
+  
+  padding: 0.8rem 1rem !important;
   border-bottom: 3px solid var(--color-oro-antiguo, #D4A559); 
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
-  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1050;
 }
 
 /* --- 2. MARCA (LOGOTIPO Y TEXTO) --- */
