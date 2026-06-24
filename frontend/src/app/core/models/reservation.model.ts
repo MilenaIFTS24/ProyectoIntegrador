@@ -9,7 +9,7 @@ export interface Reservation {
   totalAmount: number;
   paymentMethod: 'debito' | 'credito' | 'contado' | 'billetera_virtual';
   paymentId?: string;
-  pickupDate?: string;
+  pickupDate?: string | null;
   pickupTimeSlot: string;
   isEcoPackaging: boolean;
   clientNotes?: string;

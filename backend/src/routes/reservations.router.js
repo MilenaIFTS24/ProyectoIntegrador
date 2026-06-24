@@ -16,7 +16,7 @@ router.get('/user/:userId', authenticateToken, getReservationsByUser);
 router.patch('/cancel/:id', authenticateToken, cancelReservation); 
 
 // --- RUTAS ADMINISTRATIVAS (Solo Admin) ---
-router.get('/', authenticateToken, isAdmin, getAllReservations); 
-router.patch('/:id/status', authenticateToken, isAdmin, updateReservationStatus); 
+router.get('/', authenticateToken, isAdmin, getAllReservations);
+router.patch('/:id', authenticateToken, isAdmin, updateReservationStatus); 
 
 export default router;

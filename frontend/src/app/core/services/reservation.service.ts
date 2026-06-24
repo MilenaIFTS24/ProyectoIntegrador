@@ -23,7 +23,7 @@ export class ReservationService {
   }
 
   updateReservation(id: string, reservation: Partial<Reservation>): Observable<any> {
-    return this.api.put(`${this.path}/${id}`, reservation);
+    return this.api.patch(`${this.path}/${id}`, reservation);
   }
 
   deleteReservation(id: string): Observable<any> {

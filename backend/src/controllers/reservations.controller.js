@@ -14,7 +14,7 @@ export const createReservation = async (req, res) => {
 export const getAllReservations = async (req, res) => {
     try {
         const { status } = req.query;
-        
+
         const data = await ReservationService.findAllReservationsService(status);
         res.json(data);
     } catch (error) {
@@ -35,8 +35,10 @@ export const getReservationsByUser = async (req, res) => {
 export const updateReservationStatus = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await ReservationService.updateStatusService(id, req.body);
-        res.json({ message: "Estado actualizado", result });
+        const { status, pickupDate, isEcoPackaging } = req.body;
+        const result = await ReservationService.updateStatusService(id, { status, pickupDate, isEcoPackaging });
+
+        res.json({ message: "Reserva actualizada con éxito", result });
     } catch (error) {
         res.status(400).json({ error: error.message });
     }

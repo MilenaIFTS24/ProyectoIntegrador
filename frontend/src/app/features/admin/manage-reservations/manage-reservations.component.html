@@ -48,8 +48,11 @@
                     </td>
                     <td>
                         <div class="d-flex flex-column">
-                            <span>{{ res.pickupDate | date:'dd/MM/yyyy' }}</span>
-                            <small class="text-tea fw-bold" style="font-size: 0.75rem;">{{ res.pickupTimeSlot }}</small>
+                            @if (res.pickupDate) {
+                            <span class="fw-bold text-dark">{{ res.pickupDate | date:'dd/MM/yyyy' }}</span>
+                            } @else {
+                            <span class="text-muted" style="font-style: italic;">Fecha por definir</span>
+                            }
                         </div>
                     </td>
                     <td class="product-price fw-bold">{{ res.totalAmount | currency:'ARS':'symbol-narrow':'1.2-2' }}
@@ -69,12 +72,6 @@
                             <button class="btn-action btn-edit" (click)="updateReservation(res)" title="Gestionar">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
-                            @if (res.status === 'listo') {
-                            <button class="btn-action btn-save-mini" (click)="quickStatusChange(res, 'entregada')"
-                                title="Entregar">
-                                <i class="bi bi-check2-all"></i>
-                            </button>
-                            }
                         </div>
                     </td>
                 </tr>
@@ -204,10 +201,12 @@
                                     currency:'ARS':'symbol-narrow' }}</span>
                             </div>
                             <div class="mt-auto pt-3 border-top">
-                                <div class="d-flex justify-content-between fw-bold">
-                                    <span class="fs-5">TOTAL:</span>
-                                    <span class="text-dark fs-4">{{ reservationForm.get('totalAmount')?.value |
-                                        currency:'ARS':'symbol-narrow' }}</span>
+                                <div class="d-flex flex-column align-items-start gap-1 fw-bold">
+                                    <span class="text-muted small text-uppercase tracking-wider"
+                                        style="font-size: 0.75rem;">Monto Total:</span>
+                                    <span class="text-dark fs-3 lh-1 text-wrap text-break">
+                                        {{ reservationForm.get('totalAmount')?.value | currency:'ARS':'symbol-narrow' }}
+                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -217,7 +216,9 @@
                 <div class="card-footer-custom d-flex justify-content-end gap-3 pt-4">
                     <button type="button" class="btn btn-cancel" (click)="onCancel()"
                         [disabled]="loading">Limpiar</button>
-                    <button type="submit" [disabled]="reservationForm.invalid || !reservationForm.get('id')?.value || loading" class="btn btn-save">
+                    <button type="submit"
+                        [disabled]="reservationForm.invalid || !reservationForm.get('id')?.value || loading"
+                        class="btn btn-save">
                         {{ loading ? 'Actualizando...' : 'Guardar Cambios' }}
                     </button>
                 </div>

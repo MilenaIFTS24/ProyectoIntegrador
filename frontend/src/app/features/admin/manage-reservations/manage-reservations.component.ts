@@ -3,6 +3,7 @@ import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ReservationService } from '../../../core/services/reservation.service';
 import { Reservation } from '../../../core/models/reservation.model';
+import { NotificationService } from '../../../core/services/notification.service';
 
 @Component({
   selector: 'app-manage-reservations',
@@ -14,6 +15,7 @@ import { Reservation } from '../../../core/models/reservation.model';
 export class ManageReservationsComponent implements OnInit {
   private reservationService = inject(ReservationService);
   private fb = inject(FormBuilder);
+  private notify = inject(NotificationService);
 
   public reservations: Reservation[] = [];
   public filteredReservationList: Reservation[] = [];
@@ -62,6 +64,7 @@ export class ManageReservationsComponent implements OnInit {
       },
       error: () => {
         this.loading = false;
+        this.notify.toast('No se pudieron cargar las reservas', 'error');
         this.errorMessage = 'Error de conexión con el servidor.';
       }
     });
@@ -85,12 +88,16 @@ export class ManageReservationsComponent implements OnInit {
       pickupDate: reservation.pickupDate ? new Date(reservation.pickupDate).toISOString().split('T')[0] : ''
     } as any);
 
+    this.notify.toast(`Editando reserva de: ${reservation.contactEmail}`, 'info');
     this.scrollTo('.reservation-card');
   }
 
   onSubmit(): void {
     this.reservationForm.markAllAsTouched();
-    if (this.reservationForm.invalid) return;
+    if (this.reservationForm.invalid) {
+      this.notify.toast('Completa los campos obligatorios', 'warning');
+      return;
+    }
 
     const f = this.reservationForm.getRawValue();
 
@@ -99,7 +106,7 @@ export class ManageReservationsComponent implements OnInit {
     today.setHours(0, 0, 0, 0);
 
     if (selectedDate < today) {
-      console.warn('La fecha de retiro no puede ser anterior a hoy');
+      this.notify.toast('La fecha no puede ser anterior a hoy', 'warning');
       return;
     }
 
@@ -107,19 +114,21 @@ export class ManageReservationsComponent implements OnInit {
 
     const payload: Partial<Reservation> = {
       status: (f.status as any) || undefined,
-      pickupDate: f.pickupDate || undefined,
+      pickupDate: f.pickupDate ? f.pickupDate : null,
       isEcoPackaging: !!f.isEcoPackaging
     };
 
     if (f.id) {
       this.reservationService.updateReservation(f.id, payload).subscribe({
         next: () => {
-          this.loadReservations(); 
-          this.onCancel();        
+          this.notify.toast('Reserva actualizada con éxito', 'success');
+          this.loadReservations();
+          this.onCancel();
           this.scrollTo('.custom-table');
         },
         error: (err) => {
           this.loading = false;
+          this.notify.toast('Error al actualizar la reserva', 'error');
           console.error('Error al actualizar:', err);
         }
       });
