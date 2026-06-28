@@ -7,7 +7,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 })
 export class ApiService {
 
-  private baseUrl = 'casa-de-te.up.railway.app/api';
+  private baseUrl = 'https://casa-de-te.up.railway.app/api';
 
   constructor(private _httpClient: HttpClient) { }
 
