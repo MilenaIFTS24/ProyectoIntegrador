@@ -4,6 +4,6 @@
     "rootDirectory": "backend"
   },
   "deploy": {
-    "startCommand": "node index.js"
+    "startCommand": "npm start"
   }
 }
