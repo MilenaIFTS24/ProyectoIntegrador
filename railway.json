@@ -4,6 +4,6 @@
     "rootDirectory": "backend"
   },
   "deploy": {
-    "startCommand": "rm -rf node_modules && npm install && node index.js"
+    "startCommand": "node index.js"
   }
 }
