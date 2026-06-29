@@ -15,8 +15,8 @@ export class HomePageComponent implements OnInit {
   private eventService = inject(EventService);
   private router = inject(Router);
 
-  // Signal para almacenar el evento más cercano en el tiempo
-  public nextEvent = signal<CalendarEvent | null>(null);
+  // Signal para almacenar los eventos más cercanos en el tiempo
+  public upcomingEvents = signal<CalendarEvent[]>([]);
 
   ngOnInit(): void {
     this.getUpcomingEvent();
@@ -26,13 +26,13 @@ export class HomePageComponent implements OnInit {
     this.eventService.getEvents().subscribe({
       next: (events) => {
         const today = new Date().toISOString().split('T')[0];
-        // Filtrar eventos futuros y los ordenar por fecha
+        // Filtrar eventos futuros y ordenar por fecha
         const upcoming = events
           .filter(e => e.date >= today)
           .sort((a, b) => a.date.localeCompare(b.date));
-        
+
         if (upcoming.length > 0) {
-          this.nextEvent.set(upcoming[0]); // El primero es el más próximo
+          this.upcomingEvents.set(upcoming.slice(0, 3));
         }
       }
     });
