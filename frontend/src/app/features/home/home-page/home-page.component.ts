@@ -45,7 +45,7 @@ export class HomePageComponent implements OnInit {
     }
   }
 
-  navigateToEvents(): void {
+  /* navigateToEvents(): void {
     this.router.navigate(['/events']); 
-  }
+  } */
 }
