@@ -29,4 +29,5 @@ export class ReservationService {
   deleteReservation(id: string): Observable<any> {
     return this.api.delete(`${this.path}/${id}`);
   }
+  
 }

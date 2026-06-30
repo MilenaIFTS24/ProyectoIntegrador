@@ -149,6 +149,45 @@
 
                 <hr class="divider">
 
+                @if (selectedItems().length > 0) {
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h5 class="fw-bold text-dark">Productos Reservados</h5>
+                        <div class="items-table-wrapper">
+                            <div class="table-responsive bg-white border rounded">
+                                <table class="table table-sm table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Producto</th>
+                                            <th class="text-center">Cantidad</th>
+                                            <th class="text-end">Precio Unit.</th>
+                                            <th class="text-end">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (item of selectedItems(); track item.id) {
+                                        <tr>
+                                            <td>
+                                                <div class="product-name-cell">{{ item.product?.name || 'Producto no
+                                                    disponible' }}</div>
+                                                <span class="product-type-badge">{{ (item.product?.productType) |
+                                                    uppercase }}</span>
+                                            </td>
+                                            <td class="text-center">{{ item.quantity }}</td>
+                                            <td class="text-end">{{ item.unitPrice | currency:'ARS':'symbol-narrow' }}
+                                            </td>
+                                            <td class="text-end">{{ (item.quantity * item.unitPrice) |
+                                                currency:'ARS':'symbol-narrow' }}</td>
+                                        </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                }
+
                 <div class="row g-4 mb-4">
                     <div class="col-md-4">
                         <div class="p-4 border rounded bg-white shadow-sm border-oro h-100">

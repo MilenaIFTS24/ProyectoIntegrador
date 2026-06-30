@@ -198,6 +198,49 @@
     background-color: #ffffff !important;
 }
 
+.items-table-wrapper {
+    margin-top: 0.5rem;
+}
+
+.items-table-wrapper .table {
+    font-size: 0.9rem;
+}
+
+.items-table-wrapper .table thead th {
+    background-color: #f8f9fa;
+    color: #333;
+    border-bottom: 2px solid #d4a559;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.5px;
+}
+
+.items-table-wrapper .table tbody td {
+    vertical-align: middle;
+    padding: 0.6rem 0.5rem;
+    border-bottom: 1px solid #eee;
+}
+
+.items-table-wrapper .table tbody tr:hover {
+    background-color: #f5f3ef;
+}
+
+.items-table-wrapper .product-name-cell {
+    font-weight: 600;
+    color: #000;
+}
+
+.items-table-wrapper .product-type-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    background-color: #e9ecef;
+    color: #555;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+
 /* Campos DESHABILITADOS (Solo lectura) */
 input:disabled, textarea:disabled {
     background-color: #f8f9fa !important;

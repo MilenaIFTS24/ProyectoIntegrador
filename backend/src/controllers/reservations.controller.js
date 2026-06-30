@@ -1,5 +1,7 @@
 import * as ReservationService from '../services/reservations.service.js';
 
+console.log('✅ Controlador de reservas cargado correctamente');
+
 export const createReservation = async (req, res) => {
     try {
         const { items, ...reservationData } = req.body;
@@ -14,11 +16,24 @@ export const createReservation = async (req, res) => {
 export const getAllReservations = async (req, res) => {
     try {
         const { status } = req.query;
-
         const data = await ReservationService.findAllReservationsService(status);
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: error.message });
+    }
+};
+
+export const getReservationById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const data = await ReservationService.getReservationByIdService(id);
+        res.json(data);
+    } catch (error) {
+        if (error.message === 'Reserva no encontrada') {
+            res.status(404).json({ error: error.message });
+        } else {
+            res.status(500).json({ error: error.message });
+        }
     }
 };
 

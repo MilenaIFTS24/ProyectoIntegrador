@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe, CurrencyPipe } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { ReservationService } from '../../../core/services/reservation.service';
@@ -19,6 +19,7 @@ export class ManageReservationsComponent implements OnInit {
 
   public reservations: Reservation[] = [];
   public filteredReservationList: Reservation[] = [];
+  public selectedItems = signal<any[]>([]);
   public loading: boolean = true;
   public errorMessage: string = '';
   public currentPage: number = 1;
@@ -61,6 +62,7 @@ export class ManageReservationsComponent implements OnInit {
         this.reservations = data;
         this.filteredReservationList = data;
         this.loading = false;
+        this.selectedItems.set([]);
       },
       error: () => {
         this.loading = false;
@@ -81,15 +83,40 @@ export class ManageReservationsComponent implements OnInit {
   }
 
   updateReservation(reservation: Reservation): void {
-    this.reservationForm.reset();
+    // Si la reserva tiene ID, obtenemos los detalles actualizados
+    if (reservation.id) {
+      this.loading = true;
+      this.reservationService.getById(reservation.id).subscribe({
+        next: (updatedReservation) => {
+          this.loading = false;
+          // Actualizar la lista local con los datos frescos
+          const index = this.reservations.findIndex(r => r.id === updatedReservation.id);
+          if (index !== -1) {
+            this.reservations[index] = updatedReservation;
+            this.filteredReservationList[index] = updatedReservation;
+          }
 
-    this.reservationForm.patchValue({
-      ...reservation,
-      pickupDate: reservation.pickupDate ? new Date(reservation.pickupDate).toISOString().split('T')[0] : ''
-    } as any);
+          this.reservationForm.reset();
+          this.reservationForm.patchValue({
+            ...updatedReservation,
+            pickupDate: updatedReservation.pickupDate ? new Date(updatedReservation.pickupDate).toISOString().split('T')[0] : ''
+          } as any);
 
-    this.notify.toast(`Editando reserva de: ${reservation.contactEmail}`, 'info');
-    this.scrollTo('.reservation-card');
+          this.selectedItems.set(updatedReservation.items || []);
+          console.log('🔍 Items actualizados:', this.selectedItems());
+
+          this.notify.toast(`Editando reserva de: ${updatedReservation.contactEmail}`, 'info');
+          this.scrollTo('.reservation-card');
+        },
+        error: (err) => {
+          this.loading = false;
+          this.notify.toast('Error al obtener los detalles de la reserva', 'error');
+          console.error(err);
+        }
+      });
+    } else {
+      this.notify.toast('La reserva no tiene ID', 'error');
+    }
   }
 
   onSubmit(): void {
@@ -155,6 +182,8 @@ export class ManageReservationsComponent implements OnInit {
       pickupDate: '',
       isEcoPackaging: false
     });
+
+    this.selectedItems.set([]);
 
     this.loading = false;
     this.errorMessage = '';
