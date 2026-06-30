@@ -27,12 +27,12 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
+
   onSubmit() {
   if (this.loginForm.invalid) return;
   
   this.loading = true;
 
-  // Extraemos solo los valores planos para asegurar compatibilidad total con el Backend
   const { email, password } = this.loginForm.getRawValue();
 
   this.authService.loginAction({ email, password }).subscribe({
@@ -52,7 +52,6 @@ export class LoginComponent {
     },
     error: (err: HttpErrorResponse) => {
       this.loading = false;
-      // Si el backend da 401, el error suele venir en err.error.message o err.error.error
       const msg = err.error?.error || err.error?.message || 'Credenciales incorrectas';
       this.notify.toast(msg, 'error');
       console.error('Error 401 Detalles:', err);

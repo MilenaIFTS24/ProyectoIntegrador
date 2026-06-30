@@ -21,7 +21,7 @@ export const loginService = async (email, password) => {
         { expiresIn: '1h' } // El token expira en 8 horas
     );
 
-    return { token, user: { id: user.id, fullName: user.fullName, role: user.role } };
+    return { token, user: { id: user.id, fullName: user.fullName, role: user.role, email: user.email } };
 };
 
 export const registerService = async (userData) => {
@@ -47,7 +47,8 @@ export const registerService = async (userData) => {
         user: { 
             id: newUser.id, 
             fullName: newUser.fullName, 
-            role: newUser.role 
+            role: newUser.role,
+            email: newUser.email 
         } 
     };
 };

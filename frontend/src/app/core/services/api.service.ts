@@ -7,8 +7,7 @@ import { catchError, Observable, throwError } from 'rxjs';
 })
 export class ApiService {
 
-  //private baseUrl = 'https://casa-de-te.up.railway.app/api';
-  private baseUrl = 'http://localhost:3000/api';
+  private baseUrl = 'https://casa-de-te.up.railway.app/api';
 
   constructor(private _httpClient: HttpClient) { }
 

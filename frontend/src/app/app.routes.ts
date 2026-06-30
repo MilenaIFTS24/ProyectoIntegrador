@@ -35,7 +35,7 @@ export const routes: Routes = [
     { path: "events", loadComponent: () => import('./features/events/events-list/events-list.component').then(m => EventsListComponent) },
     { path: "events/:id", loadComponent: () => import('./features/events/event-detail/event-detail.component').then(m => EventDetailComponent) },
     {
-        path: "adminDashboard", loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => AdminDashboardComponent), children:
+        path: "adminDashboard", canActivate: [authGuard, roleGuard], loadComponent: () => import('./features/admin/admin-dashboard/admin-dashboard.component').then(m => AdminDashboardComponent), children:
             [
                 { path: "adminDashboardHome", loadComponent: () => import('./features/admin/admin-dashboard-home/admin-dashboard-home.component').then(m => AdminDashboardHomeComponent) },
                 { path: "manageEvents", loadComponent: () => import('./features/admin/manage-events/manage-events.component').then(m => ManageEventsComponent) },

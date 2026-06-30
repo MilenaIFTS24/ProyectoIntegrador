@@ -149,6 +149,7 @@
 
                 <hr class="divider">
 
+                <!-- SECCIÓN: TABLA DE PRODUCTOS RESERVADOS -->
                 @if (selectedItems().length > 0) {
                 <div class="row mb-4">
                     <div class="col-12">
@@ -168,16 +169,16 @@
                                         @for (item of selectedItems(); track item.id) {
                                         <tr>
                                             <td>
-                                                <div class="product-name-cell">{{ item.product?.name || 'Producto no
-                                                    disponible' }}</div>
-                                                <span class="product-type-badge">{{ (item.product?.productType) |
-                                                    uppercase }}</span>
+                                                <div class="product-name-cell">
+                                                    {{ item.product?.name || item.Product?.name || 'Producto no disponible' }}
+                                                </div>
+                                                <span class="product-type-badge">
+                                                    {{ (item.product?.productType || item.Product?.productType) | uppercase }}
+                                                </span>
                                             </td>
                                             <td class="text-center">{{ item.quantity }}</td>
-                                            <td class="text-end">{{ item.unitPrice | currency:'ARS':'symbol-narrow' }}
-                                            </td>
-                                            <td class="text-end">{{ (item.quantity * item.unitPrice) |
-                                                currency:'ARS':'symbol-narrow' }}</td>
+                                            <td class="text-end">{{ item.unitPrice | currency:'ARS':'symbol-narrow' }}</td>
+                                            <td class="text-end">{{ (item.quantity * item.unitPrice) | currency:'ARS':'symbol-narrow' }}</td>
                                         </tr>
                                         }
                                     </tbody>
@@ -193,18 +194,27 @@
                         <div class="p-4 border rounded bg-white shadow-sm border-oro h-100">
                             <h5 class="section-title text-tea mb-3"><i class="bi bi-calendar-check"></i> Entrega</h5>
 
-                            <label class="form-label small fw-bold">Fecha de Retiro <span
-                                    class="text-danger">*</span></label>
+                            <!-- CAMPO FECHA DE RETIRO CON VALIDACIÓN CONDICIONAL -->
+                            <label class="form-label small fw-bold">
+                                Fecha de Retiro
+                                @if (reservationForm.get('status')?.value !== 'cancelada') {
+                                    <span class="text-danger">*</span>
+                                }
+                            </label>
                             <input type="date" formControlName="pickupDate" [min]="minDate"
                                 class="form-control custom-input mb-3"
-                                [style.border-color]="reservationForm.get('pickupDate')?.invalid && reservationForm.get('pickupDate')?.touched ? '#dc3545' : ''"
-                                [style.background-image]="reservationForm.get('pickupDate')?.invalid && reservationForm.get('pickupDate')?.touched ? 'none' : ''">
+                                [class.is-invalid]="reservationForm.get('pickupDate')?.invalid && reservationForm.get('pickupDate')?.touched">
 
-                            @if (reservationForm.get('pickupDate')?.invalid &&
-                            reservationForm.get('pickupDate')?.touched) {
-                            <div class="text-danger small mt-1 mb-3 animate__animated animate__fadeIn">
-                                La fecha de retiro es obligatoria
-                            </div>
+                            @if (reservationForm.get('status')?.value !== 'cancelada' && reservationForm.get('pickupDate')?.invalid && reservationForm.get('pickupDate')?.touched) {
+                                <div class="text-danger small mt-1 mb-3 animate__animated animate__fadeIn">
+                                    La fecha de retiro es obligatoria
+                                </div>
+                            }
+
+                            @if (reservationForm.get('status')?.value === 'cancelada') {
+                                <small class="text-muted d-block mt-1">
+                                    <i class="bi bi-info-circle"></i> Fecha deshabilitada para reservas canceladas
+                                </small>
                             }
 
                             <label class="form-label small text-muted">Franja Horaria</label>

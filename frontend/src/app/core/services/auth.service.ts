@@ -23,6 +23,14 @@ export class AuthService {
     this.authState.set(initial);
   }
 
+  public getCurrentUser(): any {
+    return this.authState().user;
+  }
+
+  public getUserId(): string | null {
+    return this.authState().user?.id || null;
+  }
+
   private validateSession(): { token: string | null, user: any | null } {
     const token = localStorage.getItem('userToken');
     const userStr = localStorage.getItem('userData');
@@ -54,9 +62,7 @@ export class AuthService {
   login(token: string, user: any): void {
     localStorage.setItem('userToken', token);
     localStorage.setItem('userData', JSON.stringify(user));
-
     this.authState.set({ token, user });
-
     const route = user.role === 'admin' ? '/adminDashboard' : '/userDashboard';
     this.router.navigateByUrl(route);
   }

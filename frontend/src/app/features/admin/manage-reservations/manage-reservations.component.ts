@@ -19,13 +19,14 @@ export class ManageReservationsComponent implements OnInit {
 
   public reservations: Reservation[] = [];
   public filteredReservationList: Reservation[] = [];
-  public selectedItems = signal<any[]>([]);
   public loading: boolean = true;
   public errorMessage: string = '';
   public currentPage: number = 1;
   public itemsPerPage: number = 10;
   private readonly NAVBAR_OFFSET = 110;
   public minDate: string = '';
+
+  public selectedItems = signal<any[]>([]);
 
   public reservationForm = this.fb.group({
     id: [null as string | null],
@@ -38,12 +39,24 @@ export class ManageReservationsComponent implements OnInit {
     pickupTimeSlot: [{ value: '', disabled: true }, Validators.required],
     status: ['', Validators.required],
     isEcoPackaging: [false],
-    pickupDate: ['', Validators.required]
+    pickupDate: [''] // 👈 SIN VALIDACIÓN REQUERIDA
   });
 
   ngOnInit(): void {
     this.loadReservations();
     this.calculateMinDate();
+
+    // 👇 CONTROL DEL DESHABILITADO DE pickupDate SEGÚN EL ESTADO
+    this.reservationForm.get('status')?.valueChanges.subscribe((status) => {
+      const pickupDateControl = this.reservationForm.get('pickupDate');
+      if (status === 'cancelada') {
+        pickupDateControl?.disable();
+        pickupDateControl?.setValue(''); // Limpia la fecha
+      } else {
+        pickupDateControl?.enable();
+      }
+      this.reservationForm.updateValueAndValidity();
+    });
   }
 
   private calculateMinDate(): void {
@@ -51,7 +64,6 @@ export class ManageReservationsComponent implements OnInit {
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = today.getDate().toString().padStart(2, '0');
-
     this.minDate = `${year}-${month}-${day}`;
   }
 
@@ -83,60 +95,57 @@ export class ManageReservationsComponent implements OnInit {
   }
 
   updateReservation(reservation: Reservation): void {
-    // Si la reserva tiene ID, obtenemos los detalles actualizados
-    if (reservation.id) {
-      this.loading = true;
-      this.reservationService.getById(reservation.id).subscribe({
-        next: (updatedReservation) => {
-          this.loading = false;
-          // Actualizar la lista local con los datos frescos
-          const index = this.reservations.findIndex(r => r.id === updatedReservation.id);
-          if (index !== -1) {
-            this.reservations[index] = updatedReservation;
-            this.filteredReservationList[index] = updatedReservation;
-          }
+    this.reservationForm.reset();
 
-          this.reservationForm.reset();
-          this.reservationForm.patchValue({
-            ...updatedReservation,
-            pickupDate: updatedReservation.pickupDate ? new Date(updatedReservation.pickupDate).toISOString().split('T')[0] : ''
-          } as any);
+    // Restauramos el estado del control pickupDate (por si estaba deshabilitado)
+    this.reservationForm.get('pickupDate')?.enable();
 
-          this.selectedItems.set(updatedReservation.items || []);
-          console.log('🔍 Items actualizados:', this.selectedItems());
+    this.reservationForm.patchValue({
+      ...reservation,
+      pickupDate: reservation.pickupDate ? new Date(reservation.pickupDate).toISOString().split('T')[0] : ''
+    } as any);
 
-          this.notify.toast(`Editando reserva de: ${updatedReservation.contactEmail}`, 'info');
-          this.scrollTo('.reservation-card');
-        },
-        error: (err) => {
-          this.loading = false;
-          this.notify.toast('Error al obtener los detalles de la reserva', 'error');
-          console.error(err);
-        }
-      });
-    } else {
-      this.notify.toast('La reserva no tiene ID', 'error');
+    // Aplicamos la lógica de deshabilitado según el estado actual
+    const status = this.reservationForm.get('status')?.value;
+    if (status === 'cancelada') {
+      this.reservationForm.get('pickupDate')?.disable();
     }
+
+    this.selectedItems.set(reservation.items || []);
+    this.notify.toast(`Editando reserva de: ${reservation.contactEmail}`, 'info');
+    this.scrollTo('.reservation-card');
   }
 
   onSubmit(): void {
-    this.reservationForm.markAllAsTouched();
+    const status = this.reservationForm.get('status')?.value;
+    const pickupDate = this.reservationForm.get('pickupDate')?.value;
+
+    // Si el estado NO es "cancelada", la fecha es obligatoria
+    if (status !== 'cancelada' && !pickupDate) {
+      this.notify.toast('La fecha de retiro es obligatoria para reservas no canceladas', 'warning');
+      this.reservationForm.get('pickupDate')?.markAsTouched();
+      return;
+    }
+
+    // Si el estado NO es "cancelada", validar que la fecha no sea anterior a hoy
+    if (status !== 'cancelada' && pickupDate) {
+      const selectedDate = new Date(pickupDate + 'T00:00:00');
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      if (selectedDate < today) {
+        this.notify.toast('La fecha no puede ser anterior a hoy', 'warning');
+        return;
+      }
+    }
+
+    // Validar el resto del formulario (los campos obligatorios)
     if (this.reservationForm.invalid) {
+      this.reservationForm.markAllAsTouched();
       this.notify.toast('Completa los campos obligatorios', 'warning');
       return;
     }
 
     const f = this.reservationForm.getRawValue();
-
-    const selectedDate = new Date(f.pickupDate + 'T00:00:00');
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (selectedDate < today) {
-      this.notify.toast('La fecha no puede ser anterior a hoy', 'warning');
-      return;
-    }
-
     this.loading = true;
 
     const payload: Partial<Reservation> = {
@@ -182,9 +191,9 @@ export class ManageReservationsComponent implements OnInit {
       pickupDate: '',
       isEcoPackaging: false
     });
-
+    // Habilitar pickupDate por defecto
+    this.reservationForm.get('pickupDate')?.enable();
     this.selectedItems.set([]);
-
     this.loading = false;
     this.errorMessage = '';
   }

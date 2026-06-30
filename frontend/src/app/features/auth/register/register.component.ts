@@ -70,7 +70,7 @@ export class RegisterComponent implements OnInit {
 
         this.notify.toast('¡Bienvenido! Tu cuenta ha sido creada con éxito', 'success');
         
-        // 2. Redirigiral Dashboard de usuario
+        // 2. Redirigir al Dashboard de usuario
         this.router.navigate(['/userDashboard']);
       },
       error: (err: HttpErrorResponse) => {
