@@ -1,6 +1,7 @@
 import { Events } from '../models/index.js';
 import sequelize from '../data/database.js';
 
+// Obtener todos los eventos
 export const getAllEventsService = async () => {
     return await Events.findAll({
         attributes: {
@@ -19,6 +20,7 @@ export const getAllEventsService = async () => {
     });
 };
 
+// Obtener un evento por ID
 export const getEventByIdService = async (id) => {
     return await Events.findByPk(id, {
         attributes: {
@@ -36,16 +38,19 @@ export const getEventByIdService = async (id) => {
     });
 };
 
+// Crear un nuevo evento
 export const createEventService = async (eventData) => {
     return await Events.create(eventData);
 };
 
+// Actualizar un evento
 export const updateEventService = async (id, eventData) => {
     const event = await Events.findByPk(id);
     if (!event) throw new Error('Evento no encontrado');
     return await event.update(eventData);
 };
 
+// Eliminar un evento
 export const deleteEventService = async (id) => {
     return await Events.destroy({ where: { id } });
 };

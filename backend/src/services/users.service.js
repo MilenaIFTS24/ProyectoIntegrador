@@ -1,6 +1,7 @@
 import User from '../models/users.model.js';
 import bcrypt from 'bcrypt';
 
+// Crear un nuevo usuario
 export const createUserService = async (userData) => {
     const existingUser = await User.findOne({ where: { email: userData.email } });
     if (existingUser) throw new Error("El email ya está registrado.");
@@ -14,12 +15,14 @@ export const createUserService = async (userData) => {
     return userJson;
 };
 
+// Listar todos los usuarios
 export const getAllUsersService = async () => {
     return await User.findAll({
         attributes: { exclude: ['password', 'passwordRecoveryToken'] }
     });
 };
 
+// Actualizar un usuario
 export const updateUserService = async (id, updateData) => {
     const user = await User.findByPk(id);
     if (!user) throw new Error("Usuario no encontrado.");
@@ -30,8 +33,7 @@ export const updateUserService = async (id, updateData) => {
     }
 
     await user.update(updateData);
-    
-    // Retornamos los datos frescos y sin password
+
     const updatedUser = user.toJSON();
     delete updatedUser.password;
     delete updatedUser.passwordRecoveryToken;
@@ -39,6 +41,7 @@ export const updateUserService = async (id, updateData) => {
     return updatedUser;
 };
 
+// Eliminar un usuario
 export const deleteUserService = async (id) => {
     const user = await User.findByPk(id);
     if (!user) throw new Error("Usuario no encontrado.");

@@ -9,12 +9,18 @@ import { authenticateToken, isAdmin } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-// --- RUTAS PROTEGIDAS (Usuario logueado) ---
+// --- Rutas solo usuarios logueados ---
+
+// URL: POST /api/event-registrations
 router.post('/', authenticateToken, registerToEvent); 
-router.get('/my-registrations/:userId', authenticateToken, getUserRegistrations); 
+// URL: GET /api/my-registrations/:userId
+router.get('/my-registrations/:userId', authenticateToken, getUserRegistrations);
+// URL: DELETE /api/event-registrations/:id 
 router.delete('/:id', authenticateToken, cancelRegistration); 
 
-// --- RUTAS ADMINISTRATIVAS (Solo Admin) ---
+// --- Rutas solo Administradores ---
+
+// URL: GET /api/event-registrations/event/:eventId
 router.get('/event/:eventId', authenticateToken, isAdmin, getEventAttendees); 
 
 export default router;

@@ -1,11 +1,12 @@
-import { 
-    getAllOffersService, 
-    getOfferByIdService, 
-    createOfferService, 
-    updateOfferService, 
-    deleteOfferService 
+import {
+    getAllOffersService,
+    getOfferByIdService,
+    createOfferService,
+    updateOfferService,
+    deleteOfferService
 } from "../services/offers.service.js";
 
+// Obtener todas las ofertas
 export const getAllOffers = async (req, res) => {
     try {
         const offers = await getAllOffersService();
@@ -15,6 +16,7 @@ export const getAllOffers = async (req, res) => {
     }
 };
 
+// Obtener una oferta por ID
 export const getOfferById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -25,6 +27,7 @@ export const getOfferById = async (req, res) => {
     }
 };
 
+// Crear una nueva oferta
 export const createOffer = async (req, res) => {
     try {
         const newOffer = await createOfferService(req.body);
@@ -34,6 +37,7 @@ export const createOffer = async (req, res) => {
     }
 };
 
+// Actualizar una oferta
 export const updateOffer = async (req, res) => {
     try {
         const { id } = req.params;
@@ -44,6 +48,7 @@ export const updateOffer = async (req, res) => {
     }
 };
 
+// Eliminar una oferta
 export const deleteOffer = async (req, res) => {
     try {
         const { id } = req.params;

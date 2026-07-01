@@ -1,5 +1,6 @@
 import * as EventService from '../services/events.service.js';
 
+// Obtener todos los eventos
 export const getAllEvents = async (req, res) => {
     try {
         const data = await EventService.getAllEventsService();
@@ -9,6 +10,7 @@ export const getAllEvents = async (req, res) => {
     }
 };
 
+//Obtener un evento por ID
 export const getEventById = async (req, res) => {
     try {
         const data = await EventService.getEventByIdService(req.params.id);
@@ -19,6 +21,7 @@ export const getEventById = async (req, res) => {
     }
 };
 
+// Crear un nuevo evento
 export const createEvent = async (req, res) => {
     try {
         const result = await EventService.createEventService(req.body);
@@ -28,6 +31,7 @@ export const createEvent = async (req, res) => {
     }
 };
 
+// Actualizar un evento
 export const updateEvent = async (req, res) => {
     try {
         const result = await EventService.updateEventService(req.params.id, req.body);
@@ -37,6 +41,7 @@ export const updateEvent = async (req, res) => {
     }
 };
 
+// Eliminar un evento
 export const deleteEvent = async (req, res) => {
     try {
         await EventService.deleteEventService(req.params.id);

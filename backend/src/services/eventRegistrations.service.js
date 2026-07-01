@@ -1,10 +1,10 @@
 import { EventRegistrations, Events, Users } from '../models/index.js';
 
+// Inscripcion a un evento
 export const registerToEventService = async (registrationData) => {
     const event = await Events.findByPk(registrationData.eventId);
     if (!event) throw new Error('Evento inexistente');
 
-    // Validación de cupo
     const count = await EventRegistrations.count({ 
         where: { eventId: event.id, status: 'confirmada' } 
     });
@@ -16,6 +16,7 @@ export const registerToEventService = async (registrationData) => {
     return await EventRegistrations.create(registrationData);
 };
 
+// Obtener las inscripciones de un usuario
 export const getRegistrationsByUserService = async (userId) => {
     return await EventRegistrations.findAll({
         where: { userId },
@@ -23,6 +24,7 @@ export const getRegistrationsByUserService = async (userId) => {
     });
 };
 
+// Obtener los asistentes de un evento
 export const getAttendeesByEventService = async (eventId) => {
     return await EventRegistrations.findAll({
         where: { eventId },
@@ -30,6 +32,7 @@ export const getAttendeesByEventService = async (eventId) => {
     });
 };
 
+// Cancelar una inscripcion
 export const deleteRegistrationService = async (id) => {
     return await EventRegistrations.destroy({ where: { id } });
 };

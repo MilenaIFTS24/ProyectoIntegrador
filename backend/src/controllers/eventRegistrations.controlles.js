@@ -1,8 +1,8 @@
 import * as RegistrationService from '../services/eventRegistrations.service.js';
 
+// Inscribirse a un evento con cupo limitado
 export const registerToEvent = async (req, res) => {
     try {
-        // La lógica de validación de cupo ya está en el Service
         const result = await RegistrationService.registerToEventService(req.body);
         res.status(201).json(result);
     } catch (error) {
@@ -10,6 +10,7 @@ export const registerToEvent = async (req, res) => {
     }
 };
 
+// Obtener las inscripciones de un usuario
 export const getUserRegistrations = async (req, res) => {
     try {
         const data = await RegistrationService.getRegistrationsByUserService(req.params.userId);
@@ -19,6 +20,7 @@ export const getUserRegistrations = async (req, res) => {
     }
 };
 
+// Cancelar una inscripción
 export const cancelRegistration = async (req, res) => {
     try {
         await RegistrationService.deleteRegistrationService(req.params.id);
@@ -28,6 +30,7 @@ export const cancelRegistration = async (req, res) => {
     }
 };
 
+// Obtener los asistentes de un evento
 export const getEventAttendees = async (req, res) => {
     try {
         const data = await RegistrationService.getAttendeesByEventService(req.params.eventId);

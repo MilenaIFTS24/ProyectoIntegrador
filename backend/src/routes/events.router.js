@@ -10,13 +10,20 @@ import { authenticateToken, isAdmin } from '../middlewares/auth.middleware.js';
 
 const router = Router();
 
-// --- RUTAS PÚBLICAS (Sin token) ---
+// --- Rutas publicas ---
+
+// URL: /api/events
 router.get('/', getAllEvents); 
+// URL: /api/events/:id
 router.get('/:id', getEventById); 
 
-// --- RUTAS ADMINISTRATIVAS (Solo Admin) ---
+// --- Rutas solo Administradores ---
+
+// URL: POST /api/events
 router.post('/', authenticateToken, isAdmin, createEvent);
+// URL: PUT /api/events/:id
 router.put('/:id', authenticateToken, isAdmin, updateEvent);
+// URL: DELETE /api/events/:id
 router.delete('/:id', authenticateToken, isAdmin, deleteEvent);
 
 export default router;

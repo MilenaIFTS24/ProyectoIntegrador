@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../data/database.js';
 
+// Modelo para la tabla "offers" usando Sequelize
 const Offers = sequelize.define('Offers', {
   id: {
     type: DataTypes.UUID,

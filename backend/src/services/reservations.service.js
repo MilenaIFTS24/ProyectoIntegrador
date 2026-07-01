@@ -1,10 +1,8 @@
 import { Reservations, ReservationItems, Products } from '../models/index.js';
 import sequelize from '../data/database.js';
 
-console.log('🛠️ Servicio de reservas cargado');
-
+// Crear una nueva reserva
 export const createReservationService = async (reservationData, items) => {
-    console.log('📝 Creando nueva reserva con items:', items);
     const t = await sequelize.transaction();
     try {
         const reservation = await Reservations.create(reservationData, { transaction: t });
@@ -14,43 +12,34 @@ export const createReservationService = async (reservationData, items) => {
         }));
         await ReservationItems.bulkCreate(itemsData, { transaction: t });
 
-        // Descontar stock
         for (const item of items) {
-            console.log(`📉 Decrementando stock del producto ${item.productId} en ${item.quantity}`);
+            console.log(`Decrementando stock del producto ${item.productId} en ${item.quantity}`);
             const [updatedCount] = await Products.decrement('stock', {
                 by: item.quantity,
                 where: { id: item.productId },
                 transaction: t
             });
-            console.log(`   ✅ Filas afectadas: ${updatedCount}`);
             const productAfter = await Products.findByPk(item.productId, { transaction: t });
-            console.log(`   📊 Nuevo stock del producto: ${productAfter.stock}`);
         }
 
         await t.commit();
-        console.log(`✅ Reserva ${reservation.id} creada exitosamente. Stock actualizado.`);
         return reservation;
     } catch (error) {
         await t.rollback();
-        console.error('❌ Error al crear reserva:', error);
         throw error;
     }
 };
 
+// Obtener todas las reservas
 export const findAllReservationsService = async (status) => {
-    console.log('🔍 findAllReservationsService llamado con status:', status);
     const where = status ? { status } : {};
 
-    // 1. Obtener reservas con sus items (sin productos aún)
     const reservations = await Reservations.findAll({
         where,
         include: [{ model: ReservationItems, as: 'items' }],
         order: [['createdAt', 'DESC']]
     });
 
-    console.log('📦 Reservas encontradas:', reservations.length);
-
-    // 2. Extraer todos los productIds
     let allProductIds = [];
     for (const r of reservations) {
         for (const item of r.items) {
@@ -58,22 +47,17 @@ export const findAllReservationsService = async (status) => {
         }
     }
     const uniqueProductIds = [...new Set(allProductIds)];
-    console.log('🆔 Product IDs únicos:', uniqueProductIds);
 
-    // 3. Obtener productos en una sola consulta
     const products = await Products.findAll({
         where: { id: uniqueProductIds },
         attributes: ['id', 'name', 'productType', 'price']
     });
-    console.log('📦 Productos encontrados:', products.length);
 
-    // 4. Crear un mapa id -> producto
     const productMap = {};
     for (const p of products) {
         productMap[p.id] = p.toJSON();
     }
 
-    // 5. Convertir reservas a JSON plano y agregar 'product' a cada item
     const result = reservations.map(r => {
         const rJson = r.toJSON();
         rJson.items = rJson.items.map(item => {
@@ -83,12 +67,11 @@ export const findAllReservationsService = async (status) => {
         return rJson;
     });
 
-    console.log('✅ Resultado final (primer item):', JSON.stringify(result[0]?.items?.[0] || 'sin items'));
     return result;
 };
 
+// Obtener una reserva por ID
 export const getReservationByIdService = async (id) => {
-    console.log('🔍 getReservationByIdService llamado con id:', id);
     const reservation = await Reservations.findByPk(id, {
         include: [{ model: ReservationItems, as: 'items' }]
     });
@@ -120,6 +103,7 @@ export const getReservationByIdService = async (id) => {
     return result;
 };
 
+// Obtener las reservas de un usuario
 export const findReservationsByUserService = async (userId) => {
     const reservations = await Reservations.findAll({
         where: { userId },
@@ -157,58 +141,42 @@ export const findReservationsByUserService = async (userId) => {
     return result;
 };
 
+// Actualizar el estado de una reserva
 export const updateStatusService = async (id, data) => {
     const reservation = await Reservations.findByPk(id);
     if (!reservation) throw new Error('Reserva no encontrada');
     return await reservation.update(data);
 };
 
+// Cancelar una reserva (estado)
 export const cancelReservationService = async (id) => {
-    console.log(`🔍 Iniciando cancelación de reserva: ${id}`);
     const t = await sequelize.transaction();
     try {
         const reservation = await Reservations.findByPk(id, {
             include: [{ model: ReservationItems, as: 'items' }]
         });
         if (!reservation) {
-            console.error(`❌ Reserva ${id} no encontrada`);
             throw new Error('Reserva no encontrada');
         }
         if (reservation.status !== 'pendiente') {
-            console.error(`❌ La reserva ${id} no está pendiente (estado actual: ${reservation.status})`);
             throw new Error('Solo se cancelan pendientes');
         }
 
-        console.log(`📦 Reserva encontrada. Items: ${reservation.items.length}`);
         for (const item of reservation.items) {
-            console.log(`   - Producto ID: ${item.productId}, Cantidad: ${item.quantity}`);
-        }
-
-        // Reintegro de stock
-        for (const item of reservation.items) {
-            console.log(`🔄 Incrementando stock del producto ${item.productId} en ${item.quantity}`);
             const [updatedCount] = await Products.increment('stock', {
                 by: item.quantity,
                 where: { id: item.productId },
                 transaction: t
             });
-            console.log(`   ✅ Filas afectadas: ${updatedCount}`);
 
-            // Verificar el nuevo stock después del incremento
             const productAfter = await Products.findByPk(item.productId, { transaction: t });
-            console.log(`   📊 Nuevo stock del producto: ${productAfter.stock}`);
         }
 
-        // Actualizar estado de la reserva
-        console.log(`🔄 Actualizando estado de reserva a 'cancelada'`);
         await reservation.update({ status: 'cancelada', cancelledAt: new Date() }, { transaction: t });
 
-        console.log(`✅ Confirmando transacción`);
         await t.commit();
-        console.log(`✅ Reserva ${id} cancelada exitosamente. Stock reintegrado.`);
         return true;
     } catch (error) {
-        console.error(`❌ Error al cancelar la reserva ${id}:`, error);
         await t.rollback();
         throw error;
     }

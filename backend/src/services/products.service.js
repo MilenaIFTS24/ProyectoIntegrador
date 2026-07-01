@@ -1,5 +1,6 @@
 import Product from '../models/products.model.js';
 
+// Crear un nuevo producto
 export const createProductService = async (productData) => { 
     const { productType, origin, materials } = productData;
 
@@ -14,10 +15,12 @@ export const createProductService = async (productData) => {
     return await Product.create(productData);
 };
 
+// Obtener todos los productos
 export const getAllProductsService = async () => {
     return await Product.findAll();
 };
 
+// Obtener productos por tipo (te o artesania)
 export const getProductsByTypeService = async (type) => {
     if (!['tea', 'craft'].includes(type)) {
         throw new Error("Tipo de producto no válido. Debe ser 'tea' o 'craft'.");
@@ -28,6 +31,7 @@ export const getProductsByTypeService = async (type) => {
     });
 };
 
+// Obtener un producto por ID
 export const getProductByIdService = async (id) => {
     const product = await Product.findByPk(id);
     if (!product) {
@@ -36,14 +40,15 @@ export const getProductByIdService = async (id) => {
     return product;
 };
 
+// Actualizar un producto
 export const updateProductService = async (id, updateData) => {
     const product = await Product.findByPk(id);
     if (!product) throw new Error("Producto no encontrado");
 
-    // Actualiza el producto con los datos nuevos
     return await product.update(updateData);
 };
 
+// Eliminar un producto
 export const deleteProductService = async (id) => {
     const product = await Product.findByPk(id);
     if (!product) throw new Error("Producto no encontrado");

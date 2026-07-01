@@ -4,11 +4,9 @@ dotenv.config();
 import express from "express";
 import cors from "cors";
 
-// 1. Importación de la conexión y relaciones
 import sequelize from "./src/data/database.js";
-import "./src/models/index.js"; 
+import "./src/models/index.js";
 
-// 2. Importación de Routers
 import productsRouter from "./src/routes/products.router.js";
 import offersRouter from "./src/routes/offers.router.js";
 import eventsRouter from "./src/routes/events.router.js";
@@ -19,11 +17,11 @@ import eventRegistrationsRouter from "./src/routes/eventRegistrations.router.js"
 
 const app = express();
 
-// --- MIDDLEWARES GLOBALES ---
-app.use(express.json()); // Analiza cuerpos JSON
-app.use(cors());         // Habilita peticiones desde Angular
+// --- Middlewares Globales ---
+app.use(express.json());
+app.use(cors());
 
-// --- DEFINICIÓN DE RUTAS (API VERSIONING) ---
+// --- Definición de Rutas ---
 app.use("/api/auth", authRouter);
 app.use("/api/products", productsRouter);
 app.use("/api/offers", offersRouter);
@@ -33,31 +31,26 @@ app.use("/api/users", usersRouter);
 app.use("/api/registrations", eventRegistrationsRouter);
 app.use('/api/offers', offersRouter);
 
-// --- MANEJO DE ERRORES: RUTA NO ENCONTRADA ---
+// --- Manejo de error: Ruta no encontrada ---
 app.use((req, res, next) => {
   res.status(404).json({ error: "Ruta no encontrada" });
 });
 
-// --- INICIALIZACIÓN DEL SERVIDOR Y BASE DE DATOS ---
+// --- Inicializacion de Servidor y Base de Datos ---
 const PORT = process.env.PORT || 3000;
 
 async function startApplication() {
   try {
-    // 1. Autenticar conexión con Supabase
     await sequelize.authenticate();
-    console.log('Conexión exitosa a PostgreSQL (Supabase).');
 
-    // 2. Sincronizar modelos con la DB
     await sequelize.sync({ alter: true });
-    console.log('Modelos y Relaciones de Sequelize sincronizados.');
 
-    // 3. Iniciar el servidor
     app.listen(PORT, () => {
       console.log(`Servidor corriendo en: http://localhost:${PORT}`);
     });
   } catch (error) {
     console.error('Error crítico al iniciar la aplicación:', error);
-    process.exit(1); // Cierra el proceso si no hay base de datos
+    process.exit(1);
   }
 }
 

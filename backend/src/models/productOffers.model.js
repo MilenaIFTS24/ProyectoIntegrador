@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../data/database.js';
 
+// Modelo para la tabla "product_offers" usando Sequelize
 const ProductOffers = sequelize.define('ProductOffers', {
   id: {
     type: DataTypes.INTEGER,

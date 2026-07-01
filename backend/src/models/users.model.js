@@ -1,6 +1,7 @@
 import { DataTypes } from 'sequelize';
 import sequelize from '../data/database.js';
 
+// Modelo para la tabla "users" usando Sequelize
 const User = sequelize.define('User', {
     id: {
         type: DataTypes.UUID,
@@ -12,7 +13,7 @@ const User = sequelize.define('User', {
         allowNull: false
     },
     birthDate: {
-        type: DataTypes.DATEONLY, // Solo fecha, sin hora
+        type: DataTypes.DATEONLY,
         allowNull: false
     },
     email: {
@@ -35,11 +36,11 @@ const User = sequelize.define('User', {
     },
     phone: {
         type: DataTypes.STRING,
-        allowNull: true // Opcional
+        allowNull: true
     },
     address: {
         type: DataTypes.TEXT,
-        allowNull: true // Opcional
+        allowNull: true
     },
     lastLogin: {
         type: DataTypes.DATE,
@@ -55,7 +56,7 @@ const User = sequelize.define('User', {
     }
 }, {
     tableName: 'users',
-    timestamps: true // crea automáticamente 'createdAt' (fecha de creación) y 'updatedAt'
+    timestamps: true
 });
 
 export default User;

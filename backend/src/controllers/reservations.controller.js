@@ -1,11 +1,9 @@
 import * as ReservationService from '../services/reservations.service.js';
 
-console.log('✅ Controlador de reservas cargado correctamente');
-
+// Crear una nueva reserva
 export const createReservation = async (req, res) => {
     try {
         const { items, ...reservationData } = req.body;
-        // El service se encarga de la transacción y el stock
         const result = await ReservationService.createReservationService(reservationData, items);
         res.status(201).json(result);
     } catch (error) {
@@ -13,6 +11,7 @@ export const createReservation = async (req, res) => {
     }
 };
 
+// Obtener todas las reservas
 export const getAllReservations = async (req, res) => {
     try {
         const { status } = req.query;
@@ -23,6 +22,7 @@ export const getAllReservations = async (req, res) => {
     }
 };
 
+// Obtener una reserva por ID
 export const getReservationById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -37,6 +37,7 @@ export const getReservationById = async (req, res) => {
     }
 };
 
+// Obtener las reservas de un usuario
 export const getReservationsByUser = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -47,6 +48,7 @@ export const getReservationsByUser = async (req, res) => {
     }
 };
 
+// Actualizar el estado de una reserva
 export const updateReservationStatus = async (req, res) => {
     try {
         const { id } = req.params;
@@ -59,6 +61,7 @@ export const updateReservationStatus = async (req, res) => {
     }
 };
 
+// Cancelar una reserva
 export const cancelReservation = async (req, res) => {
     try {
         const { id } = req.params;

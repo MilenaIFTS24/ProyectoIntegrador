@@ -1,20 +1,20 @@
 import * as ProductService from '../services/products.service.js';
 
+// Crear un nuevo producto
 export const createProduct = async (req, res) => {
     try {
-        // Llamamos al servicio pasando solo los datos necesarios
         const newProduct = await ProductService.createProductService(req.body);
-        
+
         res.status(201).json({
-            message: "✅ Producto creado exitosamente",
+            message: "Producto creado exitosamente",
             data: newProduct
         });
     } catch (error) {
-        // Capturamos los errores lanzados por el servicio
         res.status(400).json({ error: error.message });
     }
 };
 
+// Obtener todos los productos
 export const getProducts = async (req, res) => {
     try {
         const products = await ProductService.getAllProductsService();
@@ -24,18 +24,19 @@ export const getProducts = async (req, res) => {
     }
 };
 
+// Obtener productos por tipo (te o artesania)
 export const getProductsByType = async (req, res) => {
     try {
-        const { type } = req.params; // Extrae 'tea' o 'craft' de la URL
+        const { type } = req.params;
         const products = await ProductService.getProductsByTypeService(type);
-        
+
         res.status(200).json(products);
     } catch (error) {
-        // Si el tipo no es válido, el servicio lanzará un error y caerá aquí
         res.status(400).json({ error: error.message });
     }
 };
 
+// Obtener un producto por ID
 export const getProductById = async (req, res) => {
     try {
         const { id } = req.params;
@@ -46,16 +47,18 @@ export const getProductById = async (req, res) => {
     }
 };
 
+// Actualizar un producto
 export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
         const updatedProduct = await ProductService.updateProductService(id, req.body);
-        res.status(200).json({ message: "✅ Producto actualizado", data: updatedProduct });
+        res.status(200).json({ message: "Producto actualizado", data: updatedProduct });
     } catch (error) {
         res.status(error.message === "Producto no encontrado" ? 404 : 400).json({ error: error.message });
     }
 };
 
+// Eliminar un producto
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params;
