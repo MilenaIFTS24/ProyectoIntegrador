@@ -180,4 +180,39 @@ export const cancelReservationService = async (id) => {
         await t.rollback();
         throw error;
     }
+
+};
+
+// Eliminar una reserva
+export const deleteReservationService = async (id) => {
+    const t = await sequelize.transaction();
+    try {
+        const reservation = await Reservations.findByPk(id, {
+            include: [{ model: ReservationItems, as: 'items' }]
+        });
+        if (!reservation) throw new Error('Reserva no encontrada');
+
+        if (reservation.status === 'pendiente') {
+            for (const item of reservation.items) {
+                await Products.increment('stock', {
+                    by: item.quantity,
+                    where: { id: item.productId },
+                    transaction: t
+                });
+            }
+        }
+
+        await ReservationItems.destroy({
+            where: { reservationId: id },
+            transaction: t
+        });
+
+        await reservation.destroy({ transaction: t });
+
+        await t.commit();
+        return { message: 'Reserva eliminada correctamente' };
+    } catch (error) {
+        await t.rollback();
+        throw error;
+    }
 };

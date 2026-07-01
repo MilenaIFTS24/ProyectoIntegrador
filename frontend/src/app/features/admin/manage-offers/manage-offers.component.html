@@ -63,7 +63,7 @@
             @switch (offer.type) {
             @case ('percentage') { {{ offer.value }}% OFF }
             @case ('fixed') { {{ offer.value | currency }} }
-            @case ('quantity') { {{ offer.value }}x1 }
+            @case ('quantity') { {{ offer.value }}x{{ offer.value - 1 }} }
             @default { {{ offer.value }} }
             }
           </td>

@@ -198,6 +198,34 @@ export class ManageReservationsComponent implements OnInit {
     this.errorMessage = '';
   }
 
+  // Eliminar una reserva
+  deleteReservation(reservation: Reservation): void {
+    if (!reservation.id) {
+      this.notify.toast('No se pudo identificar la reserva', 'error');
+      return;
+    }
+
+    this.notify.confirm(
+      '¿Eliminar reserva?',
+      `Estás por eliminar la reserva de ${reservation.contactEmail}. Esta acción no se puede deshacer.`
+    ).then(result => {
+      if (result.isConfirmed) {
+        this.loading = true;
+        this.reservationService.deleteReservation(reservation.id!).subscribe({
+          next: () => {
+            this.notify.toast('Reserva eliminada correctamente', 'success');
+            this.loadReservations();
+            this.onCancel(); 
+          },
+          error: (err) => {
+            this.loading = false;
+            this.notify.toast(err.message || 'Error al eliminar la reserva', 'error');
+          }
+        });
+      }
+    });
+  }
+
   // Desplazarse a un elemento
   private scrollTo(selector: string): void {
     setTimeout(() => {

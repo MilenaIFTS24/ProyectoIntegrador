@@ -70,4 +70,16 @@ export const cancelReservation = async (req, res) => {
     } catch (error) {
         res.status(400).json({ error: error.message });
     }
+
+};
+
+// Eliminar una reserva
+export const deleteReservation = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const result = await ReservationService.deleteReservationService(id);
+        res.json(result);
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+    }
 };
