@@ -1,1 +1,99 @@
-<p>home-page works!</p>
+<div class="landing-container">
+
+  <header class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content animate__animated animate__fadeIn">
+      <span class="hero-badge">Hecho a mano • 100% Orgánico</span>
+      <h1>Sabor Orgánico, Arte Sustentable</h1>
+      <p>Descubrí nuestra selección premium de tés en hebras y objetos únicos creados por artesanos locales directos a
+        tu hogar.</p>
+      <div class="hero-actions">
+        <button class="btn btn-primary" (click)="scrollTo('#products')">Explorar Tienda</button>
+        <button class="btn btn-secondary" (click)="scrollTo('#events')">Próximos Talleres</button>
+      </div>
+    </div>
+  </header>
+
+  <section class="features">
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="bi bi-flower1 text-tea"></i>
+      </div>
+      <h3>Hebras Premium</h3>
+      <p>Blends orgánicos seleccionados minuciosamente para cuidar tu bienestar y el planeta.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="bi bi-palette text-oro"></i>
+      </div>
+      <h3>Piezas Únicas</h3>
+      <p>Artesanías con alma y dedicación, donde cada detalle cuenta una historia diferente.</p>
+    </div>
+
+    <div class="feature-card">
+      <div class="feature-icon">
+        <i class="bi bi-globe-americas text-success"></i>
+      </div>
+      <h3>Enfoque Ecológico</h3>
+      <p>Packaging compostable y procesos conscientes con residuo cero.</p>
+    </div>
+  </section>
+
+  <section id="products" class="showcase">
+    <div class="section-title">
+      <h2>Nuestras Colecciones</h2>
+      <p>Un mimo para el alma y tu espacio</p>
+    </div>
+
+    <div class="showcase-grid">
+      <div class="showcase-card">
+        <div class="card-img-wrapper">
+          <img src="/images/te.jpg" alt="Tés Orgánicos">
+        </div>
+        <div class="card-body">
+          <h3>Almacén de Té</h3>
+          <p>Hebras puras, blends florales y frutales diseñados para cada momento del día.</p>
+          <a class="card-link" routerLink="/">Ver Variedades <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+
+      <div class="showcase-card">
+        <div class="card-img-wrapper">
+          <img src="/images/artesanía.jpg" alt="Artesanías">
+        </div>
+        <div class="card-body">
+          <h3>Arte y Cerámica</h3>
+          <p>Tazas, teteras y más artesanías modeladas a mano que transforman tu ritual diario.</p>
+          <a class="card-link" routerLink="/">Ver Catálogo <i class="bi bi-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="events" class="events-banner">
+    <div class="events-content">
+      <h2>Viví la Experiencia</h2>
+      <p>Participá de nuestras exclusivas degustaciones de té, talleres varios y charlas de consumo consciente.</p>
+
+      @if (upcomingEvents().length > 0) {
+      <div class="d-flex flex-column gap-2">
+        @for (event of upcomingEvents(); track event.id || $index) {
+        <div class="next-event-badge animate__animated animate__pulse animate__infinite">
+          <span>
+            <i class="bi bi-calendar-event-fill me-2 text-oro"></i>
+            <strong>{{ event.title }}</strong> - {{ event.date | date:'dd/MM' }} a las {{
+            event.startTime }}hs
+          </span>
+        </div>
+        }
+      </div>
+      }
+
+      <button class="btn btn-gold" routerLink="/">
+        <i class="bi bi-ticket-perforated me-2"></i>Reservar un Lugar
+      </button>
+    </div>
+  </section>
+
+</div>

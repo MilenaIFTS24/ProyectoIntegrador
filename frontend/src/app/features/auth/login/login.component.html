@@ -1,1 +1,45 @@
-<p>login works!</p>
+<div class="login-wrapper">
+  <div class="login-container">
+
+    <div class="login-card">
+      <h3 class="login-title">Iniciar Sesión</h3>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+
+        <div class="form-group mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" formControlName="email" class="form-control"
+            [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}">
+          @if (loginForm.get('email')?.invalid && loginForm.get('email')?.touched) {
+          <div class="invalid-feedback">Ingresa un correo válido.</div>
+          }
+        </div>
+
+        <div class="form-group mb-4">
+          <label class="form-label">Contraseña</label>
+          <input type="password" formControlName="password" class="form-control"
+            [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}">
+          @if (loginForm.get('password')?.invalid && loginForm.get('password')?.touched) {
+          <div class="invalid-feedback">Mínimo 6 caracteres.</div>
+          }
+        </div>
+
+        <button type="submit" class="btn-login-submit" [disabled]="loading || loginForm.invalid">
+          @if (loading) {
+          <span class="spinner-border spinner-border-sm me-2"></span>
+          Cargando...
+          } @else {
+          Entrar
+          }
+        </button>
+
+        <div class="login-footer mt-4">
+          <span>¿No tienes cuenta? </span>
+          <a routerLink="/register" class="register-link">Regístrate</a>
+        </div>
+
+      </form>
+    </div>
+
+  </div>
+</div>

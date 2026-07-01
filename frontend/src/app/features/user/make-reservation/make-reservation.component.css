@@ -1,0 +1,100 @@
+:host {
+  display: block;
+  background-color: #cbc9c3 !important;
+  margin: -1.5rem -3rem -1.5rem -3rem;
+  padding: 1.5rem 3rem;
+  min-height: calc(100vh - 85px);
+}
+
+.make-reservation-container {
+  max-width: 1300px;
+  margin: 0 auto;
+}
+
+.reservation-form-card {
+  border: 2px solid #000000 !important;
+  border-radius: 12px;
+  overflow: hidden;
+  background: white;
+}
+
+.card-header-custom {
+  background-color: #000000 !important;
+  color: var(--color-oro-antiguo) !important;
+  padding: 1.5rem;
+  border-bottom: 2px solid var(--color-oro-antiguo) !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--color-oro-antiguo) !important;
+}
+
+.badge-id {
+  background-color: var(--color-oro-antiguo) !important;
+  color: #000000 !important;
+  font-weight: 800;
+  padding: 0.5rem 1rem;
+}
+
+.main-label {
+  font-weight: bold;
+  color: #000000;
+}
+
+.custom-input {
+  border: 1px solid #cccccc;
+  border-radius: 8px;
+  padding: 0.7rem;
+  transition: all 0.3s;
+}
+
+.custom-input:focus {
+  border-color: var(--color-oro-rico);
+  box-shadow: 0 0 0 0.25rem rgba(212, 165, 89, 0.15);
+  outline: none;
+}
+
+.items-container .item-row {
+  background-color: #f8f7f2;
+  border-color: #d4a559 !important;
+}
+
+.btn-save {
+  background-color: var(--color-celeste-ahumado) !important;
+  color: white !important;
+  border: 2px solid #000000 !important;
+  padding: 0.8rem 2rem;
+  font-weight: 700;
+}
+
+.btn-cancel {
+  border: 2px solid #000000;
+  color: #000000;
+  font-weight: 700;
+  padding: 0.8rem 2rem;
+  background: transparent;
+}
+
+.text-tea {
+  color: #3CB371 !important;
+}
+
+.make-reservation-container .col-md-5,
+.make-reservation-container .col-md-3,
+.make-reservation-container .col-md-4,
+.make-reservation-container .col-md-6 {
+  min-height: 105px;
+}
+
+@media (max-width: 768px) {
+  :host {
+    margin: -1rem -1rem -1rem -1rem !important;
+    padding: 1rem !important;
+  }
+}

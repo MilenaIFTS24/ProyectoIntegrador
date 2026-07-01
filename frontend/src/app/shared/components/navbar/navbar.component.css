@@ -1,0 +1,140 @@
+/* --- Capa Principal --- */
+.navbar {
+  background-color: #523b2f !important;
+  --navbar-height: 95px;
+
+  height: var(--navbar-height) !important;
+  min-height: var(--navbar-height) !important;
+  max-height: var(--navbar-height) !important;
+
+  padding: 0.8rem 1rem !important;
+  border-bottom: 3px solid var(--color-oro-antiguo, #D4A559);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+  display: flex;
+  align-items: center;
+  position: relative;
+  z-index: 1050;
+}
+
+/* --- Logotipo y Texto --- */
+.brand-wrapper {
+  display: flex !important;
+  align-items: center;
+  min-width: 260px;
+  z-index: 1100;
+}
+
+.navbar-brand-custom {
+  display: flex !important;
+  align-items: center;
+  text-decoration: none !important;
+}
+
+/* Colores para el modo Auth */
+.brand-icon {
+  font-size: 2.2rem;
+  color: #523b2f !important;
+  margin-right: 12px;
+}
+
+.brand-text {
+  font-weight: 800;
+  font-size: 1.6rem;
+  color: #523b2f !important;
+  white-space: nowrap !important;
+  letter-spacing: 1px;
+}
+
+/* Colores para el modo Normal */
+.navbar:not(.navbar-auth) .brand-icon {
+  color: var(--color-oro-rico, #DAA520) !important;
+}
+
+.navbar:not(.navbar-auth) .brand-text {
+  color: #cbc9c3 !important;
+}
+
+/* --- Modo Auth --- */
+.navbar-auth {
+  background-color: transparent !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  padding-top: 2rem;
+}
+
+.navbar-auth .container {
+  display: flex !important;
+  justify-content: center !important;
+}
+
+.navbar-auth .brand-wrapper {
+  min-width: auto;
+}
+
+/* --- Navegacion y Links --- */
+.nav-link {
+  color: #cbc9c3 !important;
+  font-weight: 600;
+  margin: 0 12px;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  color: var(--color-celeste-ahumado, #6082B6) !important;
+  transform: translateY(-2px);
+}
+
+/* --- Avatar y Dropdown --- */
+.avatar-circle {
+  width: 42px;
+  height: 42px;
+  background-color: var(--color-oro-antiguo, #D4A559);
+  color: #523b2f;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+.dropdown-menu-dark {
+  background-color: #523b2f !important;
+  border: 1px solid var(--color-bronce-profundo, #8B6E4A) !important;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(212, 165, 89, 0.1);
+  /* Fondo Oro Antiguo sutil */
+  color: var(--color-oro-rico, #DAA520) !important;
+}
+
+/* --- Botones --- */
+.btn-cta-register {
+  background-color: transparent !important;
+  color: #cbc9c3 !important;
+  border: 1px solid #cbc9c3 !important;
+  font-weight: 600;
+  transition: all 0.3s ease !important;
+}
+
+.btn-cta-register:hover {
+  background-color: var(--color-celeste-ahumado, #6082B6) !important;
+  color: #ffffff !important;
+  border-color: var(--color-celeste-ahumado, #6082B6) !important;
+  transform: translateY(-1px);
+}
+
+/* --- Responsive --- */
+@media (max-width: 991px) {
+  .navbar-collapse {
+    background-color: #523b2f !important;
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 15px;
+    border: 1px solid var(--color-oro-antiguo, #D4A559);
+  }
+}

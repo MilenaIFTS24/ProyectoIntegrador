@@ -1,0 +1,272 @@
+/* --- Capa Principal --- */
+:host {
+    display: block;
+    margin: -10rem -10rem -10rem -10rem !important;
+    padding: 10rem !important;
+    background-color: #cbc9c3 !important;
+    min-height: 120vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+.manage-container {
+    max-width: 1300px;
+    margin: 0 auto;
+    background-color: transparent !important;
+    position: relative;
+    z-index: 1;
+}
+
+/* --- Barra de Búsqueda --- */
+.search-wrapper {
+    max-width: 550px;
+    margin: 2rem auto;
+}
+
+.search-form-organic {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.9);
+    padding: 6px 6px 6px 20px;
+    border-radius: 12px;
+    border: 1px solid #d4a559;
+    transition: box-shadow 0.3s ease;
+}
+
+.search-form-organic:focus-within {
+    border-color: #6082b6;
+    transform: scale(1.01);
+}
+
+.search-form-organic:focus-within {
+    box-shadow: 0 10px 25px rgba(139, 110, 74, 0.15);
+}
+
+.input-container {
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+}
+
+.search-input {
+    border: none;
+    background: transparent;
+    padding: 10px;
+    width: 100%;
+    outline: none;
+    color: #444;
+    font-size: 1rem;
+    font-family: 'Segoe UI', serif;
+}
+
+.search-input::placeholder {
+    color: #999;
+    font-style: italic;
+    font-weight: 300;
+}
+
+ww .btn-organic-search {
+    background-color: #8b6e4a;
+    color: #fff;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 8px;
+    font-weight: 500;
+    letter-spacing: 1.5px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-organic-search:hover {
+    background-color: #d4a559;
+    color: #fff;
+}
+
+/* --- Tabla --- */
+.table-responsive {
+    scroll-margin-top: 120px;
+    background-color: #ffffff !important;
+    border: 2px solid #000000 !important;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.custom-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.custom-table thead {
+    background-color: #000000 !important;
+    color: var(--color-oro-antiguo) !important;
+}
+
+.custom-table th {
+    padding: 1.2rem;
+    border-bottom: 2px solid var(--color-oro-antiguo) !important;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+}
+
+.custom-table td {
+    padding: 1rem;
+    vertical-align: middle;
+    border-bottom: 1px solid #eeeeee;
+    color: #333;
+}
+
+/* --- Placas y Estados --- */
+.badge-admin {
+    background-color: rgba(212, 165, 89, 0.15);
+    color: #8B6E4A;
+    border: 1px solid #8B6E4A;
+    font-weight: 700;
+}
+
+.badge-user {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #6c757d;
+    font-weight: 700;
+}
+
+.stock-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+/* --- Botones de accion (tabla) --- */
+.btn-action {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #000000;
+    border-radius: 8px;
+    transition: all 0.2s;
+    background: transparent;
+}
+
+.btn-edit:hover {
+    background: #8B6E4A;
+    color: white;
+}
+
+.btn-delete:hover {
+    background: #B22222;
+    color: white;
+}
+
+/* --- Tarjeta de Usuario --- */
+.user-card {
+    scroll-margin-top: 120px;
+    border: 2px solid #000000 !important;
+    border-radius: 12px;
+    overflow: hidden;
+    background: white;
+    margin-bottom: 8rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card-header {
+    background-color: #000000 !important;
+    color: var(--color-oro-antiguo) !important;
+    padding: 1.5rem;
+    border-bottom: 2px solid var(--color-oro-antiguo) !important;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header-title {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.badge-id {
+    background-color: var(--color-oro-antiguo) !important;
+    color: #000000 !important;
+    font-weight: 800;
+    padding: 0.5rem 1rem;
+}
+
+/* --- Form e Inputs --- */
+.main-label {
+    font-weight: bold;
+    color: #000000;
+    margin-bottom: 0.5rem;
+    display: block;
+}
+
+.custom-input {
+    border: 1px solid #cccccc;
+    border-radius: 8px;
+    padding: 0.7rem;
+    transition: all 0.3s;
+}
+
+.custom-input:focus {
+    border-color: var(--color-oro-rico);
+    box-shadow: 0 0 0 0.25rem rgba(212, 165, 89, 0.15);
+    outline: none;
+}
+
+/* --- Botones finales --- */
+.btn-save {
+    background-color: var(--color-celeste-ahumado) !important;
+    color: white !important;
+    border: 2px solid #000000 !important;
+    padding: 0.8rem 2rem;
+    font-weight: 700;
+    transition: all 0.2s;
+}
+
+.btn-save:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.btn-cancel {
+    border: 2px solid #000000;
+    color: #000000;
+    font-weight: 700;
+    padding: 0.8rem 2rem;
+    background: transparent;
+    transition: all 0.2s;
+}
+
+.btn-cancel:hover {
+    background: #f8f9fa;
+}
+
+/* --- Paginacion --- */
+.btn-pagination,
+.btn-page-number {
+    border: 2px solid #000000;
+    background-color: #ffffff;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.btn-page-number.active {
+    background-color: #000000;
+    color: var(--color-oro-antiguo);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+    :host {
+        margin: -5rem -5rem -5rem -5rem !important;
+        padding: 5rem !important;
+    }
+}

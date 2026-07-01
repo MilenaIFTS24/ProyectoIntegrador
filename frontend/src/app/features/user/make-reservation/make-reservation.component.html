@@ -1,1 +1,171 @@
-<p>make-reservation works!</p>
+<div class="container-fluid make-reservation-container animate__animated animate__fadeIn">
+  <div class="row justify-content-center">
+    <div class="col-lg-10 col-xl-9">
+      <div class="card reservation-form-card shadow">
+        <div class="card-header-custom">
+          <h3 class="header-title"><i class="bi bi-cart-plus me-2"></i>Nueva Reserva</h3>
+          <span class="badge badge-id">NUEVA</span>
+        </div>
+
+        <div class="card-body p-4">
+          <form [formGroup]="reservationForm" (ngSubmit)="onSubmit()">
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label main-label">Email de Contacto <span class="text-danger">*</span></label>
+                <input type="email" formControlName="contactEmail" class="form-control custom-input bg-light">
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label main-label">Método de Pago <span class="text-danger">*</span></label>
+                <select formControlName="paymentMethod" class="form-select custom-input"
+                  [class.is-invalid]="reservationForm.get('paymentMethod')?.invalid && reservationForm.get('paymentMethod')?.touched">
+                  <option value="">Selecciona...</option>
+                  <option value="contado">Contado</option>
+                  <option value="debito">Débito</option>
+                  <option value="credito">Crédito</option>
+                  <option value="billetera_virtual">Billetera Virtual</option>
+                </select>
+                @if (reservationForm.get('paymentMethod')?.invalid && reservationForm.get('paymentMethod')?.touched) {
+                <div class="invalid-feedback">Selecciona un método de pago</div>
+                }
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label main-label">Franja Horaria <span class="text-danger">*</span></label>
+                <select formControlName="pickupTimeSlot" class="form-select custom-input"
+                  [class.is-invalid]="reservationForm.get('pickupTimeSlot')?.invalid && reservationForm.get('pickupTimeSlot')?.touched">
+                  <option value="">Selecciona...</option>
+                  <option value="10:00-11:00">10:00 - 11:00</option>
+                  <option value="11:00-12:00">11:00 - 12:00</option>
+                  <option value="12:00-13:00">12:00 - 13:00</option>
+                  <option value="14:00-15:00">14:00 - 15:00</option>
+                  <option value="15:00-16:00">15:00 - 16:00</option>
+                  <option value="16:00-17:00">16:00 - 17:00</option>
+                </select>
+                @if (reservationForm.get('pickupTimeSlot')?.invalid && reservationForm.get('pickupTimeSlot')?.touched) {
+                <div class="invalid-feedback">Selecciona una franja horaria</div>
+                }
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold"><i class="bi bi-box-seam me-2"></i>Productos</h5>
+                <button type="button" class="btn btn-sm btn-outline-dark" (click)="addItemRow()">
+                  <i class="bi bi-plus-circle me-1"></i>Agregar Producto
+                </button>
+              </div>
+
+              <div formArrayName="items" class="items-container">
+                @for (itemCtrl of itemsArray.controls; track $index) {
+                <div class="item-row border rounded p-3 mb-3" [formGroupName]="$index">
+                  <div class="row g-2 align-items-end">
+                    <div class="col-md-5">
+                      <label class="form-label small fw-bold">Producto <span class="text-danger">*</span></label>
+                      <select formControlName="productId" class="form-select form-select-sm custom-input"
+                        (change)="onProductSelect($index, $event)"
+                        [class.is-invalid]="itemCtrl.get('productId')?.invalid && itemCtrl.get('productId')?.touched">
+                        <option value="">Seleccionar...</option>
+                        @for (product of products(); track product.id) {
+                        <option [value]="product.id">
+                          {{ product.name }} ({{ product.price | currency:'ARS':'symbol-narrow' }})
+                          - Stock: {{ product.stock ?? 0 }}
+                        </option>
+                        }
+                      </select>
+                      @if (itemCtrl.get('productId')?.invalid && itemCtrl.get('productId')?.touched) {
+                      <div class="invalid-feedback">Selecciona un producto</div>
+                      }
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label small fw-bold">Cantidad <span class="text-danger">*</span></label>
+                      <input type="number" formControlName="quantity" class="form-control form-control-sm custom-input"
+                        (input)="onQuantityChange($index)"
+                        [class.is-invalid]="(itemCtrl.get('quantity')?.invalid && itemCtrl.get('quantity')?.touched) || itemCtrl.get('quantity')?.hasError('exceedsStock')">
+                      @if (itemCtrl.get('quantity')?.invalid && itemCtrl.get('quantity')?.touched) {
+                      <div class="invalid-feedback">Cantidad mínima 1</div>
+                      } @else {
+                      @if (itemCtrl.get('quantity')?.hasError('exceedsStock')) {
+                      <div class="invalid-feedback">Stock insuficiente</div>
+                      }
+                      }
+
+                    </div>
+
+                    <div class="col-md-3">
+                      <label class="form-label small fw-bold">Subtotal</label>
+                      <div class="form-control form-control-sm bg-light border-0 text-end fw-bold">
+                        {{ (itemCtrl.get('productId')?.value ? getProductPrice(itemCtrl.get('productId')?.value) : 0) *
+                        (itemCtrl.get('quantity')?.value || 0) | currency:'ARS':'symbol-narrow' }}
+                      </div>
+                    </div>
+
+                    <div class="col-md-1 text-center">
+                      <button type="button" class="btn btn-sm btn-danger" (click)="removeItemRow($index)"
+                        title="Eliminar">
+                        <i class="bi bi-trash3"></i>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                } @empty {
+                <div class="alert alert-warning">No hay productos agregados.</div>
+                }
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-12">
+                <label class="form-label">Notas adicionales</label>
+                <textarea formControlName="clientNotes" class="form-control custom-input" rows="2"
+                  placeholder="Instrucciones especiales, etc."></textarea>
+              </div>
+            </div>
+
+            <div class="row g-3 mb-4">
+              <div class="col-md-6 offset-md-6">
+                <div class="p-3 border rounded bg-light">
+                  <div class="d-flex justify-content-between mb-2">
+                    <span>Subtotal:</span>
+                    <span class="fw-bold">{{ calculateSubtotal() | currency:'ARS':'symbol-narrow' }}</span>
+                  </div>
+                  @if (appliedDiscount() > 0) {
+                  <div class="d-flex justify-content-between mb-2 text-success">
+                    <span>Descuento ({{ discountLabel() }}):</span>
+                    <span class="fw-bold">-{{ appliedDiscount() | currency:'ARS':'symbol-narrow' }}</span>
+                  </div>
+                  }
+                  <hr>
+                  <div class="d-flex justify-content-between">
+                    <span class="fw-bold fs-5">Total:</span>
+                    <span class="fw-bold fs-5 text-tea">{{ (calculateSubtotal() - appliedDiscount()) |
+                      currency:'ARS':'symbol-narrow' }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-end gap-3">
+              <button type="button" class="btn btn-cancel" (click)="resetForm()" [disabled]="submitting()">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Limpiar
+              </button>
+              <button type="submit" class="btn btn-save" [disabled]="reservationForm.invalid || submitting()">
+                @if (submitting()) {
+                <span class="spinner-border spinner-border-sm me-2"></span>
+                Procesando...
+                } @else {
+                <i class="bi bi-check-circle me-1"></i>Confirmar Reserva
+                }
+              </button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

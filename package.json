@@ -1,0 +1,10 @@
+{
+  "name": "root",
+  "private": true,
+  "workspaces": [
+    "backend"
+  ],
+  "scripts": {
+    "start": "cd backend && npm start"
+  }
+}

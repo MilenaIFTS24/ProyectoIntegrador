@@ -1,3 +1,11 @@
-<app-navbar/>
-<router-outlet />
-<app-footer/>
+@if (isNavbarVisible()) {
+<app-navbar />
+}
+
+<main>
+  <router-outlet />
+</main>
+
+@if (isFooterVisible()) {
+<app-footer />
+}

@@ -1,0 +1,56 @@
+import { Events } from '../models/index.js';
+import sequelize from '../data/database.js';
+
+// Obtener todos los eventos
+export const getAllEventsService = async () => {
+    return await Events.findAll({
+        attributes: {
+            include: [
+                [
+                    sequelize.literal(`(
+                        SELECT CAST(COUNT(*) AS INTEGER)
+                        FROM "event_registrations" AS registration
+                        WHERE registration."eventId" = "Events"."id"
+                    )`), 
+                    'currentRegistrations'
+                ]
+            ]
+        },
+        order: [['date', 'ASC']]
+    });
+};
+
+// Obtener un evento por ID
+export const getEventByIdService = async (id) => {
+    return await Events.findByPk(id, {
+        attributes: {
+            include: [
+                [
+                    sequelize.literal(`(
+                        SELECT COUNT(*)
+                        FROM event_registrations AS registration
+                        WHERE registration.eventId = Events.id
+                    )`),
+                    'currentRegistrations'
+                ]
+            ]
+        }
+    });
+};
+
+// Crear un nuevo evento
+export const createEventService = async (eventData) => {
+    return await Events.create(eventData);
+};
+
+// Actualizar un evento
+export const updateEventService = async (id, eventData) => {
+    const event = await Events.findByPk(id);
+    if (!event) throw new Error('Evento no encontrado');
+    return await event.update(eventData);
+};
+
+// Eliminar un evento
+export const deleteEventService = async (id) => {
+    return await Events.destroy({ where: { id } });
+};
