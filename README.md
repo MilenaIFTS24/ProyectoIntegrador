@@ -5,7 +5,7 @@
 
 ## Link
 Se puede acceder a la plataforma en el siguiente enlace:
-[https://tu-url-aqui.com](https://tu-url-aqui.com)
+https://casadete-rcrexah1l-milenas-projects-b28c67ad.vercel.app
 
 ## Objetivo
 El objetivo principal del proyecto es profesionalizar la gestión de **Tío Iroh, Té y Artesanías** mediante la automatización de tareas administrativas, eliminando el desorden en la toma de reservas y brindando una herramienta de control de stock y ventas en tiempo real, garantizando así una operación eficiente y escalable.
