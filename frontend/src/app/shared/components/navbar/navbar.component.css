@@ -1,14 +1,14 @@
-/* --- 1. CONFIGURACIÓN BASE (ESTADO NORMAL) --- */
+/* --- Capa Principal --- */
 .navbar {
   background-color: #523b2f !important;
-  --navbar-height: 95px; 
-  
+  --navbar-height: 95px;
+
   height: var(--navbar-height) !important;
   min-height: var(--navbar-height) !important;
   max-height: var(--navbar-height) !important;
-  
+
   padding: 0.8rem 1rem !important;
-  border-bottom: 3px solid var(--color-oro-antiguo, #D4A559); 
+  border-bottom: 3px solid var(--color-oro-antiguo, #D4A559);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
   display: flex;
@@ -17,11 +17,11 @@
   z-index: 1050;
 }
 
-/* --- 2. MARCA (LOGOTIPO Y TEXTO) --- */
+/* --- Logotipo y Texto --- */
 .brand-wrapper {
   display: flex !important;
   align-items: center;
-  min-width: 260px; 
+  min-width: 260px;
   z-index: 1100;
 }
 
@@ -34,7 +34,7 @@
 /* Colores para el modo Auth */
 .brand-icon {
   font-size: 2.2rem;
-  color: #523b2f !important; 
+  color: #523b2f !important;
   margin-right: 12px;
 }
 
@@ -48,14 +48,14 @@
 
 /* Colores para el modo Normal */
 .navbar:not(.navbar-auth) .brand-icon {
-  color: var(--color-oro-rico, #DAA520) !important; 
+  color: var(--color-oro-rico, #DAA520) !important;
 }
 
 .navbar:not(.navbar-auth) .brand-text {
-  color: #cbc9c3 !important; 
+  color: #cbc9c3 !important;
 }
 
-/* --- 3. MODO AUTH (LIMPIO Y TRANSPARENTE) --- */
+/* --- Modo Auth --- */
 .navbar-auth {
   background-color: transparent !important;
   border-bottom: none !important;
@@ -72,7 +72,7 @@
   min-width: auto;
 }
 
-/* --- 4. NAVEGACIÓN Y LINKS --- */
+/* --- Navegacion y Links --- */
 .nav-link {
   color: #cbc9c3 !important;
   font-weight: 600;
@@ -80,12 +80,13 @@
   transition: all 0.3s ease;
 }
 
-.nav-link:hover, .nav-link.active {
+.nav-link:hover,
+.nav-link.active {
   color: var(--color-celeste-ahumado, #6082B6) !important;
   transform: translateY(-2px);
 }
 
-/* --- 5. AVATAR Y DROPDOWN --- */
+/* --- Avatar y Dropdown --- */
 .avatar-circle {
   width: 42px;
   height: 42px;
@@ -106,10 +107,12 @@
 }
 
 .dropdown-item:hover {
-  background-color: rgba(212, 165, 89, 0.1); /* Fondo Oro Antiguo sutil */
+  background-color: rgba(212, 165, 89, 0.1);
+  /* Fondo Oro Antiguo sutil */
   color: var(--color-oro-rico, #DAA520) !important;
 }
 
+/* --- Botones --- */
 .btn-cta-register {
   background-color: transparent !important;
   color: #cbc9c3 !important;
@@ -125,7 +128,7 @@
   transform: translateY(-1px);
 }
 
-/* --- MOBILE --- */
+/* --- Responsive --- */
 @media (max-width: 991px) {
   .navbar-collapse {
     background-color: #523b2f !important;

@@ -1,5 +1,4 @@
-import { ReservationItem } from './reservationItem.model';
-
+// Modelo de Reserva
 export interface Reservation {
   id?: string;
   userId: string;

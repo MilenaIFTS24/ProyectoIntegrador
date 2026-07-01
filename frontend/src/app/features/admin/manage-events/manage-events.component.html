@@ -135,7 +135,8 @@
             <input type="text" formControlName="title" class="form-control custom-input"
               [class.is-invalid]="eventForm.get('title')?.invalid && eventForm.get('title')?.touched">
             @if (eventForm.get('title')?.invalid && eventForm.get('title')?.touched) {
-            <div class="invalid-feedback animate__animated animate__fadeIn">El título del evento es obligatorio y debe contener un mínimo de 5 caracteres</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">El título del evento es obligatorio y debe
+              contener un mínimo de 5 caracteres</div>
             }
           </div>
           <div class="col-md-4">
@@ -261,7 +262,8 @@
             <textarea formControlName="description" class="form-control custom-input" rows="3"
               [class.is-invalid]="eventForm.get('description')?.invalid && eventForm.get('description')?.touched"></textarea>
             @if (eventForm.get('description')?.invalid && eventForm.get('description')?.touched) {
-            <div class="invalid-feedback animate__animated animate__fadeIn">La descripción es obligatoria y debe contener un mínimo de 10 caracteres</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">La descripción es obligatoria y debe
+              contener un mínimo de 10 caracteres</div>
             }
           </div>
         </div>

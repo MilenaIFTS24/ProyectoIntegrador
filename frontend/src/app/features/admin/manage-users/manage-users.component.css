@@ -1,12 +1,10 @@
-/* --- ESTRUCTURA Y FONDO TOTAL --- */
+/* --- Capa Principal --- */
 :host {
     display: block;
-    /* Técnica de expansión total para cubrir los 4 lados */
     margin: -10rem -10rem -10rem -10rem !important;
     padding: 10rem !important;
     background-color: #cbc9c3 !important;
     min-height: 120vh;
-    /* Altura extra para asegurar que llegue al footer */
     overflow-x: hidden;
     position: relative;
 }
@@ -15,12 +13,11 @@
     max-width: 1300px;
     margin: 0 auto;
     background-color: transparent !important;
-    /* Asegura que el contenido flote sobre el fondo expandido */
     position: relative;
     z-index: 1;
 }
 
-/* Contenedor con aire minimalista */
+/* --- Barra de Búsqueda --- */
 .search-wrapper {
     max-width: 550px;
     margin: 2rem auto;
@@ -31,28 +28,26 @@
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
     padding: 6px 6px 6px 20px;
-    border-radius: 12px; /* Menos redondeado, más estilo "galería" */
-    border: 1px solid #d4a559; /* Tu color-oro-antiguo */
+    border-radius: 12px;
+    border: 1px solid #d4a559;
     transition: box-shadow 0.3s ease;
 }
 
 .search-form-organic:focus-within {
     border-color: #6082b6;
-    transform: scale(1.01); /* Un leve efecto de "pop" */
+    transform: scale(1.01);
 }
 
 .search-form-organic:focus-within {
-    box-shadow: 0 10px 25px rgba(139, 110, 74, 0.15); /* Sombra con bronce profundo */
+    box-shadow: 0 10px 25px rgba(139, 110, 74, 0.15);
 }
 
-/* El contenedor interno */
 .input-container {
     display: flex;
     align-items: center;
     flex-grow: 1;
 }
 
-/* El input limpio */
 .search-input {
     border: none;
     background: transparent;
@@ -70,9 +65,8 @@
     font-weight: 300;
 }
 
-/* Botón con personalidad artesanal */
-.btn-organic-search {
-    background-color: #8b6e4a; /* Bronce profundo */
+ww .btn-organic-search {
+    background-color: #8b6e4a;
     color: #fff;
     border: none;
     padding: 10px 25px;
@@ -84,11 +78,11 @@
 }
 
 .btn-organic-search:hover {
-    background-color: #d4a559; /* Oro antiguo al pasar el mouse */
+    background-color: #d4a559;
     color: #fff;
 }
 
-/* --- TABLA PREMIUM (Basada en estilo Products) --- */
+/* --- Tabla --- */
 .table-responsive {
     scroll-margin-top: 120px;
     background-color: #ffffff !important;
@@ -126,10 +120,9 @@
     color: #333;
 }
 
-/* --- BADGES Y ESTADOS --- */
+/* --- Placas y Estados --- */
 .badge-admin {
     background-color: rgba(212, 165, 89, 0.15);
-    /* Color Oro antiguo suave */
     color: #8B6E4A;
     border: 1px solid #8B6E4A;
     font-weight: 700;
@@ -150,7 +143,7 @@
     margin-right: 8px;
 }
 
-/* --- BOTONES DE ACCIÓN (TABLA) --- */
+/* --- Botones de accion (tabla) --- */
 .btn-action {
     width: 38px;
     height: 38px;
@@ -173,7 +166,7 @@
     color: white;
 }
 
-/* --- TARJETA DEL FORMULARIO (USER-CARD) --- */
+/* --- Tarjeta de Usuario --- */
 .user-card {
     scroll-margin-top: 120px;
     border: 2px solid #000000 !important;
@@ -207,7 +200,7 @@
     padding: 0.5rem 1rem;
 }
 
-/* --- INPUTS Y FORMULARIO --- */
+/* --- Form e Inputs --- */
 .main-label {
     font-weight: bold;
     color: #000000;
@@ -228,7 +221,7 @@
     outline: none;
 }
 
-/* --- BOTONES FINALES --- */
+/* --- Botones finales --- */
 .btn-save {
     background-color: var(--color-celeste-ahumado) !important;
     color: white !important;
@@ -256,7 +249,7 @@
     background: #f8f9fa;
 }
 
-/* --- PAGINACIÓN --- */
+/* --- Paginacion --- */
 .btn-pagination,
 .btn-page-number {
     border: 2px solid #000000;
@@ -270,7 +263,7 @@
     color: var(--color-oro-antiguo);
 }
 
-/* --- RESPONSIVE --- */
+/* --- Responsive --- */
 @media (max-width: 768px) {
     :host {
         margin: -5rem -5rem -5rem -5rem !important;

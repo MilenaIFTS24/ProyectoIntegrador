@@ -5,13 +5,13 @@ import { catchError, throwError } from "rxjs";
 import { NotificationService } from "../services/notification.service";
 import { AuthService } from "../services/auth.service";
 
+// Interceptor de autenticación
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   const token = localStorage.getItem('userToken');
   const router = inject(Router);
   const notify = inject(NotificationService);
   const authService = inject(AuthService);
 
-  // Bypass para rutas públicas (login, register, productos, eventos, ofertas)
   const publicRoutes = ['auth/login', 'auth/register', 'products', 'events', 'offers'];
   if (publicRoutes.some(route => req.url.includes(route))) {
     return next(req);
@@ -34,7 +34,7 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
         if (!req.url.includes('auth/login')) {
           notify.toast('Su sesión ha expirado o no tiene permisos. Por favor, reingrese.', 'error');
           authService.logout();
-          router.navigate(['/login']); // 👈 CORREGIDO: sin /auth
+          router.navigate(['/login']);
         }
       }
       return throwError(() => error);

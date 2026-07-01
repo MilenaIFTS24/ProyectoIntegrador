@@ -1,9 +1,9 @@
-/* FUERZA EL FONDO GRIS EN TODA LA SECCIÓN */
+/* Capa Principal */
 :host {
     display: block;
     background-color: #cbc9c3 !important;
-    margin: -1.5rem -3rem -1.5rem -3rem; 
-    padding: 1.5rem 3rem; 
+    margin: -1.5rem -3rem -1.5rem -3rem;
+    padding: 1.5rem 3rem;
     min-height: calc(100vh - 85px);
     width: auto;
 }
@@ -15,7 +15,7 @@
     box-sizing: border-box;
 }
 
-/* BANNER DE BIENVENIDA (NEGRO + ORO) */
+/* Banner de Bienvenida */
 .welcome-banner {
     background-color: #000000 !important;
     color: #ffffff;
@@ -26,12 +26,14 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.text-oro { color: var(--color-oro-rico) !important; }
+.text-oro {
+    color: var(--color-oro-rico) !important;
+}
 
-/* ESTADÍSTICAS (BLANCO + BORDE NEGRO) */
+/* Estadisticas */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -60,14 +62,14 @@
     color: var(--color-bronce-profundo);
 }
 
-/* TARJETAS DE INFORMACIÓN (PERFIL Y ACCIONES) */
+/* Tarjetas de Información */
 .info-card {
     background-color: #ffffff !important;
     border: 2px solid #000000 !important;
     border-radius: 12px;
     overflow: hidden;
     height: 100%;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .card-header-custom {
@@ -82,7 +84,7 @@
     color: #000000 !important;
 }
 
-/* MANEJO DE ERRORES */
+/* Errores */
 .stat-card.border-danger {
     border: 2px solid #B22222 !important;
     background-color: #fff5f5 !important;
@@ -96,7 +98,7 @@
     color: #3CB371 !important;
 }
 
-/* AVATAR Y BOTONES */
+/* Avatar y Botones */
 .profile-initial {
     width: 70px;
     height: 70px;
@@ -132,7 +134,7 @@
     font-weight: 700;
 }
 
-/* BADGES DE ESTADO */
+/* Placas de Estado */
 .badge-online {
     background-color: rgba(60, 179, 113, 0.15);
     color: #3CB371;
@@ -162,7 +164,18 @@
 }
 
 @keyframes pulse-green {
-    0% { transform: scale(0.9); opacity: 0.7; }
-    50% { transform: scale(1.1); opacity: 1; }
-    100% { transform: scale(0.9); opacity: 0.7; }
+    0% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0.7;
+    }
 }

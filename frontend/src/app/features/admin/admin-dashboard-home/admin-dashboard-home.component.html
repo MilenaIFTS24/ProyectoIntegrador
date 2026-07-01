@@ -1,5 +1,5 @@
 <div class="home-container animate__animated animate__fadeIn">
-  
+
   <header class="welcome-banner shadow">
     <div class="welcome-text">
       <h1 class="text-oro">{{ greeting }}, {{ firstAdminName() }}!</h1>
@@ -14,21 +14,21 @@
 
   <section class="stats-grid">
     @for (stat of stats; track stat.label) {
-      <div class="stat-card" [class.border-danger]="stat.error">
-        <div class="stat-icon-container" [style.color]="stat.error ? '#B22222' : stat.color">
-          <i class="bi" [ngClass]="stat.error ? 'bi-exclamation-triangle-fill' : stat.icon"></i>
-        </div>
-        
-        <div class="stat-info">
-          @if (stat.error) {
-            <h3 class="text-danger">---</h3>
-            <p class="text-danger small fw-bold">Error de conexión</p>
-          } @else {
-            <h3 class="text-black">{{ stat.value }}</h3>
-            <p class="text-muted small fw-bold">{{ stat.label }}</p>
-          }
-        </div>
+    <div class="stat-card" [class.border-danger]="stat.error">
+      <div class="stat-icon-container" [style.color]="stat.error ? '#B22222' : stat.color">
+        <i class="bi" [ngClass]="stat.error ? 'bi-exclamation-triangle-fill' : stat.icon"></i>
       </div>
+
+      <div class="stat-info">
+        @if (stat.error) {
+        <h3 class="text-danger">---</h3>
+        <p class="text-danger small fw-bold">Error de conexión</p>
+        } @else {
+        <h3 class="text-black">{{ stat.value }}</h3>
+        <p class="text-muted small fw-bold">{{ stat.label }}</p>
+        }
+      </div>
+    </div>
     }
   </section>
 
@@ -48,7 +48,7 @@
               <span class="role-tag">{{ authService.userRole() }}</span>
             </div>
           </div>
-          
+
           <div class="detail-list">
             <div class="detail-item">
               <span class="detail-label">Estado de Cuenta: </span>

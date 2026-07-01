@@ -5,12 +5,9 @@
                 <input class="search-input" type="search" placeholder="Buscar por nombre o tipo..." #filter
                     (input)="filterResults(filter.value)">
             </div>
-            <button 
-            class="btn-organic-search" 
-            type="button" 
-            (click)="filter.value = ''; filterResults('')">
-            Limpiar
-        </button>
+            <button class="btn-organic-search" type="button" (click)="filter.value = ''; filterResults('')">
+                Limpiar
+            </button>
         </form>
     </div>
 
@@ -117,7 +114,8 @@
                         <input type="text" formControlName="name" class="form-control custom-input"
                             [class.is-invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
                         @if (productForm.get('name')?.invalid && productForm.get('name')?.touched) {
-                        <div class="invalid-feedback animate__animated animate__fadeIn">El nombre es obligatorio (mín. 3 caracteres)</div>
+                        <div class="invalid-feedback animate__animated animate__fadeIn">El nombre es obligatorio (mín. 3
+                            caracteres)</div>
                         }
                     </div>
                     <div class="col-md-3">
@@ -129,7 +127,8 @@
                             <option value="craft">Artesanía</option>
                         </select>
                         @if (productForm.get('productType')?.invalid && productForm.get('productType')?.touched) {
-                        <div class="invalid-feedback animate__animated animate__fadeIn">Debe seleccionar un tipo de producto</div>
+                        <div class="invalid-feedback animate__animated animate__fadeIn">Debe seleccionar un tipo de
+                            producto</div>
                         }
                     </div>
                     <div class="col-md-3">
@@ -137,7 +136,8 @@
                         <input type="number" formControlName="price" class="form-control custom-input"
                             [class.is-invalid]="productForm.get('price')?.invalid && productForm.get('price')?.touched">
                         @if (productForm.get('price')?.invalid && productForm.get('price')?.touched) {
-                        <div class="invalid-feedback animate__animated animate__fadeIn">El precio es obligatorio y debe ser mayor a 0</div>
+                        <div class="invalid-feedback animate__animated animate__fadeIn">El precio es obligatorio y debe
+                            ser mayor a 0</div>
                         }
                     </div>
                 </div>
@@ -180,7 +180,8 @@
                                 <input type="text" formControlName="origin" class="form-control form-control-sm"
                                     [class.is-invalid]="productForm.get('origin')?.invalid && productForm.get('origin')?.touched">
                                 @if (productForm.get('origin')?.invalid && productForm.get('origin')?.touched) {
-                                <div class="invalid-feedback animate__animated animate__fadeIn">El origen es obligatorio para los tés</div>
+                                <div class="invalid-feedback animate__animated animate__fadeIn">El origen es obligatorio
+                                    para los tés</div>
                                 }
                             </div>
                             <div class="col-6">
@@ -243,7 +244,8 @@
                                 <input type="text" formControlName="materials" class="form-control form-control-sm"
                                     [class.is-invalid]="productForm.get('materials')?.invalid && productForm.get('materials')?.touched">
                                 @if (productForm.get('materials')?.invalid && productForm.get('materials')?.touched) {
-                                <div class="invalid-feedback animate__animated animate__fadeIn">Los materiales son obligatorios para las artesanías</div>
+                                <div class="invalid-feedback animate__animated animate__fadeIn">Los materiales son
+                                    obligatorios para las artesanías</div>
                                 }
                             </div>
 

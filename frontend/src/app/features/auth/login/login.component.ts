@@ -27,35 +27,32 @@ export class LoginComponent {
     password: ['', [Validators.required, Validators.minLength(6)]]
   });
 
-
+  // Enviar el formulario
   onSubmit() {
-  if (this.loginForm.invalid) return;
-  
-  this.loading = true;
+    if (this.loginForm.invalid) return;
 
-  const { email, password } = this.loginForm.getRawValue();
+    this.loading = true;
 
-  this.authService.loginAction({ email, password }).subscribe({
-    next: (res) => {
-      // 1. Guarda sesión
-      this.authService.login(res.token, res.user);
+    const { email, password } = this.loginForm.getRawValue();
 
-      this.notify.toast(`¡Bienvenido, ${res.user.fullName}!`, 'success');
+    this.authService.loginAction({ email, password }).subscribe({
+      next: (res) => {
+        this.authService.login(res.token, res.user);
 
-      // 2. Redirección basada en el ROL que viene de la respuesta fresca
-      // Uso navigateByUrl para una navegación absoluta y limpia
-      if (res.user.role === 'admin') {
-        this.router.navigateByUrl('/adminDashboard/adminDashboardHome');
-      } else {
-        this.router.navigateByUrl('/userDashboard/userDashboardHome');
+        this.notify.toast(`¡Bienvenido, ${res.user.fullName}!`, 'success');
+
+        if (res.user.role === 'admin') {
+          this.router.navigateByUrl('/adminDashboard/adminDashboardHome');
+        } else {
+          this.router.navigateByUrl('/userDashboard/userDashboardHome');
+        }
+      },
+      error: (err: HttpErrorResponse) => {
+        this.loading = false;
+        const msg = err.error?.error || err.error?.message || 'Credenciales incorrectas';
+        this.notify.toast(msg, 'error');
+        console.error('Error 401 Detalles:', err);
       }
-    },
-    error: (err: HttpErrorResponse) => {
-      this.loading = false;
-      const msg = err.error?.error || err.error?.message || 'Credenciales incorrectas';
-      this.notify.toast(msg, 'error');
-      console.error('Error 401 Detalles:', err);
-    }
-  });
-}
+    });
+  }
 }

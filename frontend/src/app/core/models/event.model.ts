@@ -1,3 +1,5 @@
+// Modelo de Evento
+
 export interface Event {
   id?: string;
   title: string;
@@ -16,5 +18,5 @@ export interface Event {
   promoImage?: string;
   materials?: string;
   isCancelledByRain?: boolean;
-  currentRegistrations?: number; // Calculado por el backend
+  currentRegistrations?: number;
 }

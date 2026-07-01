@@ -19,7 +19,6 @@ import { UserDashboardComponent } from './features/user/user-dashboard/user-dash
 import { UserDashboardHomeComponent } from './features/user/user-dashboard-home/user-dashboard-home.component';
 import { MyReservationsComponent } from './features/user/my-reservations/my-reservations.component';
 import { MakeReservationComponent } from './features/user/make-reservation/make-reservation.component';
-import { HOST_TAG_NAME } from '@angular/core';
 import { HomePageComponent } from './features/home/home-page/home-page.component';
 
 export const routes: Routes = [
@@ -63,9 +62,9 @@ export const routes: Routes = [
                 }
             ]
     },
-    { 
-        path:'**', 
-        redirectTo:'',
+    {
+        path: '**',
+        redirectTo: '',
         pathMatch: 'full'
     },
 
@@ -99,6 +98,5 @@ export const routes: Routes = [
         ]
     },
 
-    // Si no encuentra la ruta, redigire al home
     { path: '**', redirectTo: '', pathMatch: 'full' }
 ];

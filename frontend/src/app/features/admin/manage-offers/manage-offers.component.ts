@@ -31,7 +31,6 @@ export class ManageOffersComponent implements OnInit {
 
   public selectedProductIds: any[] = [];
 
-  
   public offerForm = this.fb.group({
     id: [null as string | null],
     title: [null as string | null, [Validators.required, Validators.minLength(3)]],
@@ -40,18 +39,19 @@ export class ManageOffersComponent implements OnInit {
     active: [true]
   });
 
+  // Obtener el tipo de oferta seleccionado
   get selectedOfferType(): string {
     return this.offerForm.get('type')?.value || 'percentage';
   }
 
- 
+  // Validar si un campo es inválido
   isFieldInvalid(fieldName: string): boolean {
     const field = this.offerForm.get(fieldName);
     if (!field) return false;
-    
+
     const value = field.value;
     const isEmpty = value === null || value === undefined || value.toString().trim() === '';
-    
+
     return field.touched && isEmpty;
   }
 
@@ -60,6 +60,7 @@ export class ManageOffersComponent implements OnInit {
     this.loadProducts();
   }
 
+  // Cargar la lista de ofertas
   loadOffers(): void {
     this.loading = true;
     this.offerService.findAllOffersService().subscribe({
@@ -76,6 +77,7 @@ export class ManageOffersComponent implements OnInit {
     });
   }
 
+  // Cargar la lista de productos
   loadProducts(): void {
     this.productsService.getProducts().subscribe({
       next: (data: Product[]) => {
@@ -88,6 +90,7 @@ export class ManageOffersComponent implements OnInit {
     });
   }
 
+  // Filtrar las ofertas
   filterResults(text: string): void {
     const term = text.trim().toLowerCase();
     this.filteredOfferList = this.offers.filter(offer =>
@@ -98,6 +101,7 @@ export class ManageOffersComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  // Actualizar una oferta
   updateOffer(offer: Offer): void {
     this.offerForm.reset();
 
@@ -123,9 +127,10 @@ export class ManageOffersComponent implements OnInit {
     this.scrollTo('.event-card');
   }
 
+  // Seleccionar un producto
   onProductSelect(event: any, productId: any): void {
     const incomingId = productId.toString().trim();
-    
+
     if (event.target.checked) {
       const exists = this.selectedProductIds.some(id => id.toString().trim() === incomingId);
       if (!exists) {
@@ -138,6 +143,7 @@ export class ManageOffersComponent implements OnInit {
     }
   }
 
+  // Verificar si un producto esta seleccionado
   isProductSelected(productId: any): boolean {
     if (productId === undefined || productId === null || this.selectedProductIds.length === 0) {
       return false;
@@ -147,6 +153,7 @@ export class ManageOffersComponent implements OnInit {
       .includes(productId.toString().trim());
   }
 
+  // Enviar el formulario
   onSubmit(): void {
     this.offerForm.markAllAsTouched();
     if (this.offerForm.invalid) return;
@@ -174,7 +181,6 @@ export class ManageOffersComponent implements OnInit {
         },
         error: (err) => {
           this.loading = false;
-          console.error('Error al actualizar la oferta:', err);
           this.errorMessage = 'Error al actualizar la oferta.';
           this.notify.toast('Error al intentar guardar los cambios de la oferta', 'error');
         }
@@ -189,7 +195,6 @@ export class ManageOffersComponent implements OnInit {
         },
         error: (err) => {
           this.loading = false;
-          console.error('Error al crear la oferta:', err);
           this.errorMessage = 'Error al crear la oferta.';
           this.notify.toast('No se pudo dar de alta la oferta en el sistema', 'error');
         }
@@ -197,15 +202,16 @@ export class ManageOffersComponent implements OnInit {
     }
   }
 
+  // Eliminar una oferta
   deleteOffer(offer: Offer): void {
     this.notify.confirm(
-      '¿Estás seguro?', 
+      '¿Estás seguro?',
       `Vas a eliminar la oferta "${offer.title}"`
     ).then(result => {
       if (result.isConfirmed) {
         this.offerService.deleteOfferService(offer.id!).subscribe({
           next: () => {
-          
+
             const currentIdInForm = this.offerForm.get('id')?.value;
             if (currentIdInForm === offer.id) {
               this.onCancel();
@@ -222,6 +228,7 @@ export class ManageOffersComponent implements OnInit {
     });
   }
 
+  // Cancelar la creacion o modificacion de una oferta
   onCancel(): void {
     this.offerForm.reset({
       id: null,
@@ -236,6 +243,7 @@ export class ManageOffersComponent implements OnInit {
     this.errorMessage = '';
   }
 
+  // Desplazarse a un elemento
   private scrollTo(selector: string): void {
     setTimeout(() => {
       const el = document.querySelector(selector);
@@ -246,6 +254,7 @@ export class ManageOffersComponent implements OnInit {
     }, 100);
   }
 
+  // --- Paginacion ---
   get paginatedOffers() {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.filteredOfferList.slice(start, start + this.itemsPerPage);

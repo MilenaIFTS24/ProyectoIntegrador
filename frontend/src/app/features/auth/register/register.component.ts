@@ -28,7 +28,7 @@ export class RegisterComponent implements OnInit {
     const limitYear = today.getFullYear() - 18;
     const month = String(today.getMonth() + 1).padStart(2, '0');
     const day = String(today.getDate()).padStart(2, '0');
-    
+
     this.maxDate = `${limitYear}-${month}-${day}`;
   }
 
@@ -41,8 +41,7 @@ export class RegisterComponent implements OnInit {
     address: ['']
   });
 
-  
-
+  // Enviar el formulario
   onSubmit(): void {
     this.registerForm.markAllAsTouched();
 
@@ -69,7 +68,7 @@ export class RegisterComponent implements OnInit {
         this.authService.login(res.token, res.user);
 
         this.notify.toast('¡Bienvenido! Tu cuenta ha sido creada con éxito', 'success');
-        
+
         // 2. Redirigir al Dashboard de usuario
         this.router.navigate(['/userDashboard']);
       },

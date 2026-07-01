@@ -5,12 +5,9 @@
         <input class="search-input" type="search" placeholder="Buscar por email o nombre..." #filter
           (input)="filterResults(filter.value)">
       </div>
-      <button 
-            class="btn-organic-search" 
-            type="button" 
-            (click)="filter.value = ''; filterResults('')">
-            Limpiar
-        </button>
+      <button class="btn-organic-search" type="button" (click)="filter.value = ''; filterResults('')">
+        Limpiar
+      </button>
     </form>
   </div>
   <div class="table-responsive mb-4 shadow-sm">
@@ -107,7 +104,8 @@
             <input type="text" formControlName="fullName" class="form-control custom-input"
               [class.is-invalid]="userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched">
             @if (userForm.get('fullName')?.invalid && userForm.get('fullName')?.touched) {
-            <div class="invalid-feedback animate__animated animate__fadeIn">El nombre es obligatorio (mín. 3 caracteres)</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">El nombre es obligatorio (mín. 3 caracteres)
+            </div>
             }
           </div>
 
@@ -133,7 +131,8 @@
             @if (userForm.get('password')?.disabled) {
             <small class="text-muted d-block mt-1"><i class="bi bi-shield-lock"></i> No modificable desde aquí.</small>
             } @else if (userForm.get('password')?.invalid && userForm.get('password')?.touched) {
-            <div class="invalid-feedback animate__animated animate__fadeIn">La contraseña debe tener al menos 6 caracteres</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">La contraseña debe tener al menos 6
+              caracteres</div>
             }
           </div>
 
@@ -163,7 +162,8 @@
               <option value="admin">Admin</option>
             </select>
             @if (userForm.get('role')?.invalid && userForm.get('role')?.touched) {
-            <div class="invalid-feedback animate__animated animate__fadeIn">Debe seleccionar un rol para el usuario</div>
+            <div class="invalid-feedback animate__animated animate__fadeIn">Debe seleccionar un rol para el usuario
+            </div>
             }
           </div>
         </div>

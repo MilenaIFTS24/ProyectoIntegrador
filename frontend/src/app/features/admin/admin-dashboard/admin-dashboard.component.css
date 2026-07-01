@@ -1,7 +1,7 @@
-/* Layout Principal */
+/* Capa Principal */
 .admin-layout {
   display: flex;
-  height: calc(100vh - 95px); 
+  height: calc(100vh - 95px);
   width: 100vw;
   overflow: hidden;
   background-color: #f8f7f2;
@@ -27,7 +27,7 @@
   background-color: #ffffff;
 }
 
-/* Header más compacto */
+/* Header */
 .sidebar-header {
   padding: 0 1rem 1rem;
   border-bottom: 1px solid rgba(212, 165, 89, 0.15);
@@ -47,7 +47,7 @@
   margin-top: 0.3rem;
 }
 
-/* Navegación Compacta */
+/* Navegación */
 .admin-nav {
   padding: 0 0.8rem;
 }
@@ -60,9 +60,7 @@
   display: flex;
   align-items: center;
   margin-bottom: 3px;
-  /* Espacio mínimo entre botones */
   font-size: 0.9rem;
-  /* Fuente más pequeña */
   transition: all 0.2s ease;
 }
 
@@ -76,7 +74,7 @@
   font-weight: 700;
 }
 
-/* Divisores mucho más delgados */
+/* Divisores */
 .nav-divider {
   font-size: 0.65rem;
   color: rgba(203, 201, 195, 0.3);

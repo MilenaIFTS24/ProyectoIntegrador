@@ -4,7 +4,7 @@ import Swal from 'sweetalert2';
 @Injectable({ providedIn: 'root' })
 export class NotificationService {
 
-  // Un mensaje rápido que desaparece solo
+  // Mensaje de notificación que desaparece solo
   toast(title: string, icon: 'success' | 'error' | 'warning' | 'info' = 'success') {
     const Toast = Swal.mixin({
       toast: true,
@@ -16,7 +16,7 @@ export class NotificationService {
     Toast.fire({ icon, title });
   }
 
-  // Una confirmación para borrar
+  // Confirmacion de eliminación
   async confirm(title: string, text: string) {
     return Swal.fire({
       title,

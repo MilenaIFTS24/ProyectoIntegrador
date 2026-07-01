@@ -43,6 +43,7 @@ export class ManageUsersComponent implements OnInit {
     this.calculateMaxDate();
   }
 
+  // Cargar los usuarios
   loadUsers(): void {
     this.loading = true;
     this.userService.getUsers().subscribe({
@@ -58,6 +59,7 @@ export class ManageUsersComponent implements OnInit {
     });
   }
 
+  // Filtrar los usuarios
   filterResults(text: string): void {
     text = text.trim();
 
@@ -69,6 +71,7 @@ export class ManageUsersComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  // Calcular la fecha máxima permitida
   private calculateMaxDate(): void {
     const today = new Date();
     const limitYear = today.getFullYear() - 18;
@@ -78,22 +81,7 @@ export class ManageUsersComponent implements OnInit {
     this.maxDate = `${limitYear}-${month}-${day}`;
   }
 
-  get paginatedUsers(): User[] {
-    const start = (this.currentPage - 1) * this.itemsPerPage;
-    const end = start + this.itemsPerPage;
-    return this.filteredUserList.slice(start, end);
-  }
-  get totalPages(): number {
-    return Math.ceil(this.filteredUserList.length / this.itemsPerPage) || 1;
-  }
-
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.scrollToElement('.custom-table');
-    }
-  }
-
+  // Enviar el formulario
   onSubmit(): void {
     if (this.userForm.invalid) {
       this.userForm.markAllAsTouched();
@@ -131,6 +119,7 @@ export class ManageUsersComponent implements OnInit {
     }
   }
 
+  // Editar un usuario
   editUser(user: User): void {
     this.userForm.enable();
     this.userForm.reset();
@@ -140,6 +129,7 @@ export class ManageUsersComponent implements OnInit {
     this.scrollToElement('.user-card');
   }
 
+  // Eliminar un usuario
   deleteUser(id: number | undefined): void {
     if (!id) return;
     this.notify.confirm('¿Eliminar usuario?', 'Esta acción no se puede deshacer').then(res => {
@@ -154,6 +144,7 @@ export class ManageUsersComponent implements OnInit {
     });
   }
 
+  // Cancelar la creacion o modificacion de un usuario
   onCancel(): void {
     this.userForm.enable();
     this.userForm.reset({ role: 'user', isEnabled: true, isEmailVerified: false });
@@ -162,6 +153,7 @@ export class ManageUsersComponent implements OnInit {
     this.loading = false;
   }
 
+  // Desplazarse a un elemento
   private scrollToElement(selector: string): void {
     setTimeout(() => {
       const element = document.querySelector(selector);
@@ -173,5 +165,22 @@ export class ManageUsersComponent implements OnInit {
         }, 300);
       }
     }, 100);
+  }
+
+  // --- Paginación ---
+  get paginatedUsers(): User[] {
+    const start = (this.currentPage - 1) * this.itemsPerPage;
+    const end = start + this.itemsPerPage;
+    return this.filteredUserList.slice(start, end);
+  }
+  get totalPages(): number {
+    return Math.ceil(this.filteredUserList.length / this.itemsPerPage) || 1;
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.scrollToElement('.custom-table');
+    }
   }
 }

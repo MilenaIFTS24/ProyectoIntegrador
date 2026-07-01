@@ -1,3 +1,4 @@
+/* Contenedor Principal */
 .login-wrapper {
   min-height: 80vh;
   display: flex;
@@ -7,11 +8,12 @@
 }
 
 .login-container {
-    width: 100%;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
+/* Tarjeta de login */
 .login-card {
   width: 100% !important;
   max-width: 500px !important;
@@ -19,20 +21,22 @@
   border: 2px solid #000000;
   border-radius: 12px;
   padding: 45px;
-  box-shadow: 8px 8px 0px 0px rgba(0,0,0,0.1); 
+  box-shadow: 8px 8px 0px 0px rgba(0, 0, 0, 0.1);
 }
 
+/* Título */
 .login-title {
   color: #000;
   font-weight: 700;
   text-align: center;
   margin-bottom: 30px;
-  border-bottom: 3px solid #d4a559; 
+  border-bottom: 3px solid #d4a559;
   display: inline-block;
   width: 100%;
   padding-bottom: 10px;
 }
 
+/* Labels e Inputs */
 .form-label {
   color: #444;
   font-weight: 600;
@@ -50,6 +54,7 @@
   outline: none;
 }
 
+/* Boton */
 .btn-login-submit {
   width: 100%;
   background-color: #000;
@@ -76,6 +81,7 @@
   cursor: not-allowed;
 }
 
+/* Link Registro */
 .register-link {
   color: #8b6e4a;
   font-weight: 700;

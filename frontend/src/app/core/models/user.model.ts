@@ -1,9 +1,10 @@
+// Modelo de usuario
 export interface User {
   id?: number;
   fullName: string;
-  birthDate: string; // Se maneja como string para coincidir con el DATEONLY (ISO: YYYY-MM-DD)
+  birthDate: string;
   email: string;
-  password?: string; // Opcional porque no siempre lo recibimos del backend por seguridad
+  password?: string;
   isEmailVerified: boolean;
   isEnabled: boolean;
   phone?: string;
@@ -14,10 +15,7 @@ export interface User {
   updatedAt?: Date | string;
 }
 
-/**
- * Interface opcional para enviar 
- * datos de creación/edición al backend
- */
+// Modelo opcional para crear o actualizar un usuario en el backend
 export interface UserDTO extends Partial<User> {
   password?: string;
 }

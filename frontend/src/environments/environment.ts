@@ -1,5 +1,5 @@
 export const environment = {
-    
-    apiUrl: 'http://localhost:3000/api'
+
+    apiUrl: 'https://casa-de-te.up.railway.app/api'
 
 };

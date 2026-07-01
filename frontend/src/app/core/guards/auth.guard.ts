@@ -2,6 +2,7 @@ import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
+// Guard de autenticación para rutas con logueo obligatorio
 export const authGuard: CanActivateFn = (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
@@ -10,7 +11,6 @@ export const authGuard: CanActivateFn = (route, state) => {
     return true; 
   }
 
-  // Bloqueo inmediato y redirección
   router.navigate(['/login']);
   return false;
 };

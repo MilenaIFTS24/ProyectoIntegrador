@@ -18,31 +18,29 @@ export class NavbarComponent implements OnInit {
   public isAuthPage = signal(false);
 
   constructor() {
-    // 1. Evaluación inicial al instanciar el componente
     this.updateAuthStatus(window.location.pathname);
 
-    // 2. Suscripción a los cambios de navegación
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
     ).subscribe((event: any) => {
-      // urlAfterRedirects para captar la ruta final real
       const url = event.urlAfterRedirects || event.url;
       this.updateAuthStatus(url);
     });
   }
 
   ngOnInit() {
-    // Doble chequeo por ciclo de vida
     this.updateAuthStatus(window.location.pathname);
   }
 
+  // Actualizar visibilidad segun la pagina
   private updateAuthStatus(url: string): void {
     const currentUrl = url.toLowerCase();
     const isLoginOrRegister = currentUrl.includes('/login') || currentUrl.includes('/register');
-    
+
     this.isAuthPage.set(isLoginOrRegister);
   }
 
+  // Cerrar sesión
   logout() {
     this.authService.logout();
   }

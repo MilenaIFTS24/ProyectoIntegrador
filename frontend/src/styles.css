@@ -1,11 +1,11 @@
 :root {
-    /* Acentos */
+    /* Principal */
     --color-oro-rico: #DAA520;
     --color-oro-antiguo: #D4A559;
     --color-bronce-profundo: #8B6E4A;
     --color-celeste-ahumado: #6082B6;
 
-    /* Colores de Feedback */
+    /* Feedback */
     --color-feedback-error: #B22222;
     --color-feedback-exito: #3CB371;
     --color-feedback-alerta: #FFD700;
@@ -18,7 +18,8 @@
     font-style: normal;
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     padding: 0;
@@ -27,17 +28,16 @@ html, body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* EL MOTOR DEL FONDO: Flexbox en la raíz */
 app-root {
     display: flex;
     flex-direction: column;
-    min-height: 100vh; /* Ocupa al menos el alto de la pantalla */
+    min-height: 100vh;
     background-color: #cbc9c3 !important;
 }
 
 /* El contenedor que envuelve al router-outlet */
 .main-content {
-    flex: 1; /* Esto estira el div para llenar el espacio vacío */
+    flex: 1;
     display: flex;
     flex-direction: column;
     background-color: #cbc9c3 !important;

@@ -32,6 +32,7 @@ export class AdminDashboardHomeComponent implements OnInit {
   public loading = true;
   public isSystemOnline = false;
 
+  // Obtener el primer nombre del administrador
   public firstAdminName = computed(() => {
     const fullName = this.authService.userName();
     return fullName ? fullName.split(' ')[0] : 'Administrador';
@@ -45,6 +46,7 @@ export class AdminDashboardHomeComponent implements OnInit {
     }
   }
 
+  // Cargar los datos del dashboard (entidades)
   private loadDashboardData(): void {
     this.loading = true;
 
@@ -57,38 +59,38 @@ export class AdminDashboardHomeComponent implements OnInit {
     }).subscribe({
       next: (res) => {
         this.stats = [
-          { 
-            label: 'Productos', 
-            value: res.products ? res.products.length : 'Error', 
-            icon: 'bi-box-seam', 
+          {
+            label: 'Productos',
+            value: res.products ? res.products.length : 'Error',
+            icon: 'bi-box-seam',
             color: '#8B6E4A',
-            error: res.products === null 
+            error: res.products === null
           },
-          { 
-            label: 'Usuarios', 
-            value: res.users ? res.users.length : 'Error', 
-            icon: 'bi-people', 
+          {
+            label: 'Usuarios',
+            value: res.users ? res.users.length : 'Error',
+            icon: 'bi-people',
             color: '#3CB371',
             error: res.users === null
           },
-          { 
-            label: 'Eventos', 
-            value: res.events ? res.events.length : 'Error', 
-            icon: 'bi-calendar-event', 
+          {
+            label: 'Eventos',
+            value: res.events ? res.events.length : 'Error',
+            icon: 'bi-calendar-event',
             color: '#6082B6',
             error: res.events === null
           },
-          { 
-            label: 'Reservas', 
-            value: res.reservations ? res.reservations.length : 'Error', 
-            icon: 'bi-journal-check', 
+          {
+            label: 'Reservas',
+            value: res.reservations ? res.reservations.length : 'Error',
+            icon: 'bi-journal-check',
             color: '#D4A559',
             error: res.reservations === null
           },
-          { 
-            label: 'Ofertas', 
-            value: res.offers ? res.offers.length : 'Error', 
-            icon: 'bi-percent', 
+          {
+            label: 'Ofertas',
+            value: res.offers ? res.offers.length : 'Error',
+            icon: 'bi-percent',
             color: '#d47c59',
             error: res.offers === null
           }
@@ -105,6 +107,7 @@ export class AdminDashboardHomeComponent implements OnInit {
     });
   }
 
+  // Saludo de bienvenida según la hora
   get greeting(): string {
     const hour = new Date().getHours();
     if (hour < 12) return '¡Buen día';

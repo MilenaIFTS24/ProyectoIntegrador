@@ -16,9 +16,8 @@ export class AppComponent implements OnInit {
   public authService = inject(AuthService);
   private router = inject(Router);
 
-  // Signals para controlar las estructuras globales de la app
   public isNavbarVisible = signal(false);
-  public isFooterVisible = signal(false); 
+  public isFooterVisible = signal(false);
 
   constructor() {
     this.router.events.pipe(
@@ -32,12 +31,12 @@ export class AppComponent implements OnInit {
     this.updateVisibility(window.location.pathname);
   }
 
+  // Actualizar visibilidad del navbar segun la pagina
   private updateVisibility(currentPath: string): void {
     const authPaths = ['/login', '/register'];
     const isAdminDashboard = currentPath.toLowerCase().includes('admindashboard');
-    
-    // Es una ruta de auth si contiene /login o /register
-    const isAuthRoute = authPaths.some(path => 
+
+    const isAuthRoute = authPaths.some(path =>
       currentPath.toLowerCase().includes(path.toLowerCase())
     );
     this.isNavbarVisible.set(true);

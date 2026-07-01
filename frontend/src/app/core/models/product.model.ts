@@ -1,3 +1,4 @@
+// Modelo de Producto
 export interface Product {
   id?: string | number;
   name: string;
@@ -5,7 +6,7 @@ export interface Product {
   price: number;
   stock?: number;
   image?: string;
-  productType: 'tea' | 'craft'; // Basado en tu enum de Postgres
+  productType: 'tea' | 'craft';
   
   // Atributos de Té
   brand?: string;
@@ -26,7 +27,6 @@ export interface Product {
   materials?: string[]; 
   ecoFriendly?: boolean;
 
-  // Auditoría (Sequelize)
   createdAt?: Date;
   updatedAt?: Date;
 }

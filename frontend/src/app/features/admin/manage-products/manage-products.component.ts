@@ -27,7 +27,7 @@ export class ManageProductsComponent implements OnInit {
   private readonly NAVBAR_OFFSET = 110;
 
   public productForm = this.fb.group({
-    id: [null as any], 
+    id: [null as any],
     name: ['', [Validators.required, Validators.minLength(3)]],
     description: ['', [Validators.maxLength(200)]],
     price: [null as number | null, [Validators.required, Validators.min(0.01)]],
@@ -66,15 +66,17 @@ export class ManageProductsComponent implements OnInit {
     this.calculateMaxDate();
   }
 
+  // Calcula la fecha máxima permitida
   private calculateMaxDate(): void {
     const today = new Date();
     const year = today.getFullYear();
     const month = (today.getMonth() + 1).toString().padStart(2, '0');
     const day = today.getDate().toString().padStart(2, '0');
-    
+
     this.maxDate = `${year}-${month}-${day}`;
   }
-  
+
+  // Cargar la lista de productos
   loadProducts(): void {
     this.loading = true;
     this.productService.getProducts().subscribe({
@@ -91,6 +93,7 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  // Filtrar los productos
   filterResults(text: string): void {
     text = text.trim();
     if (!text) {
@@ -104,6 +107,7 @@ export class ManageProductsComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  // Escuchar cambios en el campo "isUnique"
   private setupUniqueProductListener(): void {
     this.productForm.get('isUnique')?.valueChanges.subscribe((isUnique: boolean | null) => {
       const stockControl = this.productForm.get('stock');
@@ -116,6 +120,7 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  // Activar o desactivar campos dependiendo del tipo de producto
   toggleFields(type: string | null | undefined): void {
     const val = type ? type.toLowerCase().trim() : '';
     const esTe = val === 'tea' || val === 'té';
@@ -124,7 +129,7 @@ export class ManageProductsComponent implements OnInit {
     const camposTe = ['brand', 'origin', 'format', 'weightPerUnit'];
     const camposArtesania = ['brandArtist', 'category', 'weight', 'materials'];
 
-     [...camposTe, ...camposArtesania].forEach(name => {
+    [...camposTe, ...camposArtesania].forEach(name => {
       const control = this.productForm.get(name);
       control?.disable();
       control?.clearValidators();
@@ -144,11 +149,12 @@ export class ManageProductsComponent implements OnInit {
       });
     }
 
-     [...camposTe, ...camposArtesania].forEach(name => {
+    [...camposTe, ...camposArtesania].forEach(name => {
       this.productForm.get(name)?.updateValueAndValidity();
     });
   }
 
+  // Actualizar un producto
   updateProduct(product: Product) {
     this.productForm.reset();
     this.productForm.get('stock')?.enable();
@@ -177,6 +183,7 @@ export class ManageProductsComponent implements OnInit {
     this.scrollTo('.product-card');
   }
 
+  // Enviar el formulario
   onSubmit() {
     this.productForm.markAllAsTouched();
 
@@ -231,6 +238,7 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  // Eliminar un producto
   deleteProduct(product: Product) {
     this.notify.confirm('¿Estás seguro?', `Vas a eliminar "${product.name}"`).then(result => {
       if (result.isConfirmed) {
@@ -246,6 +254,7 @@ export class ManageProductsComponent implements OnInit {
     });
   }
 
+  // Cancelar la creacion o modificacion de un producto
   onCancel() {
     this.productForm.get('stock')?.enable();
     this.productForm.reset({
@@ -266,6 +275,7 @@ export class ManageProductsComponent implements OnInit {
     this.loading = false;
   }
 
+  // Desplazarse a un elemento
   private scrollTo(selector: string): void {
     setTimeout(() => {
       const element = document.querySelector(selector);
@@ -276,6 +286,7 @@ export class ManageProductsComponent implements OnInit {
     }, 100);
   }
 
+  // --- Paginación ---
   get paginatedProducts() {
     const startIndex = (this.currentPage - 1) * this.itemsPerPage;
     const endIndex = startIndex + this.itemsPerPage;

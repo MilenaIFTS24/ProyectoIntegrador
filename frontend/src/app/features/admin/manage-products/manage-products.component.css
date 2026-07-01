@@ -1,7 +1,6 @@
-/* --- ESTRUCTURA Y FONDO TOTAL (Gris de la Paleta) --- */
+/* --- Capa Principal --- */
 :host {
     display: block;
-    /* Expansión total para anular el padding del padre */
     margin: -10rem -10rem -10rem -10rem !important;
     padding: 10rem !important;
     background-color: #cbc9c3 !important;
@@ -16,7 +15,7 @@
     background-color: transparent !important;
 }
 
-/* Contenedor con aire minimalista */
+/* Barra de Búsqueda */
 .search-wrapper {
     max-width: 550px;
     margin: 2rem auto;
@@ -27,23 +26,21 @@
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
     padding: 6px 6px 6px 20px;
-    border-radius: 12px; /* Menos redondeado, más estilo "galería" */
-    border: 1px solid #d4a559; /* Tu color-oro-antiguo */
+    border-radius: 12px;
+    border: 1px solid #d4a559;
     transition: box-shadow 0.3s ease;
 }
 
 .search-form-organic:focus-within {
-    box-shadow: 0 10px 25px rgba(139, 110, 74, 0.15); /* Sombra con bronce profundo */
+    box-shadow: 0 10px 25px rgba(139, 110, 74, 0.15);
 }
 
-/* El contenedor interno */
 .input-container {
     display: flex;
     align-items: center;
     flex-grow: 1;
 }
 
-/* El input limpio */
 .search-input {
     border: none;
     background: transparent;
@@ -61,9 +58,8 @@
     font-weight: 300;
 }
 
-/* Botón con personalidad artesanal */
 .btn-organic-search {
-    background-color: #8b6e4a; /* Bronce profundo */
+    background-color: #8b6e4a;
     color: #fff;
     border: none;
     padding: 10px 25px;
@@ -75,13 +71,12 @@
 }
 
 .btn-organic-search:hover {
-    background-color: #d4a559; /* Oro antiguo al pasar el mouse */
+    background-color: #d4a559;
     color: #fff;
 }
 
-/* --- TABLA PREMIUM (Negro y Oro) --- */
+/* --- Tabla --- */
 .table-responsive {
-    /* Margen de cortesía para que el Navbar no tape la tabla al scrollear */
     scroll-margin-top: 120px;
     background-color: #ffffff !important;
     border: 2px solid #000000 !important;
@@ -141,7 +136,7 @@
     color: #000000;
 }
 
-/* --- PAGINACIÓN --- */
+/* --- Paginación --- */
 .pagination-wrapper {
     padding: 0.5rem;
     display: flex;
@@ -195,7 +190,7 @@
     color: var(--color-oro-rico);
 }
 
-/* --- BADGES E INDICADORES --- */
+/* --- Placas e indicadores --- */
 .badge-tea {
     background-color: rgba(60, 179, 113, 0.15);
     color: #3CB371;
@@ -222,7 +217,7 @@
     font-weight: bold;
 }
 
-/* --- BOTONES DE ACCIÓN (TABLA) --- */
+/* --- Botones de accion (tabla) --- */
 .btn-action {
     width: 38px;
     height: 38px;
@@ -253,8 +248,8 @@
     color: white;
 }
 
-/* --- TARJETA DEL FORMULARIO (PRODUCT-CARD) --- */
-.product-card {    
+/* --- Tarjeta del form --- */
+.product-card {
     scroll-margin-top: 120px;
     border: 2px solid #000000 !important;
     border-radius: 12px;
@@ -283,7 +278,7 @@
     padding: 0.5rem 1rem;
 }
 
-/* --- FORMULARIO Y LABELS --- */
+/* --- Form y Labels --- */
 .main-label {
     font-weight: bold;
     color: #000000;
@@ -306,7 +301,7 @@
     outline: none;
 }
 
-/* --- SECCIONES TÉ Y ARTESANÍA --- */
+/* --- Secciones --- */
 .tea-section {
     border-left: 4px solid #3CB371;
     padding-left: 1.5rem;
@@ -339,7 +334,7 @@
     margin: 2rem 0;
 }
 
-/* --- BOTONES FINALES --- */
+/* --- Botones finales --- */
 .btn-save {
     background-color: var(--color-celeste-ahumado) !important;
     color: white !important;
@@ -356,7 +351,7 @@
     background: transparent;
 }
 
-/* --- ESTADOS AUXILIARES --- */
+/* --- Errores --- */
 .opacity-inactive {
     opacity: 0.25;
     filter: grayscale(1);
@@ -372,7 +367,7 @@
     padding: 1rem;
 }
 
-/* --- RESPONSIVE --- */
+/* --- Responsive --- */
 @media (max-width: 768px) {
     .col-id {
         display: none;

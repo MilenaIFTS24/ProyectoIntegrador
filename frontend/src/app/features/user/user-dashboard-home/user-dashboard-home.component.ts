@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../../core/services/auth.service';
 import { ReservationService } from '../../../core/services/reservation.service';
-import { ProductService } from '../../../core/services/product.service';
 import { EventService } from '../../../core/services/event.service';
 import { forkJoin } from 'rxjs';
 import { catchError, of } from 'rxjs';
@@ -18,7 +17,6 @@ import { catchError, of } from 'rxjs';
 export class UserDashboardHomeComponent implements OnInit {
   private authService = inject(AuthService);
   private reservationService = inject(ReservationService);
-  private productService = inject(ProductService);
   private eventService = inject(EventService);
 
   public currentDate = new Date();
@@ -26,11 +24,9 @@ export class UserDashboardHomeComponent implements OnInit {
   public stats = signal({
     totalReservations: 0,
     activeReservations: 0,
-    totalProducts: 0,
     upcomingEvents: 0
   });
 
-  // Computed signals desde AuthService
   public userName = this.authService.userName;
   public userEmail = computed(() => this.authService.getCurrentUser()?.email || '');
 
@@ -38,6 +34,7 @@ export class UserDashboardHomeComponent implements OnInit {
     this.loadDashboardData();
   }
 
+  // Cargar los datos del dashboard
   private loadDashboardData(): void {
     this.loading.set(true);
 
@@ -51,22 +48,17 @@ export class UserDashboardHomeComponent implements OnInit {
       userReservations: this.reservationService.getUserReservations(userId).pipe(
         catchError(() => of([]))
       ),
-      products: this.productService.getProducts().pipe(
-        catchError(() => of([]))
-      ),
       events: this.eventService.getEvents().pipe(
         catchError(() => of([]))
       )
     }).subscribe({
       next: (res) => {
         const reservations = res.userReservations as any[];
-        const products = res.products as any[];
         const events = res.events as any[];
 
         this.stats.set({
           totalReservations: reservations.length,
           activeReservations: reservations.filter(r => r.status !== 'cancelada' && r.status !== 'entregada').length,
-          totalProducts: products.length,
           upcomingEvents: events.filter(e => e.date >= new Date().toISOString().split('T')[0]).length
         });
 
@@ -78,6 +70,7 @@ export class UserDashboardHomeComponent implements OnInit {
     });
   }
 
+  // Saludo de bienvenida segun la hora
   get greeting(): string {
     const hour = new Date().getHours();
     if (hour < 12) return '¡Buen día';

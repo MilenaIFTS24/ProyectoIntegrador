@@ -1,7 +1,6 @@
-/* --- ESTRUCTURA Y FONDO TOTAL (Gris de la Paleta) --- */
+/* Capa Principal */
 :host {
     display: block;
-    /* Expansión total para anular el padding del dashboard padre */
     margin: -10rem -10rem -10rem -10rem !important;
     padding: 10rem !important;
     background-color: #cbc9c3 !important;
@@ -26,8 +25,8 @@
     align-items: center;
     background: rgba(255, 255, 255, 0.9);
     padding: 6px 6px 6px 20px;
-    border-radius: 12px; /* Estilo galería */
-    border: 1px solid #d4a559; /* Oro antiguo */
+    border-radius: 12px;
+    border: 1px solid #d4a559;
     transition: box-shadow 0.3s ease;
 }
 
@@ -76,7 +75,7 @@
     color: #fff;
 }
 
-/* --- TABLA PREMIUM --- */
+/* --- Tabla --- */
 .table-responsive {
     scroll-margin-top: 120px;
     background-color: #ffffff !important;
@@ -106,7 +105,7 @@
     letter-spacing: 1px;
 }
 
-/* Anchos de columna optimizados para Ofertas */
+/* Anchos de columnas */
 .col-stock {
     width: 140px;
 }
@@ -132,7 +131,7 @@
     font-weight: 500;
 }
 
-/* --- PAGINACIÓN --- */
+/* --- Paginación --- */
 .pagination-wrapper {
     padding: 0.5rem;
     display: flex;
@@ -186,7 +185,7 @@
     color: var(--color-oro-rico);
 }
 
-/* --- BADGES E INDICADORES DE OFERTA --- */
+/* --- Placas e indicadores de Oferta --- */
 .badge-tea {
     background-color: rgba(60, 179, 113, 0.15);
     color: #3CB371;
@@ -220,7 +219,7 @@
     letter-spacing: 0.5px;
 }
 
-/* --- BOTONES DE ACCIÓN (TABLA) --- */
+/* --- Botones de acción (tabla) --- */
 .btn-action {
     width: 38px;
     height: 38px;
@@ -251,8 +250,8 @@
     color: white;
 }
 
-/* --- TARJETA DEL FORMULARIO  --- */
-.event-card {    
+/* --- Tarjeta del Form  --- */
+.event-card {
     scroll-margin-top: 120px;
     border: 2px solid #000000 !important;
     border-radius: 12px;
@@ -281,7 +280,7 @@
     padding: 0.5rem 1rem;
 }
 
-/* --- FORMULARIO, LABELS E INPUTS --- */
+/* --- Form, Labels e Inputs --- */
 .main-label {
     font-weight: bold;
     color: #000000;
@@ -305,7 +304,7 @@
     outline: none;
 }
 
-/* --- CONTENEDOR DE SCROLL PARA SELECCIÓN DE PRODUCTOS --- */
+/* --- Contenedor de Scroll --- */
 .content-scroll {
     background-color: #f9f9f9;
     border: 1px solid #cccccc !important;
@@ -362,7 +361,7 @@
     margin: 2rem 0;
 }
 
-/* --- BOTONES FINALES --- */
+/* --- Botones finales --- */
 .btn-save {
     background-color: var(--color-celeste-ahumado) !important;
     color: white !important;
@@ -390,7 +389,7 @@
     background-color: #f5f5f5;
 }
 
-/* --- ESTADOS AUXILIARES Y ALERTAS --- */
+/* --- Errores --- */
 .alert-error-container {
     color: #B22222;
     background: #fff5f5;
@@ -400,14 +399,14 @@
     font-weight: 500;
 }
 
-/* --- RESPONSIVE --- */
+/* --- Responsive --- */
 @media (max-width: 768px) {
     .pagination-wrapper {
         flex-direction: column;
         gap: 1rem;
         text-align: center;
     }
-    
+
     :host {
         margin: -2rem -1rem -2rem -1rem !important;
         padding: 2rem 1rem !important;

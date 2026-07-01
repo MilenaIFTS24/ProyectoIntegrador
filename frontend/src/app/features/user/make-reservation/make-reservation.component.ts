@@ -48,7 +48,6 @@ export class MakeReservationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Obtener email
     let email = this.currentUser?.email;
     if (!email) {
       const userData = localStorage.getItem('userData');
@@ -70,6 +69,7 @@ export class MakeReservationComponent implements OnInit {
     this.addItemRow();
   }
 
+  // Cargar la lista de productos
   loadProducts(): void {
     this.loading.set(true);
     this.productService.getProducts().subscribe({
@@ -84,21 +84,21 @@ export class MakeReservationComponent implements OnInit {
     });
   }
 
+  // Cargar la lista de ofertas
   loadOffers(): void {
     this.offerService.findAllOffersService().subscribe({
       next: (data) => {
         const activeOffers = data.filter(o => o.active === true);
         this.offers.set(activeOffers);
-        console.log('🛒 Ofertas activas cargadas:', activeOffers); // 👈 LOG
-        this.calculateDiscount(); // Recalcular descuento si ya hay productos
+        this.calculateDiscount();
       },
       error: (err) => {
-        console.warn('⚠️ No se pudieron cargar las ofertas:', err);
         this.offers.set([]);
       }
     });
   }
 
+  // Agregar una fila de producto
   addItemRow(): void {
     const itemGroup = this.fb.group({
       productId: [null as string | null, Validators.required],
@@ -109,6 +109,7 @@ export class MakeReservationComponent implements OnInit {
     this.calculateDiscount();
   }
 
+  // Eliminar una fila de producto
   removeItemRow(index: number): void {
     if (this.itemsArray.length > 1) {
       this.itemsArray.removeAt(index);
@@ -118,6 +119,7 @@ export class MakeReservationComponent implements OnInit {
     }
   }
 
+  // Seleccionar un producto
   onProductSelect(index: number, event: Event): void {
     const select = event.target as HTMLSelectElement;
     const productId = select.value;
@@ -133,6 +135,7 @@ export class MakeReservationComponent implements OnInit {
     }
   }
 
+  // Validar la cantidad de un producto
   validateQuantity(index: number): void {
     const itemGroup = this.itemsArray.at(index);
     const productId = itemGroup.get('productId')?.value;
@@ -153,26 +156,31 @@ export class MakeReservationComponent implements OnInit {
     }
   }
 
+  // Actualizar la cantidad de un producto
   onQuantityChange(index: number): void {
     this.validateQuantity(index);
     this.calculateDiscount();
   }
 
+  // Obtener el nombre de un producto
   getProductName(productId: string): string {
     const product = this.products().find(p => p.id === productId);
     return product ? product.name : 'Producto no disponible';
   }
 
+  // Obtener el precio de un producto
   getProductPrice(productId: string): number {
     const product = this.products().find(p => p.id === productId);
     return product ? product.price : 0;
   }
 
+  // Obtener el stock de un producto
   getProductStock(productId: string): number {
     const product = this.products().find(p => p.id === productId);
     return product?.stock ?? 0;
   }
 
+  // Calcular el subtotal
   calculateSubtotal(): number {
     let subtotal = 0;
     for (const control of this.itemsArray.controls) {
@@ -186,12 +194,12 @@ export class MakeReservationComponent implements OnInit {
     return subtotal;
   }
 
+  // Calcular el descuento
   calculateDiscount(): void {
     const subtotal = this.calculateSubtotal();
     if (subtotal === 0) {
       this.appliedDiscount.set(0);
       this.discountLabel.set('');
-      console.log('📦 Subtotal 0, descuento = 0');
       return;
     }
 
@@ -202,16 +210,14 @@ export class MakeReservationComponent implements OnInit {
     if (productIds.length === 0) {
       this.appliedDiscount.set(0);
       this.discountLabel.set('');
-      console.log('Sin productos en el carrito');
       return;
     }
 
     const applicableOffers: Offer[] = [];
     for (const offer of this.offers()) {
       const offerProductIds = offer.Products?.map(p => p.id) || [];
-      // Si la oferta no tiene productos específicos, aplica a todos
-      const applies = offerProductIds.length === 0 || 
-                      productIds.some(id => offerProductIds.includes(id));
+      const applies = offerProductIds.length === 0 ||
+        productIds.some(id => offerProductIds.includes(id));
       if (applies) {
         applicableOffers.push(offer);
       }
@@ -220,11 +226,8 @@ export class MakeReservationComponent implements OnInit {
     if (applicableOffers.length === 0) {
       this.appliedDiscount.set(0);
       this.discountLabel.set('');
-      console.log('No hay ofertas aplicables');
       return;
     }
-
-    console.log('Ofertas aplicables:', applicableOffers);
 
     let bestDiscount = 0;
     let bestLabel = '';
@@ -245,9 +248,9 @@ export class MakeReservationComponent implements OnInit {
 
     this.appliedDiscount.set(bestDiscount);
     this.discountLabel.set(bestLabel);
-    console.log(`✅ Descuento aplicado: ${bestDiscount} (${bestLabel})`);
   }
 
+  // Enviar el formulario
   onSubmit(): void {
     if (this.reservationForm.invalid) {
       this.reservationForm.markAllAsTouched();
@@ -307,8 +310,6 @@ export class MakeReservationComponent implements OnInit {
       items: items
     };
 
-    console.log('Enviando reserva:', reservationData); 
-
     this.reservationService.createReservation(reservationData).subscribe({
       next: () => {
         this.submitting.set(false);
@@ -317,12 +318,12 @@ export class MakeReservationComponent implements OnInit {
       },
       error: (err) => {
         this.submitting.set(false);
-        console.error(' Error al crear reserva:', err);
         this.notify.toast('Error al crear la reserva', 'error');
       }
     });
   }
 
+  // Limpiar el formulario
   resetForm(): void {
     this.reservationForm.reset({
       paymentMethod: 'contado',
@@ -338,6 +339,7 @@ export class MakeReservationComponent implements OnInit {
     this.discountLabel.set('');
   }
 
+  // Obtener la fecha mínima permitida
   get minDate(): string {
     return new Date().toISOString().split('T')[0];
   }

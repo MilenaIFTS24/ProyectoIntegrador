@@ -21,13 +21,16 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  background: url('/assets/images/hero-bg.jpg') center/cover no-repeat;
+  /* background: url('/assets/images/hero-bg.jpg') center/cover no-repeat; */
   padding: 2rem;
 }
 
 .hero-overlay {
   position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: linear-gradient(rgba(44, 74, 62, 0.6), rgba(44, 74, 62, 0.8));
   z-index: 1;
 }
@@ -185,7 +188,7 @@
 .showcase-card {
   background: #ffffff;
   border-radius: var(--radius-organic);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
   overflow: hidden;
   border: 1px solid rgba(189, 162, 97, 0.15);
 }
@@ -230,7 +233,7 @@
 }
 
 .events-banner {
-  background: linear-gradient(rgba(244, 246, 244, 0.95), rgba(244, 246, 244, 0.95)), url('/assets/images/pattern.png');
+  /* background: linear-gradient(rgba(244, 246, 244, 0.95), rgba(244, 246, 244, 0.95)), url('/assets/images/pattern.png'); */
   padding: 5rem 2rem;
   text-align: center;
   border-top: 1px solid rgba(189, 162, 97, 0.2);

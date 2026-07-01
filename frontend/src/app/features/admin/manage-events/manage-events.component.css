@@ -1,9 +1,9 @@
-/* --- ESTRUCTURA Y FONDO TOTAL (Gris de la Paleta) --- */
+/* Capa Principal */
 :host {
     display: block;
     margin: -10rem -10rem -10rem -10rem !important;
     padding: 10rem !important;
-    background-color: #cbc9c3 !important; /* Gris base de la tienda */
+    background-color: #cbc9c3 !important;
     min-height: 120vh;
     overflow-x: hidden;
     position: relative;
@@ -15,7 +15,7 @@
     background-color: transparent !important;
 }
 
-/* --- BARRA DE BÚSQUEDA (Estilo Orgánico) --- */
+/* --- Barra de Búsqueda --- */
 .search-wrapper {
     max-width: 550px;
     margin: 2rem auto;
@@ -27,7 +27,7 @@
     background: rgba(255, 255, 255, 0.9);
     padding: 6px 6px 6px 20px;
     border-radius: 12px;
-    border: 1px solid #d4a559; /* Oro antiguo */
+    border: 1px solid #d4a559;
     transition: box-shadow 0.3s ease;
 }
 
@@ -52,7 +52,7 @@
 }
 
 .btn-organic-search {
-    background-color: #8b6e4a; /* Bronce */
+    background-color: #8b6e4a;
     color: #fff;
     border: none;
     padding: 10px 25px;
@@ -64,11 +64,11 @@
 }
 
 .btn-organic-search:hover {
-    background-color: #d4a559; /* Oro antiguo */
+    background-color: #d4a559;
     color: #fff;
 }
 
-/* --- TABLA PREMIUM (Negro y Oro) --- */
+/* --- Tabla --- */
 .table-responsive {
     scroll-margin-top: 120px;
     background-color: #ffffff !important;
@@ -104,11 +104,19 @@
     border-bottom: 1px solid #eeeeee;
 }
 
-.col-id { width: 80px; }
-.col-stock { width: 120px; }
-.col-actions { width: 180px; }
+.col-id {
+    width: 80px;
+}
 
-/* --- PAGINACIÓN --- */
+.col-stock {
+    width: 120px;
+}
+
+.col-actions {
+    width: 180px;
+}
+
+/* --- Paginación --- */
 .pagination-wrapper {
     padding: 0.5rem;
     display: flex;
@@ -124,7 +132,7 @@
 
 .btn-pagination {
     background-color: #000000 !important;
-    color: #d4a559 !important; /* Tu color-oro-antiguo */
+    color: #d4a559 !important;
     border: 2px solid #000000 !important;
     border-radius: 8px;
     width: 38px;
@@ -159,51 +167,14 @@
 }
 
 .btn-page-number:hover:not(.active) {
-    border-color: #8b6e4a !important; 
+    border-color: #8b6e4a !important;
     color: #8b6e4a !important;
 }
 
 
-.btn-pagination i, .btn-page-number i {
+.btn-pagination i,
+.btn-page-number i {
     -webkit-text-stroke: 0.5px;
-}
-
-.badge-id {
-    background-color: var(--color-oro-antiguo) !important;
-    color: #000000 !important;                            
-    font-weight: 800;
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    letter-spacing: 1px;
-    text-transform: uppercase;
-}
-
-/* --- BADGES ESPECÍFICOS PARA EVENTOS --- */
-.badge-tea { /* Usado para Degustaciones */
-    background-color: rgba(60, 179, 113, 0.15);
-    color: #3CB371;
-    border: 1px solid #3CB371;
-    font-weight: 700;
-}
-
-.badge-craft { /* Usado para Talleres */
-    background-color: rgba(96, 130, 182, 0.15);
-    color: #6082B6;
-    border: 1px solid #6082B6;
-    font-weight: 700;
-}
-
-/* --- INDICADORES DE CUPO --- */
-.stock-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    display: inline-block;
-    margin-right: 8px;
-}
-
-.stock-value {
-    font-weight: bold;
 }
 
 /* --- PAGINACIÓN --- */
@@ -240,8 +211,47 @@
     color: var(--color-oro-antiguo);
 }
 
-/* --- TARJETA DEL FORMULARIO --- */
-.product-card {    
+/* --- Placas --- */
+.badge-id {
+    background-color: var(--color-oro-antiguo) !important;
+    color: #000000 !important;
+    font-weight: 800;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+.badge-tea {
+    background-color: rgba(60, 179, 113, 0.15);
+    color: #3CB371;
+    border: 1px solid #3CB371;
+    font-weight: 700;
+}
+
+.badge-craft {
+    background-color: rgba(96, 130, 182, 0.15);
+    color: #6082B6;
+    border: 1px solid #6082B6;
+    font-weight: 700;
+}
+
+/* --- Indicadores de cupo --- */
+.stock-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.stock-value {
+    font-weight: bold;
+}
+
+
+/* --- Tarjeta del form --- */
+.product-card {
     scroll-margin-top: 120px;
     border: 2px solid #000000 !important;
     border-radius: 12px;
@@ -261,10 +271,10 @@
     margin: 0;
     font-size: 1.5rem;
     font-weight: 700;
-    color: var(--color-oro-antiguo) !important; 
+    color: var(--color-oro-antiguo) !important;
 }
 
-/* --- INPUTS Y FORMULARIOS --- */
+/* --- Inputs y Form --- */
 .main-label {
     font-weight: bold;
     color: #000000;
@@ -283,7 +293,7 @@
     outline: none;
 }
 
-/* --- BOTONES DE ACCIÓN --- */
+/* --- Botones de accion --- */
 .btn-action {
     width: 38px;
     height: 38px;
@@ -296,11 +306,23 @@
     background: transparent;
 }
 
-.btn-edit { color: #8B6E4A; }
-.btn-edit:hover { background: #8B6E4A; color: white; }
+.btn-edit {
+    color: #8B6E4A;
+}
 
-.btn-delete { color: #B22222; }
-.btn-delete:hover { background: #B22222; color: white; }
+.btn-edit:hover {
+    background: #8B6E4A;
+    color: white;
+}
+
+.btn-delete {
+    color: #B22222;
+}
+
+.btn-delete:hover {
+    background: #B22222;
+    color: white;
+}
 
 .btn-save {
     background-color: var(--color-celeste-ahumado) !important;
@@ -318,9 +340,12 @@
     background: transparent;
 }
 
-/* --- RESPONSIVE --- */
+/* --- Responsive --- */
 @media (max-width: 768px) {
-    .col-id { display: none; }
+    .col-id {
+        display: none;
+    }
+
     .pagination-wrapper {
         flex-direction: column;
         gap: 1rem;

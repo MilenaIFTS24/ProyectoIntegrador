@@ -46,6 +46,7 @@ export class ManageEventsComponent implements OnInit {
     isCancelledByRain: [false]
   });
 
+  // Obtener la fecha mínima permitida
   get minDate(): string {
     const today = new Date();
     return today.toISOString().split('T')[0];
@@ -57,6 +58,7 @@ export class ManageEventsComponent implements OnInit {
     this.checkInitialStates();
   }
 
+  // Verificar el estado inicial de los controles
   private checkInitialStates(): void {
     if (this.eventForm.get('isFree')?.value) {
       this.eventForm.get('price')?.disable();
@@ -69,6 +71,7 @@ export class ManageEventsComponent implements OnInit {
     }
   }
 
+  // Configurar los listeners de los controles
   private setupFormListeners(): void {
     this.eventForm.get('isFree')?.valueChanges.subscribe((isFree: boolean | null) => {
       const priceControl = this.eventForm.get('price');
@@ -103,6 +106,7 @@ export class ManageEventsComponent implements OnInit {
     });
   }
 
+  // Cargar los eventos
   loadEvents(): void {
     this.loading = true;
     this.eventService.getEvents().subscribe({
@@ -118,6 +122,7 @@ export class ManageEventsComponent implements OnInit {
     });
   }
 
+  // Filtrar los eventos
   filterResults(text: string): void {
     const term = text.toLowerCase().trim();
     this.filteredEventList.set(
@@ -129,6 +134,7 @@ export class ManageEventsComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  // Actualizar un evento
   updateEvent(event: CalendarEvent): void {
     this.eventForm.reset();
 
@@ -144,6 +150,7 @@ export class ManageEventsComponent implements OnInit {
     this.scrollTo('.event-card');
   }
 
+  // Eliminar un evento
   deleteEvent(event: CalendarEvent): void {
     if (!event || !event.id) {
       this.notify.toast('No se pudo identificar el evento', 'error');
@@ -170,25 +177,26 @@ export class ManageEventsComponent implements OnInit {
     });
   }
 
+  // Enviar el formulario
   onSubmit(): void {
     if (this.eventForm.invalid) return;
 
     this.loading = true;
-    
+
     const rawData = this.eventForm.getRawValue();
-    
-    const data: any = { 
+
+    const data: any = {
       ...rawData,
       price: rawData.isFree ? 0 : Number(rawData.price),
       maxCapacity: rawData.requiresRegistration ? Number(rawData.maxCapacity) : null
     };
-   
+
     const nullableFields = [
-      'endTime', 
-      'organizerContact', 
-      'promoImage', 
-      'ecoFocus', 
-      'materials', 
+      'endTime',
+      'organizerContact',
+      'promoImage',
+      'ecoFocus',
+      'materials',
       'maxCapacity'
     ];
 
@@ -221,25 +229,27 @@ export class ManageEventsComponent implements OnInit {
     });
   }
 
+  // Cancelar la creacion o modificacion de un evento
   onCancel(): void {
-    this.eventForm.reset({ 
-      location: 'Tienda de Té', 
-      type: 'taller', 
-      isFree: true, 
-      requiresRegistration: true, 
+    this.eventForm.reset({
+      location: 'Tienda de Té',
+      type: 'taller',
+      isFree: true,
+      requiresRegistration: true,
       isVirtual: false,
       price: 0,
       maxCapacity: 10,
       isCancelledByRain: false
     });
-    
+
     this.eventForm.get('price')?.disable();
     this.eventForm.get('location')?.enable();
     this.eventForm.get('maxCapacity')?.enable();
-    
+
     this.loading = false;
   }
 
+  // Desplazarse a un elemento
   private scrollTo(selector: string): void {
     setTimeout(() => {
       const el = document.querySelector(selector);
@@ -250,6 +260,7 @@ export class ManageEventsComponent implements OnInit {
     }, 100);
   }
 
+  // --- Paginacion ---
   get paginatedEvents() {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.filteredEventList().slice(start, start + this.itemsPerPage);

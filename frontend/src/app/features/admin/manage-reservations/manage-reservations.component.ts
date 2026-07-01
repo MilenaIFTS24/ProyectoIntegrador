@@ -39,14 +39,13 @@ export class ManageReservationsComponent implements OnInit {
     pickupTimeSlot: [{ value: '', disabled: true }, Validators.required],
     status: ['', Validators.required],
     isEcoPackaging: [false],
-    pickupDate: [''] // 👈 SIN VALIDACIÓN REQUERIDA
+    pickupDate: ['']
   });
 
   ngOnInit(): void {
     this.loadReservations();
     this.calculateMinDate();
 
-    // 👇 CONTROL DEL DESHABILITADO DE pickupDate SEGÚN EL ESTADO
     this.reservationForm.get('status')?.valueChanges.subscribe((status) => {
       const pickupDateControl = this.reservationForm.get('pickupDate');
       if (status === 'cancelada') {
@@ -59,6 +58,7 @@ export class ManageReservationsComponent implements OnInit {
     });
   }
 
+  // Calcula la fecha mínima permitida
   private calculateMinDate(): void {
     const today = new Date();
     const year = today.getFullYear();
@@ -67,6 +67,7 @@ export class ManageReservationsComponent implements OnInit {
     this.minDate = `${year}-${month}-${day}`;
   }
 
+  // Cargar las reservas
   loadReservations(): void {
     this.loading = true;
     this.reservationService.getAll().subscribe({
@@ -84,6 +85,7 @@ export class ManageReservationsComponent implements OnInit {
     });
   }
 
+  // Filtrar las reservas
   filterResults(text: string): void {
     const term = text.trim().toLowerCase();
     this.filteredReservationList = this.reservations.filter(res =>
@@ -94,10 +96,10 @@ export class ManageReservationsComponent implements OnInit {
     this.currentPage = 1;
   }
 
+  // Actualizar una reserva
   updateReservation(reservation: Reservation): void {
     this.reservationForm.reset();
 
-    // Restauramos el estado del control pickupDate (por si estaba deshabilitado)
     this.reservationForm.get('pickupDate')?.enable();
 
     this.reservationForm.patchValue({
@@ -105,7 +107,6 @@ export class ManageReservationsComponent implements OnInit {
       pickupDate: reservation.pickupDate ? new Date(reservation.pickupDate).toISOString().split('T')[0] : ''
     } as any);
 
-    // Aplicamos la lógica de deshabilitado según el estado actual
     const status = this.reservationForm.get('status')?.value;
     if (status === 'cancelada') {
       this.reservationForm.get('pickupDate')?.disable();
@@ -116,18 +117,17 @@ export class ManageReservationsComponent implements OnInit {
     this.scrollTo('.reservation-card');
   }
 
+  // Enviar el formulario
   onSubmit(): void {
     const status = this.reservationForm.get('status')?.value;
     const pickupDate = this.reservationForm.get('pickupDate')?.value;
 
-    // Si el estado NO es "cancelada", la fecha es obligatoria
     if (status !== 'cancelada' && !pickupDate) {
       this.notify.toast('La fecha de retiro es obligatoria para reservas no canceladas', 'warning');
       this.reservationForm.get('pickupDate')?.markAsTouched();
       return;
     }
 
-    // Si el estado NO es "cancelada", validar que la fecha no sea anterior a hoy
     if (status !== 'cancelada' && pickupDate) {
       const selectedDate = new Date(pickupDate + 'T00:00:00');
       const today = new Date();
@@ -138,7 +138,6 @@ export class ManageReservationsComponent implements OnInit {
       }
     }
 
-    // Validar el resto del formulario (los campos obligatorios)
     if (this.reservationForm.invalid) {
       this.reservationForm.markAllAsTouched();
       this.notify.toast('Completa los campos obligatorios', 'warning');
@@ -165,18 +164,19 @@ export class ManageReservationsComponent implements OnInit {
         error: (err) => {
           this.loading = false;
           this.notify.toast('Error al actualizar la reserva', 'error');
-          console.error('Error al actualizar:', err);
         }
       });
     }
   }
 
+  // Actualizar el estado de una reserva
   quickStatusChange(reservation: Reservation, newStatus: any): void {
     this.reservationService.updateStatus(reservation.id!, newStatus).subscribe(() => {
       this.loadReservations();
     });
   }
 
+  // Cancelar la creacion o modificacion de una reserva
   onCancel(): void {
     this.reservationForm.reset({
       id: null,
@@ -191,13 +191,14 @@ export class ManageReservationsComponent implements OnInit {
       pickupDate: '',
       isEcoPackaging: false
     });
-    // Habilitar pickupDate por defecto
+
     this.reservationForm.get('pickupDate')?.enable();
     this.selectedItems.set([]);
     this.loading = false;
     this.errorMessage = '';
   }
 
+  // Desplazarse a un elemento
   private scrollTo(selector: string): void {
     setTimeout(() => {
       const el = document.querySelector(selector);
@@ -208,6 +209,7 @@ export class ManageReservationsComponent implements OnInit {
     }, 100);
   }
 
+  // --- Paginación ---
   get paginatedReservations() {
     const start = (this.currentPage - 1) * this.itemsPerPage;
     return this.filteredReservationList.slice(start, start + this.itemsPerPage);

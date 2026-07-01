@@ -23,14 +23,17 @@ export class AuthService {
     this.authState.set(initial);
   }
 
+  // Obtener el usuario actual
   public getCurrentUser(): any {
     return this.authState().user;
   }
 
+  // Obtener el ID del usuario actual
   public getUserId(): string | null {
     return this.authState().user?.id || null;
   }
 
+  // Validar la sesión
   private validateSession(): { token: string | null, user: any | null } {
     const token = localStorage.getItem('userToken');
     const userStr = localStorage.getItem('userData');
@@ -51,14 +54,19 @@ export class AuthService {
     }
   }
 
+  // --- Acciones de autenticación ---
+
+  // Iniciar sesión
   loginAction(credentials: any): Observable<any> {
     return this.api.post('auth/login', credentials);
   }
 
+  // Registrarse
   registerAction(userData: any): Observable<any> {
     return this.api.post('auth/register', userData);
   }
 
+  // Login
   login(token: string, user: any): void {
     localStorage.setItem('userToken', token);
     localStorage.setItem('userData', JSON.stringify(user));
@@ -67,17 +75,20 @@ export class AuthService {
     this.router.navigateByUrl(route);
   }
 
+  // Limpiar sesión
   clearSession(): void {
     localStorage.clear();
     sessionStorage.clear();
     this.authState.set({ token: null, user: null });
   }
 
+  // Cerrar sesión
   logout(): void {
     this.clearSession();
     this.router.navigateByUrl('/');
   }
 
+  // Verificar si el usuario es Administrador
   isAdmin(): boolean {
     return this.userRole() === 'admin';
   }

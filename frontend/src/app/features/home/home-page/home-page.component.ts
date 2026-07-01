@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { EventService } from '../../../core/services/event.service';
 import { Event as CalendarEvent } from '../../../core/models/event.model';
 
@@ -13,20 +13,18 @@ import { Event as CalendarEvent } from '../../../core/models/event.model';
 })
 export class HomePageComponent implements OnInit {
   private eventService = inject(EventService);
-  private router = inject(Router);
 
-  // Signal para almacenar los eventos más cercanos en el tiempo
   public upcomingEvents = signal<CalendarEvent[]>([]);
 
   ngOnInit(): void {
     this.getUpcomingEvent();
   }
 
+  // Obtener los 3 próximos eventos
   getUpcomingEvent(): void {
     this.eventService.getEvents().subscribe({
       next: (events) => {
         const today = new Date().toISOString().split('T')[0];
-        // Filtrar eventos futuros y ordenar por fecha
         const upcoming = events
           .filter(e => e.date >= today)
           .sort((a, b) => a.date.localeCompare(b.date));
@@ -38,6 +36,7 @@ export class HomePageComponent implements OnInit {
     });
   }
 
+  // Desplazarse a un elemento
   scrollTo(selector: string): void {
     const el = document.querySelector(selector);
     if (el) {
@@ -45,6 +44,7 @@ export class HomePageComponent implements OnInit {
     }
   }
 
+  // Navegar a la página de eventos
   /* navigateToEvents(): void {
     this.router.navigate(['/events']); 
   } */
