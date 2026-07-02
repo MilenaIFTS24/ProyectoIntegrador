@@ -70,7 +70,7 @@
                     <td class="text-center">
                         <div class="btn-group gap-2">
                             <button class="btn-action btn-edit" (click)="updateReservation(res)" title="Gestionar"
-                                [disabled]="res.status === 'cancelada'">
+                                [disabled]="res.status === 'cancelada' || res.status === 'entregada'">
                                 <i class="bi bi-pencil-square"></i>
                             </button>
                             <button class="btn-action btn-delete" (click)="deleteReservation(res)" title="Eliminar">

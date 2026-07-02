@@ -98,8 +98,8 @@ export class ManageReservationsComponent implements OnInit {
 
   // Actualizar una reserva
   updateReservation(reservation: Reservation): void {
-    if (reservation.status === 'cancelada') {
-      this.notify.toast('No se puede editar una reserva cancelada', 'warning');
+    if (reservation.status === 'cancelada' || reservation.status === 'entregada') {
+      this.notify.toast(`No se puede editar una reserva ${reservation.status}`, 'warning');
       return;
     }
     this.reservationForm.reset();

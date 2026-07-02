@@ -149,8 +149,8 @@ export const updateStatusService = async (id, data) => {
         include: [{ model: ReservationItems, as: 'items' }]
     });
     if (!reservation) throw new Error('Reserva no encontrada');
-    if (reservation.status === 'cancelada') {
-        throw new Error('No se puede modificar una reserva ya cancelada');
+    if (reservation.status === 'cancelada' || reservation.status === 'entregada') {
+        throw new Error(`No se puede modificar una reserva ${reservation.status}`);
     }
 
 
