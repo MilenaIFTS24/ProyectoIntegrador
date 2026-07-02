@@ -113,17 +113,17 @@ export class ManageOffersComponent implements OnInit {
       active: offer.active
     } as any);
 
-    const associatedProducts = offer.Products || (offer as any).products;
+    const associatedProducts = offer.Products || (offer as any).products || [];
 
-    if (associatedProducts && Array.isArray(associatedProducts)) {
+    if (associatedProducts && Array.isArray(associatedProducts) && associatedProducts.length > 0) {
       this.selectedProductIds = associatedProducts
         .filter(p => p && p.id !== undefined && p.id !== null)
-        .map(p => p.id);
+        .map(p => p.id.toString().trim());
     } else {
       this.selectedProductIds = [];
     }
 
-    this.notify.toast(`Consultando oferta: ${offer.title}`, 'info');
+    this.notify.toast(`Editando oferta: ${offer.title}`, 'info');
     this.scrollTo('.event-card');
   }
 

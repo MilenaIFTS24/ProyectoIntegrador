@@ -66,11 +66,41 @@ export const createOfferService = async (data) => {
 
 // Actualizar una oferta
 export const updateOfferService = async (id, data) => {
+    const { title, type, value, active, productIds } = data;
+
     const offer = await Offers.findByPk(id);
     if (!offer) {
         throw new Error("Oferta no encontrada");
     }
-    return await offer.update(data);
+
+    await offer.update({ title, type, value, active });
+
+    if (productIds && Array.isArray(productIds)) {
+        await ProductOffers.destroy({
+            where: { offerId: id }
+        });
+
+        if (productIds.length > 0) {
+            const relations = productIds.map(productId => ({
+                offerId: id,
+                productId: productId.toString().trim()
+            }));
+            await ProductOffers.bulkCreate(relations);
+        }
+    }
+
+    const updatedOffer = await Offers.findByPk(id, {
+        include: [
+            {
+                model: Products,
+                as: 'Products',
+                attributes: ['id', 'name', 'price'],
+                through: { attributes: [] }
+            }
+        ]
+    });
+
+    return updatedOffer;
 }
 
 // Eliminar una oferta
@@ -79,6 +109,11 @@ export const deleteOfferService = async (id) => {
     if (!offer) {
         throw new Error("Oferta no encontrada");
     }
+
+    await ProductOffers.destroy({
+        where: { offerId: id }
+    });
+
     await offer.destroy();
     return { message: "Oferta eliminada correctamente" };
 }
