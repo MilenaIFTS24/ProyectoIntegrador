@@ -143,9 +143,38 @@ export const findReservationsByUserService = async (userId) => {
 
 // Actualizar el estado de una reserva
 export const updateStatusService = async (id, data) => {
-    const reservation = await Reservations.findByPk(id);
+    const { status, pickupDate, isEcoPackaging } = data;
+
+    const reservation = await Reservations.findByPk(id, {
+        include: [{ model: ReservationItems, as: 'items' }]
+    });
     if (!reservation) throw new Error('Reserva no encontrada');
-    return await reservation.update(data);
+
+    if (status === 'cancelada' && reservation.status !== 'cancelada') {
+        const t = await sequelize.transaction();
+        try {
+            for (const item of reservation.items) {
+                await Products.increment('stock', {
+                    by: item.quantity,
+                    where: { id: item.productId },
+                    transaction: t
+                });
+            }
+
+            await reservation.update(
+                { status, pickupDate, isEcoPackaging, cancelledAt: new Date() },
+                { transaction: t }
+            );
+
+            await t.commit();
+            return reservation;
+        } catch (error) {
+            await t.rollback();
+            throw error;
+        }
+    } else {
+        return await reservation.update(data);
+    }
 };
 
 // Cancelar una reserva (estado)
