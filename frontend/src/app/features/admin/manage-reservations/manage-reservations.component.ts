@@ -98,6 +98,10 @@ export class ManageReservationsComponent implements OnInit {
 
   // Actualizar una reserva
   updateReservation(reservation: Reservation): void {
+    if (reservation.status === 'cancelada') {
+      this.notify.toast('No se puede editar una reserva cancelada', 'warning');
+      return;
+    }
     this.reservationForm.reset();
 
     this.reservationForm.get('pickupDate')?.enable();
@@ -215,7 +219,7 @@ export class ManageReservationsComponent implements OnInit {
           next: () => {
             this.notify.toast('Reserva eliminada correctamente', 'success');
             this.loadReservations();
-            this.onCancel(); 
+            this.onCancel();
           },
           error: (err) => {
             this.loading = false;
