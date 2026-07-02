@@ -203,7 +203,8 @@
 
                             <label class="form-label small fw-bold">
                                 Fecha de Retiro
-                                @if (reservationForm.get('status')?.value !== 'cancelada') {
+                                @if (reservationForm.get('status')?.value !== 'cancelada' &&
+                                reservationForm.get('status')?.value !== 'entregada') {
                                 <span class="text-danger">*</span>
                                 }
                             </label>
@@ -212,10 +213,17 @@
                                 [class.is-invalid]="reservationForm.get('pickupDate')?.invalid && reservationForm.get('pickupDate')?.touched">
 
                             @if (reservationForm.get('status')?.value !== 'cancelada' &&
+                            reservationForm.get('status')?.value !== 'entregada' &&
                             reservationForm.get('pickupDate')?.invalid && reservationForm.get('pickupDate')?.touched) {
                             <div class="text-danger small mt-1 mb-3 animate__animated animate__fadeIn">
                                 La fecha de retiro es obligatoria
                             </div>
+                            }
+
+                            @if (reservationForm.get('status')?.value === 'entregada') {
+                            <small class="text-muted d-block mt-1">
+                                <i class="bi bi-info-circle"></i> Fecha opcional para reservas entregadas
+                            </small>
                             }
 
                             @if (reservationForm.get('status')?.value === 'cancelada') {

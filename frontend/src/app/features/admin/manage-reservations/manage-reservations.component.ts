@@ -126,13 +126,13 @@ export class ManageReservationsComponent implements OnInit {
     const status = this.reservationForm.get('status')?.value;
     const pickupDate = this.reservationForm.get('pickupDate')?.value;
 
-    if (status !== 'cancelada' && !pickupDate) {
-      this.notify.toast('La fecha de retiro es obligatoria para reservas no canceladas', 'warning');
+    if (status !== 'cancelada' && status !== 'entregada' && !pickupDate) {
+      this.notify.toast('La fecha de retiro es obligatoria para reservas pendientes o listas', 'warning');
       this.reservationForm.get('pickupDate')?.markAsTouched();
       return;
     }
 
-    if (status !== 'cancelada' && pickupDate) {
+    if (status !== 'cancelada' && status !== 'entregada' && pickupDate) {
       const selectedDate = new Date(pickupDate + 'T00:00:00');
       const today = new Date();
       today.setHours(0, 0, 0, 0);
