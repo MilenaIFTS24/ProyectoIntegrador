@@ -48,9 +48,9 @@ export class ManageReservationsComponent implements OnInit {
 
     this.reservationForm.get('status')?.valueChanges.subscribe((status) => {
       const pickupDateControl = this.reservationForm.get('pickupDate');
-      if (status === 'cancelada') {
+      if (status === 'cancelada' || status === 'entregada') {
         pickupDateControl?.disable();
-        pickupDateControl?.setValue(''); // Limpia la fecha
+        pickupDateControl?.setValue('');
       } else {
         pickupDateControl?.enable();
       }
@@ -126,13 +126,14 @@ export class ManageReservationsComponent implements OnInit {
     const status = this.reservationForm.get('status')?.value;
     const pickupDate = this.reservationForm.get('pickupDate')?.value;
 
-    if (status !== 'cancelada' && status !== 'entregada' && !pickupDate) {
-      this.notify.toast('La fecha de retiro es obligatoria para reservas pendientes o listas', 'warning');
+    const estadosSinFecha = ['pendiente', 'cancelada', 'entregada'];
+    if (!estadosSinFecha.includes(status!) && !pickupDate) {
+      this.notify.toast('La fecha de retiro es obligatoria para reservas en estado "Listo"', 'warning');
       this.reservationForm.get('pickupDate')?.markAsTouched();
       return;
     }
 
-    if (status !== 'cancelada' && status !== 'entregada' && pickupDate) {
+    if (!estadosSinFecha.includes(status!) && pickupDate) {
       const selectedDate = new Date(pickupDate + 'T00:00:00');
       const today = new Date();
       today.setHours(0, 0, 0, 0);
