@@ -76,9 +76,8 @@ export const updateOfferService = async (id, data) => {
     await offer.update({ title, type, value, active });
 
     if (productIds && Array.isArray(productIds)) {
-        await ProductOffers.destroy({
-            where: { offerId: id }
-        });
+        // Eliminar relaciones existentes
+        await ProductOffers.destroy({ where: { offerId: id } });
 
         if (productIds.length > 0) {
             const relations = productIds.map(productId => ({
@@ -89,19 +88,8 @@ export const updateOfferService = async (id, data) => {
         }
     }
 
-    const updatedOffer = await Offers.findByPk(id, {
-        include: [
-            {
-                model: Products,
-                as: 'Products',
-                attributes: ['id', 'name', 'price'],
-                through: { attributes: [] }
-            }
-        ]
-    });
-
-    return updatedOffer;
-}
+    return offer;
+};
 
 // Eliminar una oferta
 export const deleteOfferService = async (id) => {

@@ -19,7 +19,16 @@ const app = express();
 
 // --- Middlewares Globales ---
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    'https://proyectointegrador-blond.vercel.app',
+    'http://localhost:4200',
+    'http://localhost:3000'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 // --- Definición de Rutas ---
 app.use("/api/auth", authRouter);
