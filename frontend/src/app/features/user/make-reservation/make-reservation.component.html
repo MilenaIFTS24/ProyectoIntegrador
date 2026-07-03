@@ -86,12 +86,12 @@
                       <input type="number" formControlName="quantity" class="form-control form-control-sm custom-input"
                         (input)="onQuantityChange($index)"
                         [class.is-invalid]="(itemCtrl.get('quantity')?.invalid && itemCtrl.get('quantity')?.touched) || itemCtrl.get('quantity')?.hasError('exceedsStock')">
-                      @if (itemCtrl.get('quantity')?.invalid && itemCtrl.get('quantity')?.touched) {
-                      <div class="invalid-feedback">Cantidad mínima 1</div>
-                      } @else {
-                      @if (itemCtrl.get('quantity')?.hasError('exceedsStock')) {
-                      <div class="invalid-feedback">Stock insuficiente</div>
+                      @if (itemCtrl.get('quantity')?.hasError('exceedsStock') && itemCtrl.get('quantity')?.touched) {
+                      <div class="invalid-feedback d-block">Stock insuficiente</div>
                       }
+                      @if (itemCtrl.get('quantity')?.hasError('min') &&
+                      !itemCtrl.get('quantity')?.hasError('exceedsStock') && itemCtrl.get('quantity')?.touched) {
+                      <div class="invalid-feedback d-block">Cantidad mínima 1</div>
                       }
 
                     </div>
